@@ -2,15 +2,20 @@
 
 import { useState } from 'react';
 import { supabase } from '@/lib/supabaseClient';
-import { useRouter } from 'next/navigation';
+import { useRouter, useSearchParams } from 'next/navigation';
 
 export const PostForm = () => {
+  const router = useRouter();
+  const searchParams = useSearchParams();
+
+  const movieTitle = searchParams.get('title');
+  const movieImage = searchParams.get('image');
+  const movieOverview = searchParams.get('overview');
+
   const [title, setTitle] = useState('');
   const [content, setContent] = useState('');
   const [imageUrl, setImageUrl] = useState('');
   const [isSubmitting, setIsSubmitting] = useState(false);
-
-  const router = useRouter();
 
   const handleSubmit = async () => {
     if (!title.trim()) {
@@ -20,7 +25,7 @@ export const PostForm = () => {
 
     setIsSubmitting(true);
 
-    const { error } = await supabase.from('Post').insert({
+    const { error } = await supabase.from('posts').insert({
       title,
       content,
       image_url: imageUrl,
@@ -30,7 +35,7 @@ export const PostForm = () => {
       console.error('Error creating post:', error.message);
       alert('Failed to create post.');
     } else {
-      router.push('/'); 
+      router.push('/');
     }
 
     setIsSubmitting(false);
@@ -38,6 +43,26 @@ export const PostForm = () => {
 
   return (
     <div className="flex flex-col gap-4 w-[70%] mx-auto mt-8">
+      {/* Movie Info Section */}
+      {movieTitle && (
+        <div className="flex flex-row border p-4 rounded-lg shadow mb-6 gap-6">
+          {movieImage && (
+            <img
+              src={movieImage}
+              alt={movieTitle}
+              className="w-40 h-60 object-cover rounded"
+            />
+          )}
+          <div className="flex flex-col">
+            <h2 className="text-2xl font-bold mb-2">{movieTitle}</h2>
+            {movieOverview && (
+              <p className="text-gray-700">{movieOverview}</p>
+            )}
+          </div>
+        </div>
+      )}
+
+      {/* Create Post Form */}
       <input
         type="text"
         placeholder="Post Title"
@@ -55,7 +80,7 @@ export const PostForm = () => {
 
       <input
         type="text"
-        placeholder="Image URL (optional)"
+        placeholder="Add your favorite scenes"
         value={imageUrl}
         onChange={(e) => setImageUrl(e.target.value)}
         className="border rounded p-2"

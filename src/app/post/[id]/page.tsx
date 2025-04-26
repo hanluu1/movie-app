@@ -1,10 +1,9 @@
 'use client';
-
 import { useEffect, useState } from 'react';
 import { useParams } from 'next/navigation';
 import { supabase } from '@/lib/supabaseClient';
 import { Header } from '@/components/header';
-
+import { EditPostForm } from '@/components/EditPost';
 interface Post {
   id: string;
   title: string;
@@ -20,12 +19,13 @@ interface Comment {
   created_at: string;
 }
 
-export default function PostDetailPage() {
+export default function PostDetailPage () {
   const { id } = useParams();
   const [post, setPost] = useState<Post | null>(null);
   const [comments, setComments] = useState<Comment[]>([]);
   const [newComment, setNewComment] = useState('');
   const [loading, setLoading] = useState(true);
+  const [edit, setEdit] = useState(false);
 
   useEffect(() => {
     if (id) {
@@ -36,10 +36,10 @@ export default function PostDetailPage() {
 
   const fetchPost = async () => {
     const { data, error } = await supabase
-                                .from('Post')
-                                .select('*')
-                                .eq('id', id)
-                                .single();
+      .from('Post')
+      .select('*')
+      .eq('id', id)
+      .single();
 
     if (error) {
       console.error('Error fetching post:', error);
@@ -51,10 +51,10 @@ export default function PostDetailPage() {
 
   const fetchComments = async () => {
     const { data, error } = await supabase
-                                .from('Comments')
-                                .select('*')
-                                .eq('post_id', id)
-                                .order('created_at', { ascending: true });
+      .from('Comments')
+      .select('*')
+      .eq('post_id', id)
+      .order('created_at', { ascending: true });
 
     if (error) {
       console.error('Error fetching comments:', error);
@@ -92,33 +92,84 @@ export default function PostDetailPage() {
       fetchComments(); 
     }
   };
+  const handleDeletePost = async () => {
+    const confirmDelete = window.confirm('Are you sure you want to delete this post?');
+
+    if (!confirmDelete) return;
+
+    const { error } = await supabase
+      .from('Post')
+      .delete()
+      .eq('id', id);
+
+    if (error) {
+      console.error('Error deleting post:', error);
+    } else {
+      alert('Post deleted successfully.');
+      window.location.href = '/';
+    }
+  };
+
+  if (loading) return <div className="p-6">Loading...</div>;
+  if (!post) return <div className="p-6">Post not found.</div>;
 
   if (loading) return <div className="p-6">Loading...</div>;
   if (!post) return <div className="p-6">Post not found.</div>;
 
   return (
-    <div className="flex flex-col w-full p-6">
+    <div className="flex flex-col w-full">
       <Header />
 
       <div className="max-w-3xl mx-auto mt-8">
-        <h1 className="text-3xl font-bold mb-2">{post.title}</h1>
-        <div className="text-gray-500 text-sm mb-4">Posted on {new Date(post.created_at).toLocaleString()}</div>
+        {edit ? (
+          <EditPostForm
+            postId={post.id}
+            title={post.title}
+            content={post.content || ''}
+            imageUrl={post.image_url || ''}
+            onCancel={() => setEdit(false)}
+            onSave={() => {
+              setEdit(false);
+              fetchPost();
+            }}
+          />
+        ) : (
+          <>
+            <h1 className="text-3xl font-bold mb-2">{post.title}</h1>
+            <div className="text-gray-500 text-sm mb-4">Posted on {new Date(post.created_at).toLocaleString()}</div>
 
-        {post.image_url && (
-          <img src={post.image_url} alt={post.title} className="w-full rounded-lg mb-4" />
+            {post.image_url && (
+              <img src={post.image_url} alt={post.title} className="w-full rounded-lg mb-4" />
+            )}
+
+            <p className="text-lg mb-6">{post.content}</p>
+
+            <div className="flex gap-4 mb-6">
+              <button
+                onClick={handleUpvote}
+                className="bg-blue-500 text-white px-4 py-2 rounded-lg hover:bg-blue-600"
+              >
+                👍 Upvote ({post.upvotes})
+              </button>
+
+              <button
+                onClick={() => setEdit(true)}
+                className="bg-yellow-500 text-white px-4 py-2 rounded-lg hover:bg-yellow-600"
+              >
+                Edit Post
+              </button>
+
+              <button
+                onClick={handleDeletePost}
+                className="bg-red-500 text-white px-4 py-2 rounded-lg hover:bg-red-600"
+              >
+                Delete Post
+              </button>
+            </div>
+          </>
         )}
 
-        <p className="text-lg mb-6">{post.content}</p>
-
-        {/* Upvote Button */}
-        <button
-          onClick={handleUpvote}
-          className="bg-blue-500 text-white px-4 py-2 rounded-lg mb-8 hover:bg-blue-600"
-        >
-          👍 Upvote ({post.upvotes})
-        </button>
-
-        {/* Comment Section */}
+        {/* Comments Section */}
         <div className="border-t pt-6 mt-6">
           <h2 className="text-2xl font-bold mb-4">Comments</h2>
 
