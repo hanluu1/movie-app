@@ -11,6 +11,17 @@ const compat = new FlatCompat({
 
 const eslintConfig = [
   ...compat.extends("next/core-web-vitals", "next/typescript"),
+  {
+    rules: {
+      // Enforce consistent spacing
+      "indent": ["error", 2], // 2 spaces for indentation
+      "no-mixed-spaces-and-tabs": "error", // Disallow mixed spaces and tabs
+      "space-before-function-paren": ["error", "always"], // Space before function parentheses
+      "space-in-parens": ["error", "never"], // No spaces inside parentheses
+      "key-spacing": ["error", { beforeColon: false, afterColon: true }], // Consistent spacing in object keys
+      "comma-spacing": ["error", { before: false, after: true }], // Space after commas
+    },
+  },
 ];
 
 export default eslintConfig;

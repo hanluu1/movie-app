@@ -69,5 +69,5 @@ The following **additional** features are implemented:
 
 Here's a walkthrough of implemented user stories:
 
-<img src='./public/movie-blog.gif' title='Video Walkthrough' width='50' alt='Video Walkthrough' />
+<img src='./public/movie-blog.gif' title='Video Walkthrough' width='' alt='Video Walkthrough' />
 
