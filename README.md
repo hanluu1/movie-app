@@ -38,7 +38,7 @@ The following **required** functionality is completed:
     - Each click increases the post's upvotes count by one
     - Users can upvote any post any number of times
 
-- [ ] **A post that a user previously created can be edited or deleted from its post pages**
+- [X] **A post that a user previously created can be edited or deleted from its post pages**
   - After a user creates a new post, they can go back and edit the post
   - A previously created post can be deleted from its post page
 
@@ -62,12 +62,12 @@ The following **optional** features are implemented:
 - [ ] Web app displays a loading animation whenever data is being fetched
 
 The following **additional** features are implemented:
-
+- fetch the api to search for the movie they want to add review and post
 * [ ] List anything else that you added to improve the site's functionality!
 
 ## Video Walkthrough
 
 Here's a walkthrough of implemented user stories:
 
-<img src='./public/movie-blog.gif' title='Video Walkthrough' width='' alt='Video Walkthrough' />
+<img src='./public/walkthrufinal.gif' title='Video Walkthrough' width='' alt='Video Walkthrough' />
 

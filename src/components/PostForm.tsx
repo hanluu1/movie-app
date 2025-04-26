@@ -25,7 +25,7 @@ export const PostForm = () => {
 
     setIsSubmitting(true);
 
-    const { error } = await supabase.from('posts').insert({
+    const { error } = await supabase.from('Post').insert({
       title,
       content,
       image_url: imageUrl,
