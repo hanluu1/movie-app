@@ -1,40 +1,69 @@
 'use client';
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import Link from 'next/link';
 const API_KEY = process.env.NEXT_PUBLIC_TMDB_API_KEY;
 
 interface Movie {
   id: number;
   title: string;
+  name: string;
   overview: string;
   poster_path: string;
 }
 
 export const SearchMovie = () => {
   const [query, setQuery] = useState('');
-  const [results, setResults] = useState<Movie[]>([]);
+  const [results, setResults] = useState<Movie[]>([]);  
 
-  const handleSearch = async () => {
-    if (!query) return;
-    
-    const response = await fetch(
-      `https://api.themoviedb.org/3/search/movie?query=${encodeURIComponent(query)}`,
-      {
-        method: "GET",
-        headers: {
-          Authorization: `Bearer ${API_KEY}`,
-          "Content-Type": "application/json;charset=utf-8",
-        },
+
+  useEffect(() => {
+    const fetchMoviesOrTv = async () => {
+      if (!query) {
+        setResults([]);
+        return;
       }
-    );
-    
-    if (response.ok) {
-      const data = await response.json();
-      setResults(data.results || []);
-    } else {
-      console.error('Failed to fetch movies');
-    }
-  };
+
+
+      try {
+        // Try searching movies first
+        const movieRes = await fetch(
+          `https://api.themoviedb.org/3/search/movie?query=${encodeURIComponent(query)}`,
+          {
+            method: "GET",
+            headers: {
+              Authorization: `Bearer ${API_KEY}`,
+              "Content-Type": "application/json;charset=utf-8",
+            },
+          }
+        );
+        const movieData = await movieRes.json();
+
+        if (movieData.results.length > 0) {
+          setResults(movieData.results);
+        } else {
+          // If no movies found, try searching TV
+          const tvRes = await fetch(
+            `https://api.themoviedb.org/3/search/tv?query=${encodeURIComponent(query)}`,
+            {
+              method: "GET",
+              headers: {
+                Authorization: `Bearer ${API_KEY}`,
+                "Content-Type": "application/json;charset=utf-8",
+              },
+            }
+          );
+          const tvData = await tvRes.json();
+          setResults(tvData.results || []);
+        }
+      } catch (error) {
+        console.error('Error fetching movie or TV:', error);
+      }
+
+    };
+
+    fetchMoviesOrTv();
+  }, [query]); // 👈 Automatically run every time the query changes
+
 
   return (
     <div className="flex flex-col items-center">
@@ -49,23 +78,14 @@ export const SearchMovie = () => {
           placeholder="Search for a movie..."
           className="border border-gray-300 rounded-lg p-2 w-1/2"
         />
-        <button
-          onClick={handleSearch}
-          className="bg-blue-500 text-white rounded-lg p-2 ml-2"
-        >
-                Search
-        </button>
-        
         
         <button className="bg-blue-500 text-white px-2 py-2 rounded-lg hover:bg-blue-600 transition duration-300">
           <Link href="/create-post">
-                      Create New Post
+              Create New Post
           </Link>
         </button>
-         
-                
-        
       </div>
+      
       <div>
         {results.length > 0 ? (
           <div className="flex flex-col">
@@ -74,7 +94,7 @@ export const SearchMovie = () => {
                 {movie.poster_path ? (
                   <img
                     src={`https://image.tmdb.org/t/p/w500${movie.poster_path}`}
-                    alt={movie.title}
+                    alt={movie.title || movie.name}
                     className="w-32 h-48 mb-2"
                   />
                 ) : (
@@ -84,10 +104,10 @@ export const SearchMovie = () => {
                 )} 
                 <div className='flex flex-col'>               
                   <Link href={`/movie/${movie.id}`} className="text-lg font-bold text-blue-500 hover:underline">
-                    {movie.title}
+                    {movie.title || movie.name}
                   </Link>
                   <Link
-                    href={`/create-post?title=${encodeURIComponent(movie.title)}&image=https://image.tmdb.org/t/p/w500${movie.poster_path}&overview=${encodeURIComponent(movie.overview)}`}
+                    href={`/create-post?title=${encodeURIComponent(movie.title || movie.name)}&image=https://image.tmdb.org/t/p/w500${movie.poster_path}&overview=${encodeURIComponent(movie.overview)}`}
                   >
                     <button className="mt-2 bg-blue-500 text-white px-4 py-2 rounded hover:bg-green-600">
                       Create Post
