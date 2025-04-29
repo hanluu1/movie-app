@@ -1,8 +1,9 @@
 'use client';
 import React, { useState, useEffect } from 'react';
 import Link from 'next/link';
-const API_KEY = process.env.NEXT_PUBLIC_TMDB_API_KEY;
+import Image from 'next/image';
 
+const API_KEY = process.env.NEXT_PUBLIC_TMDB_API_KEY;
 interface Movie {
   id: number;
   title: string;
@@ -22,27 +23,19 @@ export const SearchMovie = () => {
         setResults([]);
         return;
       }
-
-
       try {
         // Try searching movies first
-        const movieRes = await fetch(
-          `https://api.themoviedb.org/3/search/movie?query=${encodeURIComponent(query)}`,
-          {
-            method: "GET",
-            headers: {
-              Authorization: `Bearer ${API_KEY}`,
-              "Content-Type": "application/json;charset=utf-8",
-            },
-          }
-        );
-        const movieData = await movieRes.json();
-
-        if (movieData.results.length > 0) {
-          setResults(movieData.results);
-        } else {
-          // If no movies found, try searching TV
-          const tvRes = await fetch(
+        const [movieRes, tvRes] = await Promise.all([
+          fetch(`https://api.themoviedb.org/3/search/movie?query=${encodeURIComponent(query)}`,
+            {
+              method: "GET",
+              headers: {
+                Authorization: `Bearer ${API_KEY}`,
+                "Content-Type": "application/json;charset=utf-8",
+              },
+            }
+          ),
+          fetch(
             `https://api.themoviedb.org/3/search/tv?query=${encodeURIComponent(query)}`,
             {
               method: "GET",
@@ -51,11 +44,18 @@ export const SearchMovie = () => {
                 "Content-Type": "application/json;charset=utf-8",
               },
             }
-          );
-          const tvData = await tvRes.json();
-          setResults(tvData.results || []);
-        }
-      } catch (error) {
+          ),
+        ]);
+          
+        const movieData = await movieRes.json();
+        const tvData = await tvRes.json();
+
+        //combine the results
+        const combinedResults = [...movieData.results, ...tvData.results];
+        
+        setResults(combinedResults);
+      }
+      catch (error) {
         console.error('Error fetching movie or TV:', error);
       }
 
@@ -70,7 +70,6 @@ export const SearchMovie = () => {
       <h1 className="text-3xl">Welcome to Reel Emotions</h1>
       <p>Search a movie to create a new post or basically create new post if no result found</p>
       <div className="flex gap-2 justify-center w-[100%] mb-4">
-            
         <input
           type="text"
           value={query}
@@ -92,9 +91,11 @@ export const SearchMovie = () => {
             {results.map((movie) => (
               <div key={movie.id} className="flex flex-row gap-5">
                 {movie.poster_path ? (
-                  <img
+                  <Image
                     src={`https://image.tmdb.org/t/p/w500${movie.poster_path}`}
                     alt={movie.title || movie.name}
+                    width={128}
+                    height={192}
                     className="w-32 h-48 mb-2"
                   />
                 ) : (
