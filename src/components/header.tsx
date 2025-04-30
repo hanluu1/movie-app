@@ -2,12 +2,23 @@
 
 import React from 'react';
 import Link from 'next/link';
-export function Header () {
+import { MagnifyingGlassIcon } from '@heroicons/react/24/outline';
+
+export function Header ({showSearchIcon = true, showSearch}:{showSearchIcon?: boolean; showSearch?: ()=> void}) {
+  
   return (
-    <div className='flex items-center justify-start gap-2 py-5 text-black bg-gray-200'>
-      <Link href="/">
-        <h1 className='text-3xl font-bold mx-10 cursor-pointer'>Reel Emotions</h1>
-      </Link>
+    <div className='flex flex-row justify-between items-center px-4 py-5 text-black bg-gray-200'>
+      
+      <Link href='/' className='text-3xl font-bold cursor-pointer'>Reel Emotions</Link>
+      <div className='flex flex-row gap-2'>
+        {showSearchIcon && (
+          <MagnifyingGlassIcon 
+            className="flex h-6 w-6 cursor-pointer text-gray-500"
+            onClick={showSearch}/>
+        )}
+        <p>Sign out</p>
+      </div>
+      
     </div>
   );
 }

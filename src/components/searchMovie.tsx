@@ -66,23 +66,15 @@ export const SearchMovie = () => {
 
 
   return (
-    <div className="flex flex-col items-center">
-      <h1 className="text-3xl">Welcome to Reel Emotions</h1>
-      <p>Search a movie to create a new post or basically create new post if no result found</p>
-      <div className="flex gap-2 justify-center w-[100%] mb-4">
+    <div className="flex flex-col my-2 items-center">
+      <div className="flex px-2 justify-center w-[100%] mb-4">
         <input
           type="text"
           value={query}
           onChange={(e) => setQuery(e.target.value)}
-          placeholder="Search for a movie..."
-          className="border border-gray-300 rounded-lg p-2 w-1/2"
-        />
-        
-        <button className="bg-blue-500 text-white px-2 py-2 rounded-lg hover:bg-blue-600 transition duration-300">
-          <Link href="/create-post">
-              Create New Post
-          </Link>
-        </button>
+          placeholder="Search your favorite movie or TV show"
+          className="border border-gray-300 rounded-lg p-2 w-full"
+        /> 
       </div>
       
       <div>
