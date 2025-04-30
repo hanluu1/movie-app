@@ -4,6 +4,7 @@ import { useParams } from 'next/navigation';
 import { supabase } from '@/lib/supabaseClient';
 import { Header } from '@/components/header';
 import { EditPostForm } from '@/components/EditPost';
+import Image from 'next/image';
 interface Post {
   id: string;
   title: string;
@@ -26,7 +27,6 @@ export default function PostDetailPage () {
   const [newComment, setNewComment] = useState('');
   const [loading, setLoading] = useState(true);
   const [edit, setEdit] = useState(false);
-
   useEffect(() => {
     if (id) {
       fetchPost();
@@ -113,12 +113,9 @@ export default function PostDetailPage () {
   if (loading) return <div className="p-6">Loading...</div>;
   if (!post) return <div className="p-6">Post not found.</div>;
 
-  if (loading) return <div className="p-6">Loading...</div>;
-  if (!post) return <div className="p-6">Post not found.</div>;
-
   return (
-    <div className="flex flex-col w-full">
-      <Header />
+    <div className="flex flex-col bg-[#dddddd] w-full h-screen">
+      <Header showSearchIcon={false} />
 
       <div className="max-w-3xl mx-auto mt-8">
         {edit ? (
@@ -139,7 +136,9 @@ export default function PostDetailPage () {
             <div className="text-gray-500 text-sm mb-4">Posted on {new Date(post.created_at).toLocaleString()}</div>
 
             {post.image_url && (
-              <img src={post.image_url} alt={post.title} className="w-full rounded-lg mb-4" />
+              <Image src={post.image_url} 
+                alt={post.title} 
+                className="w-full rounded-lg mb-4" />
             )}
 
             <p className="text-lg mb-6">{post.content}</p>
@@ -149,7 +148,7 @@ export default function PostDetailPage () {
                 onClick={handleUpvote}
                 className="bg-blue-500 text-white px-4 py-2 rounded-lg hover:bg-blue-600"
               >
-                👍 Upvote ({post.upvotes})
+                👍 Like ({post.upvotes})
               </button>
 
               <button

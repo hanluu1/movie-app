@@ -1,6 +1,7 @@
 'use client';
 
 import { useState } from 'react';
+import Image from 'next/image';
 import { supabase } from '@/lib/supabaseClient';
 import { useRouter, useSearchParams } from 'next/navigation';
 
@@ -42,17 +43,17 @@ export const PostForm = () => {
   };
 
   return (
-    <div className="flex flex-col gap-4 w-[70%] mx-auto mt-8">
+    <div className="flex flex-col gap-4 w-[70%] mx-auto">
       {/* Movie Info Section */}
       {movieTitle && (
         <div className="flex flex-row border p-4 rounded-lg shadow mb-6 gap-6">
-          {movieImage && (
-            <img
-              src={movieImage}
-              alt={movieTitle}
-              className="w-40 h-60 object-cover rounded"
-            />
-          )}
+          <Image
+            src={movieImage || ''}
+            alt={movieTitle || ''}
+            width={100}
+            height={150}
+            className="rounded-lg"
+          />
           <div className="flex flex-col">
             <h2 className="text-2xl font-bold mb-2">{movieTitle}</h2>
             {movieOverview && (
@@ -89,7 +90,7 @@ export const PostForm = () => {
       <button
         onClick={handleSubmit}
         disabled={isSubmitting}
-        className={`bg-blue-500 text-white rounded p-2 ${
+        className={`bg-zinc-400 text-black rounded p-2 ${
           isSubmitting ? 'opacity-50 cursor-not-allowed' : ''
         }`}
       >

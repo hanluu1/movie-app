@@ -3,15 +3,18 @@
 import { useEffect, useState } from 'react';
 import { supabase } from '@/lib/supabaseClient';
 import { PostCard } from '@/components/PostCard';
-
+import { useSearchParams } from 'next/navigation';
+import Link from 'next/link';
 interface Post {
+  movie_image: string | null;
+  movie_title: string | null;
   id: number;
   title: string;
   created_at: string;
   upvotes: number;
 }
 
-export const AllPost = () => {
+export const AllPost = () => {  
   const [posts, setPosts] = useState<Post[]>([]);
   const [searchQuery, setSearchQuery] = useState('');
   const [sort, setSort] = useState<'created_at' | 'upvotes'>('created_at');
@@ -23,7 +26,7 @@ export const AllPost = () => {
   const fetchPosts = async () => {
     const { data, error } = await supabase
       .from('Post')
-      .select('id, title, created_at, upvotes')
+      .select('id, title, movie_title, movie_image, created_at, upvotes')
       .order(sort, { ascending: false });
 
     if (error) {
@@ -38,39 +41,30 @@ export const AllPost = () => {
   );
 
   return (
-    <div className="flex flex-col mx-10">
-      <div className="flex flex-row gap-2 justify-start mb-4">
-        <input
-          type="text"
-          placeholder="Search posts..."
-          value={searchQuery}
-          onChange={(e) => setSearchQuery(e.target.value)}
-          className="border rounded p-2 w-full sm:w-64"
-        />
-            
-            
-        <button
-          onClick={() => setSort('created_at')}
-          className={`px-4 py-2 rounded ${sort === 'created_at' ? 'bg-blue-500 text-white' : 'bg-gray-200'}`}
-        >
-            Sort by Newest
+    <div className="flex flex-col py-4 mx-10">
+      <div className="flex flex-row justify-center gap-2 mb-4">
+        <button className="bg-[#f6f6f6] text-black px-2 py-2 rounded hover:bg-gray-500 transition duration-300">
+          <Link href="/create-post">
+            Create Post
+          </Link>
         </button>
-
         <button
           onClick={() => setSort('upvotes')}
-          className={`px-4 py-2 rounded ${sort === 'upvotes' ? 'bg-blue-500 text-white' : 'bg-gray-200'}`}
+          className={`px-4 py-2 rounded bg-[#f6f6f6] ${sort === 'upvotes' ? 'hover:bg-gray-500 text-black' : 'bg-[#f6f6f6]'}`}
         >
-            Sort by Upvotes
+          Most favorite
         </button>
       </div>
       
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+      <div className="flex flex-col gap-4 justify-center items-center">
         {filteredPosts.length > 0 ? (
           filteredPosts.map(post => (
             <PostCard
               key={post.id}
               id={post.id}
-              title={post.title}
+              movieTitle={post.movie_title}
+              movieImage={post.movie_image}
+              postTitle={post.title}
               createdAt={post.created_at}
               upvotes={post.upvotes}
             />
