@@ -11,6 +11,12 @@ const nextConfig: NextConfig = {
         port: '',
         pathname: '/t/p/w500/**', // Match the specific path for TMDB images
       },
+      {
+        protocol: 'https',
+        hostname: 'about.netflix.com',
+        port: '',
+        pathname: '/**', // Allow all paths under about.netflix.com
+      },
     ],
   },
   

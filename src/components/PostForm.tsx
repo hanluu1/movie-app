@@ -30,6 +30,8 @@ export const PostForm = () => {
       title,
       content,
       image_url: imageUrl,
+      movie_title: movieTitle,
+      movie_image: movieImage,
     });
 
     if (error) {

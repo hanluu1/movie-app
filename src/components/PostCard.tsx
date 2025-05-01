@@ -24,6 +24,8 @@ export const PostCard = ({ id, movieTitle, movieImage, postTitle, createdAt, upv
                 src={movieImage}
                 alt={movieTitle || ''}
                 className="w-full h-40 object-cover rounded"
+                width={50}
+                height={150}
               />
             )}
 

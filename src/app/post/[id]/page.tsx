@@ -12,6 +12,8 @@ interface Post {
   image_url: string;
   created_at: string;
   upvotes: number;
+  movie_title?: string;
+  movie_image?: string;
 }
 
 interface Comment {
@@ -134,11 +136,26 @@ export default function PostDetailPage () {
           <>
             <h1 className="text-3xl font-bold mb-2">{post.title}</h1>
             <div className="text-gray-500 text-sm mb-4">Posted on {new Date(post.created_at).toLocaleString()}</div>
+            {post.movie_image && (
+              <Image
+                src={post.movie_image}
+                alt={post.movie_title || 'Movie poster'}
+                width={300}
+                height={450}
+                className="rounded-lg mb-4"
+              />
+            )}
 
+            {post.movie_title && (
+              <h2 className="text-xl font-semibold text-gray-700 mb-2">{post.movie_title}</h2>
+            )}
             {post.image_url && (
-              <Image src={post.image_url} 
+              <Image 
+                src={post.image_url.trim()} 
                 alt={post.title} 
-                className="w-full rounded-lg mb-4" />
+                className="w-full rounded-lg mb-4" 
+                width={150}
+                height={150}/>
             )}
 
             <p className="text-lg mb-6">{post.content}</p>
