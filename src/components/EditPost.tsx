@@ -42,7 +42,7 @@ export const EditPostForm = ({ postId, title, content, imageUrl, onCancel, onSav
   };
 
   return (
-    <div className="flex flex-col gap-4 mb-6">
+    <div className="flex flex-col min-w-96 gap-4 mb-6">
       <input
         type="text"
         value={editedTitle}
@@ -68,14 +68,14 @@ export const EditPostForm = ({ postId, title, content, imageUrl, onCancel, onSav
         <button
           onClick={handleUpdatePost}
           disabled={isSaving}
-          className="bg-green-500 text-white px-4 py-2 rounded-lg hover:bg-green-600"
+          className=" bg-[#cfcfcf] text-black px-4 py-2 rounded-lg hover:bg-gray-400 hover:text-white"
         >
           {isSaving ? 'Saving...' : 'Save Changes'}
         </button>
 
         <button
           onClick={onCancel}
-          className="bg-gray-400 text-white px-4 py-2 rounded-lg hover:bg-gray-500"
+          className="bg-[#cfcfcf] text-black  px-4 py-2 rounded-lg hover:bg-gray-400 hover:text-white"
         >
             Cancel
         </button>

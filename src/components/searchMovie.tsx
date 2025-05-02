@@ -62,7 +62,7 @@ export const SearchMovie = () => {
     };
 
     fetchMoviesOrTv();
-  }, [query]); // 👈 Automatically run every time the query changes
+  }, [query]); // Automatically run every time the query changes
 
 
   return (

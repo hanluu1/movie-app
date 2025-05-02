@@ -119,7 +119,7 @@ export default function PostDetailPage () {
     <div className="flex flex-col bg-[#dddddd] w-full h-screen">
       <Header showSearchIcon={false} />
 
-      <div className="max-w-3xl mx-auto mt-8">
+      <div className="bg-white p-5 rounded-lg max-w-3xl mx-auto mt-8">
         {edit ? (
           <EditPostForm
             postId={post.id}
@@ -133,22 +133,29 @@ export default function PostDetailPage () {
             }}
           />
         ) : (
-          <>
-            <h1 className="text-3xl font-bold mb-2">{post.title}</h1>
-            <div className="text-gray-500 text-sm mb-4">Posted on {new Date(post.created_at).toLocaleString()}</div>
-            {post.movie_image && (
-              <Image
-                src={post.movie_image}
-                alt={post.movie_title || 'Movie poster'}
-                width={300}
-                height={450}
-                className="rounded-lg mb-4"
-              />
-            )}
+          <div>
+            <div className="flex flex-row justify-between min-w-96">
+              <div className="flex flex-col">
+                <h1 className="text-3xl font-bold mb-2">{post.title}</h1>
+                <div className="text-gray-500 text-sm mb-4">Posted on {new Date(post.created_at).toLocaleString()}</div>
+              </div>
+              
+              <div className="flex flex-col items-center w-36">
+                {post.movie_image && (
+                  <Image
+                    src={post.movie_image}
+                    alt={post.movie_title || 'Movie poster'}
+                    width={300}
+                    height={450}
+                    className="rounded-lg mb-4 w-20 h-24"
+                  />
+                )}
 
-            {post.movie_title && (
-              <h2 className="text-xl font-semibold text-gray-700 mb-2">{post.movie_title}</h2>
-            )}
+                {post.movie_title && (
+                  <div className="flex items-center justify-center text-sm font-semibold text-gray-700 mb-2">{post.movie_title}</div>
+                )}
+              </div>
+            </div>
             {post.image_url && (
               <Image 
                 src={post.image_url.trim()} 
@@ -163,26 +170,26 @@ export default function PostDetailPage () {
             <div className="flex gap-4 mb-6">
               <button
                 onClick={handleUpvote}
-                className="bg-blue-500 text-white px-4 py-2 rounded-lg hover:bg-blue-600"
+                className="bg-[#cfcfcf] text-black px-4 py-2 rounded-lg"
               >
-                👍 Like ({post.upvotes})
+                Like ({post.upvotes})
               </button>
 
               <button
                 onClick={() => setEdit(true)}
-                className="bg-yellow-500 text-white px-4 py-2 rounded-lg hover:bg-yellow-600"
+                className="bg-[#cfcfcf] text-black px-4 py-2 rounded-lg "
               >
                 Edit Post
               </button>
 
               <button
                 onClick={handleDeletePost}
-                className="bg-red-500 text-white px-4 py-2 rounded-lg hover:bg-red-600"
+                className="bg-[#cfcfcf] text-black px-4 py-2 rounded-lg "
               >
                 Delete Post
               </button>
             </div>
-          </>
+          </div>
         )}
 
         {/* Comments Section */}
@@ -198,7 +205,7 @@ export default function PostDetailPage () {
             />
             <button
               onClick={handleAddComment}
-              className="bg-green-500 text-white px-4 py-2 rounded-lg self-end hover:bg-green-600"
+              className="bg-[#cfcfcf] text-black px-4 py-2 rounded-lg self-end hover:bg-gray-400 hover:text-white"
             >
               Add Comment
             </button>
