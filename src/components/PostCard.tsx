@@ -10,39 +10,65 @@ interface PostCardProps {
     postTitle: string;
     createdAt: string;
     upvotes: number;
+    postContent?: string;
+    onLike?: () => void;
+    onComment?: () => void;
 }
 
-export const PostCard = ({ id, movieTitle, movieImage, postTitle, createdAt, upvotes }: PostCardProps) => {
+export const PostCard = ({ id, movieTitle, movieImage, postTitle, createdAt, postContent, upvotes, onLike, onComment }: PostCardProps) => {
+
 
   return (
-    <div className="border rounded-lg w-1/2 p-4 shadow hover:shadow-md transition bg-[#f8f4f4] hover:bg-gray-400">
-      <Link href={`/post/${id}`}>
+    <div className="border rounded-lg w-1/2 p-4 shadow hover:shadow-md transition bg-[#f8f4f4]">
+      <div>
         <div className="flex flex-col gap-2">
-          <div className="flex items-center gap-2">
-            {movieImage && (
-              <Image
-                src={movieImage}
-                alt={movieTitle || ''}
-                className="w-full h-40 object-cover rounded"
-                width={50}
-                height={150}
-              />
-            )}
+          <div className='flex flex-row justify-between'>
+            <div className='flex flex-col w-4/5'>
+              <Link href={`/post/${id}`} >
+                <h2 className="text-xl font-bold text-yellow-950">{postTitle}</h2>
+              </Link>
+              <div className="text-sm text-gray-500">
+                {new Date(createdAt).toLocaleString()}
+              </div>
+              <p className="text-lg mb-6">{postContent}</p>
 
-            {/* Movie Title */}
-            {movieTitle && (
-              <h3 className="text-lg font-semibold text-gray-800">{movieTitle}</h3>
-            )}
+            </div>
+            <div className="flex flex-col items-center">
+              {movieImage && (
+                <Image
+                  src={movieImage}
+                  alt={movieTitle || ''}
+                  className="w-20 h-24 object-cover rounded"
+                  width={50}
+                  height={150}
+                />
+              )}
+            </div>
           </div>
-          <h2 className="text-xl font-bold text-yellow-950">{postTitle}</h2>
-          <div className="text-sm text-gray-500">
-                Created at: {new Date(createdAt).toLocaleString()}
-          </div>
-          <div className="text-sm text-gray-700 font-semibold">
-                Likes: {upvotes}
+          <div className="flex flex-row justify-between mt-2 mb-1 px-4">
+            <button
+              onClick={onLike}
+              className="bg-[#cfcfcf] text-black px-4 py-2 rounded-lg hover:bg-zinc-400"
+            >
+              Like {upvotes}
+            </button>
+            <button
+              onClick={onComment}
+              className="bg-[#cfcfcf] text-black px-4 py-2 rounded-lg self-end hover:bg-zinc-400"
+            >
+              Comment
+            </button>
+            <button
+             
+              className="bg-[#cfcfcf] text-black px-4 py-2 rounded-lg hover:bg-zinc-400"
+            >
+              Save
+            </button>
+
+              
           </div>
         </div>
-      </Link>
+      </div>
     </div>
   );
 };
