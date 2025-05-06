@@ -13,9 +13,10 @@ interface PostCardProps {
     postContent?: string;
     onLike?: () => void;
     onComment?: () => void;
+    postImage?: string;
 }
 
-export const PostCard = ({ id, movieTitle, movieImage, postTitle, createdAt, postContent, upvotes, onLike, onComment }: PostCardProps) => {
+export const PostCard = ({ id, movieTitle, movieImage, postTitle, createdAt, postContent, upvotes, postImage, onLike, onComment }: PostCardProps) => {
 
 
   return (
@@ -45,6 +46,15 @@ export const PostCard = ({ id, movieTitle, movieImage, postTitle, createdAt, pos
               )}
             </div>
           </div>
+          {postImage && (
+            <Image
+              src={postImage}
+              alt={postTitle}
+              className="w-full rounded-lg mb-4"
+              width={150}
+              height={150}
+            />
+          )}
           <div className="flex flex-row justify-between mt-2 mb-1 px-4">
             <button
               onClick={onLike}

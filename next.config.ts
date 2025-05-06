@@ -17,6 +17,11 @@ const nextConfig: NextConfig = {
         port: '',
         pathname: '/**', // Allow all paths under about.netflix.com
       },
+      {
+        protocol: 'https',
+        hostname: 'awbhkclqydtvwbtbirhv.supabase.co',
+        pathname: '/storage/v1/object/public/post-images/**',
+      },
     ],
   },
   

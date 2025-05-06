@@ -156,17 +156,28 @@ export default function PostDetailPage () {
                 )}
               </div>
             </div>
-            {post.image_url && (
-              <Image 
-                src={post.image_url.trim()} 
-                alt={post.title} 
-                className="w-full rounded-lg mb-4" 
-                width={150}
-                height={150}/>
-            )}
-
             <p className="text-lg mb-6">{post.content}</p>
-
+            {Array.isArray(post.image_url)
+              ? post.image_url.map((url, idx) => (
+                <Image
+                  key={idx}
+                  src={url.trim()}
+                  alt={`Uploaded ${idx}`}
+                  width={150}
+                  height={150}
+                  className="w-full rounded-lg mb-4"
+                />
+              ))
+              : post.image_url && (
+                <Image
+                  src={post.image_url.trim()}
+                  alt={post.title}
+                  width={150}
+                  height={150}
+                  className="w-full rounded-lg mb-4"
+                />
+              )
+            }
             <div className="flex gap-4 mb-6">
               <button
                 onClick={handleUpvote}
