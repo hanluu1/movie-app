@@ -64,19 +64,7 @@ export const AllPost = () => {
 
   return (
     <div className="flex flex-col py-4 mx-10">
-      <div className="flex flex-row justify-center gap-2 mb-4">
-        <button className="bg-[#f6f6f6] text-black px-2 py-2 rounded hover:bg-gray-500 transition duration-300">
-          <Link href="/create-post">
-            Create Post
-          </Link>
-        </button>
-        <button
-          onClick={() => setSort('upvotes')}
-          className={`px-4 py-2 rounded bg-[#f6f6f6] ${sort === 'upvotes' ? 'hover:bg-gray-500 text-black' : 'bg-[#f6f6f6]'}`}
-        >
-          Most favorite
-        </button>
-      </div>
+      
       
       <div className="flex flex-col gap-4 justify-center items-center">
         
