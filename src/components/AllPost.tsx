@@ -3,7 +3,6 @@
 import { useEffect, useState } from 'react';
 import { supabase } from '@/lib/supabaseClient';
 import { PostCard } from '@/components/PostCard';
-import Link from 'next/link';
 import { CommentModal } from '@/components/CommentModal';
 interface Post {
   movie_image: string | null;
