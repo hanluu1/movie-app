@@ -30,38 +30,51 @@ export default function AuthPage () {
   };
 
   return (
-    <div className="max-w-sm mx-auto mt-20 p-4 border rounded shadow">
-      <h1 className="text-xl font-bold mb-4">{isLogin ? 'Log In' : 'Sign Up'}</h1>
-      <form onSubmit={handleSubmit} className="flex flex-col gap-3">
-        <input
-          className="border p-2 rounded"
-          type="email"
-          placeholder="Email"
-          value={email}
-          onChange={(e) => setEmail(e.target.value)}
-          required
-        />
-        <input
-          className="border p-2 rounded"
-          type="password"
-          placeholder="Password"
-          value={password}
-          onChange={(e) => setPassword(e.target.value)}
-          required
-        />
-        <button type="submit" className="bg-blue-600 text-white p-2 rounded">
-          {isLogin ? 'Log In' : 'Sign Up'}
-        </button>
-      </form>
-
-      {error && <p className="text-red-600 mt-2">{error}</p>}
-
-      <p className="mt-4 text-sm text-center">
-        {isLogin ? "Don't have an account?" : 'Already have an account?'}{' '}
-        <button className="text-blue-600" onClick={() => setIsLogin(!isLogin)}>
-          {isLogin ? 'Sign Up' : 'Log In'}
-        </button>
-      </p>
+    <div className="min-h-screen bg-gradient-to-br from-gray-900 via-black to-gray-800 flex items-center justify-center">
+      <div className="w-full max-w-md bg-gray-900 border border-gray-700 p-8 rounded-2xl shadow-2xl">
+        <h1 className="text-3xl font-extrabold text-center text-white mb-6">
+          {isLogin ? 'Welcome to ReelEmotions 🎬' : 'Join Reel Emotions 🍿'}
+        </h1>
+        <form onSubmit={handleSubmit} className="flex flex-col gap-4">
+          <input
+            className="bg-gray-800 border border-gray-600 text-white placeholder-gray-400 p-3 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+            type="email"
+            placeholder="Email"
+            value={email}
+            onChange={(e) => setEmail(e.target.value)}
+            required
+          />
+          <input
+            className="bg-gray-800 border border-gray-600 text-white placeholder-gray-400 p-3 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+            type="password"
+            placeholder="Password"
+            value={password}
+            onChange={(e) => setPassword(e.target.value)}
+            required
+          />
+          <button
+            type="submit"
+            className="bg-blue-600 hover:bg-blue-700 text-white font-semibold py-3 rounded-lg transition duration-200"
+          >
+            {isLogin ? 'Log In' : 'Sign Up'}
+          </button>
+        </form>
+  
+        {error && (
+          <p className="text-red-500 text-sm mt-4 text-center">{error}</p>
+        )}
+  
+        <p className="mt-6 text-sm text-gray-400 text-center">
+          {isLogin ? "Don't have an account?" : 'Already have an account?'}{' '}
+          <button
+            className="text-blue-400 hover:underline ml-1"
+            onClick={() => setIsLogin(!isLogin)}
+          >
+            {isLogin ? 'Sign Up' : 'Log In'}
+          </button>
+        </p>
+      </div>
     </div>
   );
+  
 }
