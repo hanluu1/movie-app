@@ -1,6 +1,8 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+@import url('https://fonts.googleapis.com/css2?family=Anton&family=Bebas+Neue&family=Rajdhani:wght@300;400;500;600;700&display=swap');
+
 *,
 *::after,
 *::before {
@@ -12,7 +14,7 @@
 }
 html,
 body {
-  font-family: var(--font-raleway);
+  font-family: 'Bebas Neue', sans-serif;
 
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;

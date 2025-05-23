@@ -7,8 +7,12 @@ module.exports = {
     './app/**/*.{js,ts,jsx,tsx}',
   ],
   theme: {
-    extend: {},
-  },
-  plugins: [],
-}
-
+    extend: {
+      fontFamily: {
+        logo: ['Anton', 'sans-serif'],
+        body: ['Bebas Neue', 'sans-serif'],
+      },
+    },
+    plugins: [],
+  }
+};
