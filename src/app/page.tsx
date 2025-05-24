@@ -13,7 +13,7 @@ export default function Home () {
   
       <div className="flex flex-col items-center px-4 py-6">
         {showSearch && (
-          <div className="w-full max-w-3xl mb-6">
+          <div className="w-full mb-6">
             <SearchMovie />
           </div>
         )}

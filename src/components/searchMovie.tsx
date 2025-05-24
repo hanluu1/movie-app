@@ -73,7 +73,7 @@ export const SearchMovie = () => {
           value={query}
           onChange={(e) => setQuery(e.target.value)}
           placeholder="Search your favorite movie or TV show"
-          className="border border-gray-300 rounded-lg p-2 w-full"
+          className="border text-black border-gray-300 rounded-lg p-2 w-full"
         /> 
       </div>
       
@@ -102,7 +102,7 @@ export const SearchMovie = () => {
                   <Link
                     href={`/create-post?title=${encodeURIComponent(movie.title || movie.name)}&image=https://image.tmdb.org/t/p/w500${movie.poster_path}&overview=${encodeURIComponent(movie.overview)}`}
                   >
-                    <button className="mt-2 bg-blue-500 text-white px-4 py-2 rounded hover:bg-green-600">
+                    <button className="mt-2 bg-blue-500 px-4 py-2 rounded hover:bg-green-600">
                       Create Post
                     </button>
                   </Link>
