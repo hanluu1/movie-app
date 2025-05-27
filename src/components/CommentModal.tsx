@@ -1,7 +1,7 @@
 'use client';
 import { useEffect, useState } from 'react';
 import { supabase } from '@/lib/supabaseClient';
-
+import { XMarkIcon } from '@heroicons/react/24/outline';
 interface Comment {
   id: string;
   content: string;
@@ -50,18 +50,15 @@ export const CommentModal = ({ postId, isOpen, onClose }: CommentModalProps) => 
   if (!isOpen) return null;
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50">
-      <div className="bg-white w-full max-w-md p-6 rounded-lg relative shadow-lg max-h-[80vh] overflow-y-auto">
-        <button
+    <div className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50 text-black">
+      <div className="bg-gray-900 w-[80%] max-w-xl mx-auto my-10 p-6 border border-gray-700 rounded-lg relative shadow-lg overflow-y-auto">
+        <XMarkIcon
           onClick={onClose}
-          className="absolute top-2 right-3 text-gray-500 hover:text-black"
-        >
-          ✕
-        </button>
+          className="absolute w-7 h-7 top-2 right-4 text-gray-500 cursor-pointer"
+        />
+        <div className="text-xl font-bold mb-4 text-white">Comments</div>
 
-        <h2 className="text-xl font-bold mb-4">Comments</h2>
-
-        <div className="flex flex-col gap-2 mb-4">
+        <div className="flex flex-col gap-3 mb-4">
           <textarea
             value={newComment}
             onChange={(e) => setNewComment(e.target.value)}
@@ -70,9 +67,9 @@ export const CommentModal = ({ postId, isOpen, onClose }: CommentModalProps) => 
           />
           <button
             onClick={handleAddComment}
-            className="bg-[#cfcfcf] text-black px-4 py-2 rounded-lg self-end"
+            className="bg-gray-700 hover:bg-gray-600 text-white px-2 py-2 rounded-md self-end"
           >
-            Add Comment
+            Add comment
           </button>
         </div>
 

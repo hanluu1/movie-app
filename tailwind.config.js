@@ -9,8 +9,9 @@ module.exports = {
   theme: {
     extend: {
       fontFamily: {
-        logo: ['Anton', 'sans-serif'],
-        body: ['Bebas Neue', 'sans-serif'],
+        logo: ['var(--font-anton)'],
+        sans: ['var(--font-geist-sans)'],
+        mono: ['var(--font-geist-mono)'],
       },
     },
     plugins: [],

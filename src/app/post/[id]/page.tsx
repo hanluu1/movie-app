@@ -116,10 +116,10 @@ export default function PostDetailPage () {
   if (!post) return <div className="p-6">Post not found.</div>;
 
   return (
-    <div className="flex flex-col bg-[#dddddd] w-full h-screen">
+    <div className="flex flex-col min-h-screen w-full bg-gradient-to-br from-gray-900 via-black to-gray-800 text-white transition-all duration-300">
       <Header showSearchIcon={false} />
 
-      <div className="bg-white p-5 rounded-lg max-w-3xl mx-auto mt-8">
+      <div className="bg-gray-900 border border-gray-700 rounded-2xl w-full max-w-2xl mx-auto my-10 p-6 ">
         {edit ? (
           <EditPostForm
             postId={post.id}
@@ -152,7 +152,7 @@ export default function PostDetailPage () {
                 )}
 
                 {post.movie_title && (
-                  <div className="flex items-center justify-center text-sm font-semibold text-gray-700 mb-2">{post.movie_title}</div>
+                  <div className="flex items-center justify-center text-sm font-semibold text-gray-300 mb-2">{post.movie_title}</div>
                 )}
               </div>
             </div>
@@ -181,21 +181,21 @@ export default function PostDetailPage () {
             <div className="flex gap-4 mb-6">
               <button
                 onClick={handleUpvote}
-                className="bg-[#cfcfcf] text-black px-4 py-2 rounded-lg"
+                className="bg-gray-700 hover:bg-gray-600 text-white px-4 py-2 rounded-lg"
               >
                 Like ({post.upvotes})
               </button>
 
               <button
                 onClick={() => setEdit(true)}
-                className="bg-[#cfcfcf] text-black px-4 py-2 rounded-lg "
+                className="bg-gray-700 hover:bg-gray-600 text-white px-4 py-2 rounded-lg "
               >
                 Edit Post
               </button>
 
               <button
                 onClick={handleDeletePost}
-                className="bg-[#cfcfcf] text-black px-4 py-2 rounded-lg "
+                className="bg-gray-700 hover:bg-gray-600 text-white px-4 py-2 rounded-lg "
               >
                 Delete Post
               </button>
@@ -207,7 +207,7 @@ export default function PostDetailPage () {
         <div className="border-t pt-6 mt-6">
           <h2 className="text-2xl font-bold mb-4">Comments</h2>
 
-          <div className="flex flex-col gap-2 mb-6">
+          <div className="flex flex-col gap-2 mb-6 text-black">
             <textarea
               value={newComment}
               onChange={(e) => setNewComment(e.target.value)}
@@ -216,7 +216,7 @@ export default function PostDetailPage () {
             />
             <button
               onClick={handleAddComment}
-              className="bg-[#cfcfcf] text-black px-4 py-2 rounded-lg self-end hover:bg-gray-400 hover:text-white"
+              className="bg-gray-700 hover:bg-gray-600 text-white px-4 py-2 rounded-lg self-end hover:bg-gray-400 hover:text-white"
             >
               Add Comment
             </button>

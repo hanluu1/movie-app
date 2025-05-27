@@ -24,11 +24,10 @@ export function Header ({
   return (
     <header className="relative flex items-center justify-between px-6 py-5 bg-gray-900 border-b border-gray-700 shadow-md">
       <div
-        className="text-3xl font-bold text-white z-10"
+        className="font-logo text-4xl tracking-tight text-white leading-none"
       >
         ReelEmotions
       </div>
-
       <div className="absolute left-1/2 -translate-x-1/2 flex gap-6">
         <Link href="/">
           <HomeIcon className="h-6 w-6 cursor-pointer text-gray-300 hover:text-blue-400 transition" />
@@ -46,7 +45,7 @@ export function Header ({
 
       <button
         onClick={handleSignOut}
-        className="z-10 text-gray-300 hover:text-red-400 transition"
+        className="z-10 text-gray-300 hover:text-blue-400 transition"
       >
         Sign out
       </button>

@@ -14,8 +14,9 @@
 }
 html,
 body {
-  font-family: 'Bebas Neue', sans-serif;
-
+  font-family: 'Antonn SC', sans-serif;
+  font-smooth: always;
+  -webkit-font-smoothing: antialiased;
 
 
 }

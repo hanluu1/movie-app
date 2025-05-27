@@ -42,7 +42,7 @@ export const EditPostForm = ({ postId, title, content, imageUrl, onCancel, onSav
   };
 
   return (
-    <div className="flex flex-col min-w-96 gap-4 mb-6">
+    <div className="flex flex-col min-w-96 gap-4 mb-6 text-black">
       <input
         type="text"
         value={editedTitle}

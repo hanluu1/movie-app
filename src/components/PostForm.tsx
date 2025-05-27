@@ -92,7 +92,7 @@ export const PostForm = () => {
   };
 
   return (
-    <div className="flex flex-col gap-4 w-[70%] mx-auto">
+    <div className="flex flex-col gap-4 mx-auto text-black">
       {/* Movie Info Section */}
       {movieTitle && (
         <div className="flex flex-row border p-4 rounded-lg shadow mb-6 gap-6">
@@ -152,12 +152,10 @@ export const PostForm = () => {
           ))}
         </div>
       )}
-
-
       <button
         onClick={handleSubmit}
         disabled={isSubmitting}
-        className={`bg-zinc-400 text-black rounded p-2 ${
+        className={`bg-gray-700 hover:bg-gray-600 text-white rounded p-2 ${
           isSubmitting ? 'opacity-50 cursor-not-allowed' : ''
         }`}
       >

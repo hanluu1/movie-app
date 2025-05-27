@@ -1,8 +1,11 @@
 'use client';
 import React from 'react';
+import { useState } from 'react';
 import Link from 'next/link';
 import Image from 'next/image';
-
+import {  ChatBubbleLeftRightIcon, BookmarkIcon } from '@heroicons/react/16/solid';
+import { HandThumbUpIcon as HandThumbUpSolid } from '@heroicons/react/16/solid';
+import { HandThumbUpIcon as HandThumbUpOutline } from '@heroicons/react/24/outline';
 interface PostCardProps {
     id: number;
     movieTitle: string | null;
@@ -17,7 +20,7 @@ interface PostCardProps {
 }
 
 export const PostCard = ({ id, movieTitle, movieImage, postTitle, createdAt, postContent, upvotes, postImage, onLike, onComment }: PostCardProps) => {
-
+  const [liked, setLiked] = useState(false);
 
   return (
     <div className="bg-gray-900 border border-gray-700 rounded-2xl w-full max-w-2xl mx-auto p-6 shadow-xl hover:shadow-blue-900/40 transition duration-300">
@@ -60,21 +63,32 @@ export const PostCard = ({ id, movieTitle, movieImage, postTitle, createdAt, pos
   
         <div className="flex justify-between items-center mt-2 text-sm text-gray-300">
           <button
-            onClick={onLike}
-            className="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg transition"
+            onClick={() => {
+              setLiked((prev) => !prev);
+              if (onLike) onLike();
+            }}
+            className={`flex items-center gap-1 px-4 py-2 rounded-lg transition
+              ${liked ? 'bg-blue-600 text-white' : 'bg-gray-700 hover:bg-gray-600 text-white'}`}
           >
-            👍 Like {upvotes}
+            {liked ? (
+              <HandThumbUpSolid className="h-5 w-5" />
+            ) : (
+              <HandThumbUpOutline className="h-5 w-5" />
+            )}
+              Like {upvotes}
           </button>
           <button
             onClick={onComment}
-            className="bg-gray-700 hover:bg-gray-600 text-white px-4 py-2 rounded-lg transition"
+            className="flex items-center gap-1 bg-gray-700 hover:bg-gray-600 text-white px-4 py-2 rounded-lg transition"
           >
-            💬 Comment
+            <ChatBubbleLeftRightIcon className="h-5 w-5" />
+              Comment
           </button>
           <button
-            className="bg-gray-700 hover:bg-gray-600 text-white px-4 py-2 rounded-lg transition"
+            className="flex items-center gap-1 bg-gray-700 hover:bg-gray-600 text-white px-4 py-2 rounded-lg transition"
           >
-            📌 Save
+            <BookmarkIcon className="h-5 w-5" />
+              Save
           </button>
         </div>
       </div>
