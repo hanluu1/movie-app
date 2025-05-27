@@ -16,8 +16,6 @@ html,
 body {
   font-family: 'Bebas Neue', sans-serif;
 
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
-  --font-smooth: never;
+
 
 }

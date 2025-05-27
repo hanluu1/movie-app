@@ -23,12 +23,11 @@ export function Header ({
 
   return (
     <header className="relative flex items-center justify-between px-6 py-5 bg-gray-900 border-b border-gray-700 shadow-md">
-      <Link
-        href="/"
-        className="text-3xl font-logo text-white hover:text-blue-500 transition duration-200 z-10"
+      <div
+        className="text-3xl font-bold text-white z-10"
       >
         ReelEmotions
-      </Link>
+      </div>
 
       <div className="absolute left-1/2 -translate-x-1/2 flex gap-6">
         <Link href="/">
