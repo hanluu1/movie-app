@@ -63,8 +63,6 @@ export const AllPost = () => {
 
   return (
     <div className="flex flex-col py-4 mx-10">
-      
-      
       <div className="flex flex-col gap-4 justify-center items-center">
         
         {posts.map((post) => (

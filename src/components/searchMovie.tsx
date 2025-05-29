@@ -67,7 +67,7 @@ export const SearchMovie = () => {
 
   return (
     <div className="flex flex-col my-2 items-center">
-      <div className="flex px-2 justify-center w-[100%] mb-4">
+      <div className="flex px-2 justify-center w-[100%] mb-2">
         <input
           type="text"
           value={query}
