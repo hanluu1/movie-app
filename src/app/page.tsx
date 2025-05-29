@@ -2,7 +2,7 @@
 
 import React, { useState } from "react";
 
-import { Header } from "@/components/header";
+import { Header } from "@/components/Header";
 import { SearchMovie } from "@/components/searchMovie";
 import { AllPost } from "@/components/AllPost";
 export default function Home () {

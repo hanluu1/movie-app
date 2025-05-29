@@ -2,7 +2,7 @@
 import { useEffect, useState } from 'react';
 import { useParams } from 'next/navigation';
 import { supabase } from '@/lib/supabaseClient';
-import { Header } from '@/components/header';
+import { Header } from '@/components/Header';
 import { EditPostForm } from '@/components/EditPost';
 import Image from 'next/image';
 interface Post {

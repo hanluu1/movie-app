@@ -1,6 +1,6 @@
 'use client';
 import { PostForm } from '@/components/PostForm';
-import { Header } from '@/components/header';
+import { Header } from '@/components/Header';
 export default function CreatePage () {
   return (
     <div className="flex flex-col min-h-screen w-full bg-gradient-to-br from-gray-900 via-black to-gray-800 text-white transition-all duration-300">
