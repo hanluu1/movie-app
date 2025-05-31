@@ -3,21 +3,24 @@
 import { useState } from 'react';
 import Image from 'next/image';
 import { supabase } from '@/lib/supabaseClient';
-import { useRouter, useSearchParams } from 'next/navigation';
+import { useRouter} from 'next/navigation';
+import { SearchMovie } from '@/components/searchMovie';
 import { v4 as uuidv4 } from 'uuid';
+import { MagnifyingGlassCircleIcon, XMarkIcon } from '@heroicons/react/24/outline';
 
 export const PostForm = () => {
   const router = useRouter();
-  const searchParams = useSearchParams();
-
-  const movieTitle = searchParams.get('title');
-  const movieImage = searchParams.get('image');
-  const movieOverview = searchParams.get('overview');
 
   const [title, setTitle] = useState('');
   const [content, setContent] = useState('');
   const [imageUrl, setImageUrl] = useState<string[]>([]);
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [showMovieSearch, setShowMovieSearch] = useState(false);
+  const [selectedMovie, setSelectedMovie] = useState<{
+    title: string;
+    image: string;
+    overview: string;
+  } | null>(null);
 
   const handleImageUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const files = e.target.files;
@@ -56,7 +59,7 @@ export const PostForm = () => {
         .getPublicUrl(filePath);
   
       if (publicUrlData?.publicUrl) {
-        console.log(`✅ Public URL for "${file.name}":`, publicUrlData.publicUrl);
+        console.log(` Public URL for "${file.name}":`, publicUrlData.publicUrl);
         newUrls.push(publicUrlData.publicUrl);
       } else {
         alert(`Failed to get public URL for file: ${file.name}`);
@@ -77,8 +80,8 @@ export const PostForm = () => {
       title,
       content,
       image_url: imageUrl.join(','),
-      movie_title: movieTitle,
-      movie_image: movieImage,
+      movie_title: selectedMovie?.title || null,
+      movie_image: selectedMovie?.image || null,
     });
 
     if (error) {
@@ -94,25 +97,47 @@ export const PostForm = () => {
   return (
     <div className="flex flex-col gap-4 mx-auto text-black">
       {/* Movie Info Section */}
-      {movieTitle && (
+      {selectedMovie && (
         <div className="flex flex-row border p-4 rounded-lg shadow mb-6 gap-6">
           <Image
-            src={movieImage || ''}
-            alt={movieTitle || ''}
+            src={selectedMovie.image}
+            alt={selectedMovie.title}
             width={100}
             height={150}
             className="rounded-lg"
           />
           <div className="flex flex-col">
-            <h2 className="text-2xl font-bold mb-2">{movieTitle}</h2>
-            {movieOverview && (
-              <p className="text-gray-700">{movieOverview}</p>
+            <h2 className="text-2xl font-bold mb-2">{selectedMovie.title}</h2>
+            {selectedMovie.overview && (
+              <p className="text-gray-700">{selectedMovie.overview}</p>
             )}
           </div>
         </div>
       )}
 
       {/* Create Post Form */}
+      <div
+        className="flex items-center gap-2 cursor-pointer w-fit text-white hover:text-gray-500"
+        onClick={() => setShowMovieSearch(!showMovieSearch)}
+      >
+        <MagnifyingGlassCircleIcon className="w-6 h-6" />
+        <div>{selectedMovie ? 'Edit picked movie' : 'Select a show/movie'}</div>
+      </div>
+      {showMovieSearch && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50">
+          <div className="bg-white p-4 rounded shadow-lg max-w-lg w-full max-h-[50vh] overflow-y-auto relative">
+            <SearchMovie
+              mode='select'
+              onSelect={(movie) => {
+                setSelectedMovie(movie);
+                setShowMovieSearch(false);
+                setTitle('');
+                setContent('');
+              }}
+            />
+          </div>
+        </div>
+      )}
       <input
         type="text"
         placeholder="Post Title"
