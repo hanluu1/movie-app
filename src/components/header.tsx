@@ -2,10 +2,8 @@
 
 import { useRouter } from 'next/navigation';
 import React from 'react';
-import Link from 'next/link';
 import { supabase } from '@/lib/supabaseClient';
 import { MagnifyingGlassIcon,  } from '@heroicons/react/24/outline';
-import { HomeIcon, PlusIcon, Squares2X2Icon } from '@heroicons/react/16/solid';
 
 export function Header ({
   showSearchIcon = true,
