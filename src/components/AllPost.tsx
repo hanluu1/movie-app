@@ -3,7 +3,7 @@
 import { useEffect, useState } from 'react';
 import { supabase } from '@/lib/supabaseClient';
 import { PostCard } from '@/components/PostCard';
-import { CommentModal } from '@/components/CommentModal';
+import { CommentModal } from '@/components/popup-modal/comment-modal';
 interface Post {
   movie_image: string | null;
   movie_title: string | null;
@@ -18,7 +18,6 @@ export const AllPost = () => {
   const [sort, setSort] = useState<'created_at' | 'upvotes'>('created_at');
   const [showCommentModal, setShowCommentModal] = useState(false);
   const [activePostId, setActivePostId] = useState<number | null>(null);
-  
   const openCommentModal = (postId: number) => {
     setActivePostId(postId);
     setShowCommentModal(true);
