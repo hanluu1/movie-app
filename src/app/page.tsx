@@ -15,8 +15,15 @@ export default function Home () {
     <div className="flex flex-col min-h-screen w-full bg-gradient-to-br from-gray-900 via-black to-gray-800 text-white transition-all duration-300">
       <Header showSearchIcon={true} showSearch={() => setShowSearch(prev => !prev)} />
       {showSearch && (
-        <div className="w-full">
-          <SearchMovie />
+        <div className="w-full ">
+          <SearchMovie 
+            mode="navigate"
+            onSelect={
+              (movie) => {
+                setShowSearch(false);
+                window.location.href = `/movie-more-info/${movie.id}`;
+              }
+            }/>
         </div>
       )}
       <div className="flex flex-col items-center px-4 py-4">

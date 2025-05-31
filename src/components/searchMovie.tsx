@@ -21,7 +21,7 @@ interface SearchMovieProps {
 export const SearchMovie = ({ onSelect, mode = 'navigate' }: SearchMovieProps) => {
   const [query, setQuery] = useState('');
   const [results, setResults] = useState<Movie[]>([]);
-
+  const [showSearchInput, setShowSearchInput] = useState(true);
   useEffect(() => {
     const fetchMoviesOrTv = async () => {
       if (!query) {
@@ -66,25 +66,32 @@ export const SearchMovie = ({ onSelect, mode = 'navigate' }: SearchMovieProps) =
 
   return (
     <div className="flex flex-col my-2 items-center">
-      <div className="flex px-2 justify-center w-full mb-2">
-        <input
-          type="text"
-          value={query}
-          onChange={(e) => setQuery(e.target.value)}
-          placeholder="Search your favorite movie or TV show"
-          className="border text-black border-gray-300 rounded-lg p-2 w-full"
-        />
-        {query && (
-          <XMarkIcon
-            onClick={() => setQuery('')}
-            className="w-6 h-6 ml-3 cursor-pointer text-gray-500 hover:text-gray-700"
+      {showSearchInput && (
+        <div className="relative px-2 w-full mx-auto">
+          <input
+            type="text"
+            value={query}
+            onChange={(e) => setQuery(e.target.value)}
+            placeholder="Search your favorite movie or TV show"
+            className="w-full border text-black border-gray-300 rounded-lg p-2 pr-10"
           />
-        )}
-      </div>
+          <XMarkIcon
+            onClick={() => {
+              if (query) {
+                setQuery('');
+              } else {
+                setShowSearchInput(false);
+              }
+            }}
+            className="w-5 h-5 text-gray-500 hover:text-gray-700 absolute right-3 top-1/2 transform -translate-y-1/2 cursor-pointer"
+          />
+        </div>
+      )}
 
-      <div className="w-full">
+
+      <div className="ml-2">
         {results.length > 0 ? (
-          <div className="flex flex-col gap-2">
+          <div className="flex flex-col mt-2 gap-2">
             {results.map((movie) => {
               const movieTitle = movie.title || movie.name;
               const imageUrl = movie.poster_path
@@ -130,7 +137,7 @@ export const SearchMovie = ({ onSelect, mode = 'navigate' }: SearchMovieProps) =
                           {movieTitle}
                         </a>
                       ) : (
-                        <div className="text-lg font-bold text-blue-500 hover:underline">
+                        <div className="text-lg font-bold text-white hover:text-zinc-300 transition">
                           {movieTitle}
                         </div>
                       )}

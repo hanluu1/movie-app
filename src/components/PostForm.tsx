@@ -13,7 +13,7 @@ export const PostForm = () => {
 
   const [title, setTitle] = useState('');
   const [content, setContent] = useState('');
-  const [imageUrl, setImageUrl] = useState<string[]>([]);
+  // const [imageUrl, setImageUrl] = useState<string[]>([]);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [showMovieSearch, setShowMovieSearch] = useState(false);
   const [selectedMovie, setSelectedMovie] = useState<{
@@ -22,52 +22,52 @@ export const PostForm = () => {
     overview: string;
   } | null>(null);
 
-  const handleImageUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
-    const files = e.target.files;
-    if (!files || files.length === 0) return;
+  // const handleImageUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
+  //   const files = e.target.files;
+  //   if (!files || files.length === 0) return;
   
-    const newUrls: string[] = [];
+  //   const newUrls: string[] = [];
   
-    for (let i = 0; i < files.length; i++) {
-      const file = files[i];
+  //   for (let i = 0; i < files.length; i++) {
+  //     const file = files[i];
   
-      // Validate image type
-      if (!file.type.startsWith('image/')) {
-        alert(`File "${file.name}" is not a valid image.`);
-        continue;
-      }
+  //     // Validate image type
+  //     if (!file.type.startsWith('image/')) {
+  //       alert(`File "${file.name}" is not a valid image.`);
+  //       continue;
+  //     }
   
-      const fileExt = file.name.split('.').pop();
-      const fileName = `${uuidv4()}.${fileExt}`;
-      const filePath = `${fileName}`;
+  //     const fileExt = file.name.split('.').pop();
+  //     const fileName = `${uuidv4()}.${fileExt}`;
+  //     const filePath = `${fileName}`;
   
-      const { data: uploadData, error: uploadError } = await supabase.storage
-        .from('post-images')
-        .upload(filePath, file, {
-          contentType: file.type || 'image/jpeg', 
-        });
+  //     const { error: uploadError } = await supabase.storage
+  //       .from('post-images')
+  //       .upload(filePath, file, {
+  //         contentType: file.type || 'image/jpeg', 
+  //       });
   
-      if (uploadError) {
-        console.error('Upload error:', uploadError);
-        alert(`Failed to upload file: ${file.name}`);
-        continue;
-      }
+  //     if (uploadError) {
+  //       console.error('Upload error:', uploadError);
+  //       alert(`Failed to upload file: ${file.name}`);
+  //       continue;
+  //     }
   
-      const { data: publicUrlData } = supabase
-        .storage
-        .from('post-images')
-        .getPublicUrl(filePath);
+  //     const { data: publicUrlData } = supabase
+  //       .storage
+  //       .from('post-images')
+  //       .getPublicUrl(filePath);
   
-      if (publicUrlData?.publicUrl) {
-        console.log(` Public URL for "${file.name}":`, publicUrlData.publicUrl);
-        newUrls.push(publicUrlData.publicUrl);
-      } else {
-        alert(`Failed to get public URL for file: ${file.name}`);
-      }
-    }
+  //     if (publicUrlData?.publicUrl) {
+  //       console.log(` Public URL for "${file.name}":`, publicUrlData.publicUrl);
+  //       newUrls.push(publicUrlData.publicUrl);
+  //     } else {
+  //       alert(`Failed to get public URL for file: ${file.name}`);
+  //     }
+  //   }
   
-    setImageUrl((prev) => [...prev, ...newUrls]);
-  }
+  //   setImageUrl((prev) => [...prev, ...newUrls]);
+  // }
   const handleSubmit = async () => {
     if (!title.trim()) {
       alert('Title is required.');
@@ -107,9 +107,9 @@ export const PostForm = () => {
             className="rounded-lg"
           />
           <div className="flex flex-col">
-            <h2 className="text-2xl font-bold mb-2">{selectedMovie.title}</h2>
+            <h2 className="text-2xl text-white font-bold mb-2">{selectedMovie.title}</h2>
             {selectedMovie.overview && (
-              <p className="text-gray-700">{selectedMovie.overview}</p>
+              <p className="text-gray-300">{selectedMovie.overview}</p>
             )}
           </div>
         </div>
@@ -125,16 +125,22 @@ export const PostForm = () => {
       </div>
       {showMovieSearch && (
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50">
-          <div className="bg-white p-4 rounded shadow-lg max-w-lg w-full max-h-[50vh] overflow-y-auto relative">
-            <SearchMovie
-              mode='select'
-              onSelect={(movie) => {
-                setSelectedMovie(movie);
-                setShowMovieSearch(false);
-                setTitle('');
-                setContent('');
-              }}
-            />
+          <div className="bg-white p-4 rounded shadow-lg max-w-lg w-full max-h-[80vh] overflow-y-auto relative">
+            <button
+              onClick={() => setShowMovieSearch(false)}
+              className="absolute top-2 right-2 z-10 gap-2 cursor-pointer"
+            >Close</button>
+            <div className="pt-4">
+              <SearchMovie
+                mode='select'
+                onSelect={(movie) => {
+                  setSelectedMovie(movie);
+                  setShowMovieSearch(false);
+                  setTitle('');
+                  setContent('');
+                }}
+              />
+            </div>
           </div>
         </div>
       )}
@@ -153,7 +159,7 @@ export const PostForm = () => {
         className="border rounded p-2 h-32 resize-none"
       />
 
-      <input
+      {/* <input
         type="file"
         accept='image/*'
         multiple
@@ -176,7 +182,7 @@ export const PostForm = () => {
             )
           ))}
         </div>
-      )}
+      )} */}
       <button
         onClick={handleSubmit}
         disabled={isSubmitting}
