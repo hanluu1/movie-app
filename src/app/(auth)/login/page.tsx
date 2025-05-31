@@ -33,7 +33,7 @@ export default function AuthPage () {
     <div className="min-h-screen bg-gradient-to-br from-gray-900 via-black to-gray-800 flex items-center justify-center">
       <div className="w-full max-w-md bg-gray-900 border border-gray-700 p-8 rounded-2xl shadow-2xl">
         <h1 className="text-3xl font-extrabold text-center text-white mb-6">
-          {isLogin ? 'Welcome to ReelEmotions 🎬' : 'Join Reel Emotions 🍿'}
+          {isLogin ? 'ReelEmotions Login' : 'Join ReelEmotions Today'}
         </h1>
         <form onSubmit={handleSubmit} className="flex flex-col gap-4">
           <input
