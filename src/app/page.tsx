@@ -29,9 +29,9 @@ export default function Home () {
       <div className="flex flex-col items-center px-4 py-4">
         <div className="flex flex-row justify-between items-center bg-gray-900 border border-gray-700 rounded-2xl w-full max-w-2xl p-4">
          
-          <HomeIcon className="h-6 w-6 cursor-pointer text-gray-300 hover:text-blue-400 transition" />
+          <Link href='my-movies'><HomeIcon  className="h-6 w-6 cursor-pointer text-gray-300 hover:text-blue-400 transition" /></Link>
           
-          <GlobeAltIcon href='/' className="h-6 w-6 cursor-pointer text-gray-300 hover:text-blue-400 transition" />
+          <GlobeAltIcon className="h-6 w-6 cursor-pointer text-gray-300 hover:text-blue-400 transition" />
           
           <PlusIcon className="h-6 w-6 cursor-pointer text-gray-300 hover:text-blue-400 transition" onClick={()=> setShowCreatePostModal(true)}/>
           
