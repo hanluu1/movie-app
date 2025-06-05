@@ -4,8 +4,7 @@ import { useState } from 'react';
 import Image from 'next/image';
 import { supabase } from '@/lib/supabaseClient';
 import { useRouter} from 'next/navigation';
-import { SearchMovie } from '@/components/searchMovie';
-import { v4 as uuidv4 } from 'uuid';
+import { SearchMovie } from '@/modules/home/search-movie';
 import { MagnifyingGlassCircleIcon, XMarkIcon } from '@heroicons/react/24/outline';
 
 export const PostForm = () => {
@@ -79,7 +78,6 @@ export const PostForm = () => {
     const { error } = await supabase.from('Post').insert({
       title,
       content,
-      image_url: imageUrl.join(','),
       movie_title: selectedMovie?.title || null,
       movie_image: selectedMovie?.image || null,
     });

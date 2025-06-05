@@ -2,8 +2,8 @@
 
 import { useEffect, useState } from 'react';
 import { supabase } from '@/lib/supabaseClient';
-import { PostCard } from '@/components/PostCard';
-import { CommentModal } from '@/components/popup-modal/comment-modal';
+import { PostCard } from '@/modules/user-post';
+import { CommentModal } from '@/modules/user-post';
 interface Post {
   movie_image: string | null;
   movie_title: string | null;

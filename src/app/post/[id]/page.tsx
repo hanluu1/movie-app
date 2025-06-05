@@ -2,8 +2,8 @@
 import { useEffect, useState } from 'react';
 import { useParams } from 'next/navigation';
 import { supabase } from '@/lib/supabaseClient';
-import { Header } from '@/components/Header';
-import { EditPostForm } from '@/components/EditPost';
+import { Header } from '@/components';
+import { EditPostForm } from '@/modules/user-post';
 import Image from 'next/image';
 interface Post {
   id: string;

@@ -2,11 +2,11 @@
 
 import React, { useState } from "react";
 
-import { Header } from "@/components/Header";
-import { SearchMovie } from "@/components/searchMovie";
-import { AllPost } from "@/components/AllPost";
+import { Header } from "@/components";
+import { SearchMovie } from "@/modules/home";
+import { AllPost } from "@/modules/user-post";
 import { HomeIcon, PlusIcon, GlobeAltIcon } from "@heroicons/react/24/outline";
-import { CreatePostModal } from "@/components/popup-modal/new-post-modal";
+import { CreatePostModal } from "@/modules/user-post";
 import Link from "next/link";
 export default function Home () {
   const[showSearch, setShowSearch] = useState(false);

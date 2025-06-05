@@ -1,7 +1,7 @@
 'use client';
 import { supabase } from '@/lib/supabaseClient';
 import { useState } from 'react';
-import { Header } from '@/components/Header';
+import { Header } from '@/components';
 
 export default function MyMoviesPage() {
     const [watchedMovies, setWatchedMovies] = useState<string[]>([]);
