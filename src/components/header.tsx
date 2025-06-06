@@ -5,6 +5,7 @@ import React from 'react';
 import { supabase } from '@/lib/supabaseClient';
 import { MagnifyingGlassIcon,  } from '@heroicons/react/24/outline';
 import Link from 'next/link';
+
 export function Header ({
   showSearchIcon = true,
   showSearch,
@@ -21,11 +22,12 @@ export function Header ({
 
   return (
     <div className="relative flex items-center justify-between px-6 py-5 bg-gray-900 border-b border-gray-700 shadow-md">
-      <Link href='/'><div
+      <Link href='/'>
+        <div
         className="font-logo text-4xl tracking-tight text-white leading-none"
-      >
-        ReelEmotions
-      </div>
+        >
+          ReelEmotions
+        </div>
       </Link>
       <div className='flex flex-row gap-4 items-center'> 
         {showSearchIcon && (

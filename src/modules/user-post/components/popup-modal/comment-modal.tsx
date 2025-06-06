@@ -2,6 +2,7 @@
 import { useEffect, useState } from 'react';
 import { supabase } from '@/lib/supabaseClient';
 import { XMarkIcon } from '@heroicons/react/24/outline';
+
 interface Comment {
   id: string;
   content: string;

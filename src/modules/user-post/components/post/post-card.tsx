@@ -3,9 +3,10 @@ import React from 'react';
 import { useState } from 'react';
 import Link from 'next/link';
 import Image from 'next/image';
-import {  ChatBubbleLeftRightIcon, BookmarkIcon } from '@heroicons/react/16/solid';
+import { ChatBubbleLeftRightIcon, BookmarkIcon } from '@heroicons/react/16/solid';
 import { HandThumbUpIcon as HandThumbUpSolid } from '@heroicons/react/16/solid';
 import { HandThumbUpIcon as HandThumbUpOutline } from '@heroicons/react/24/outline';
+
 interface PostCardProps {
     id: number;
     movieTitle: string | null;

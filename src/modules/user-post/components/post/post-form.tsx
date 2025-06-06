@@ -4,7 +4,7 @@ import { useState } from 'react';
 import Image from 'next/image';
 import { supabase } from '@/lib/supabaseClient';
 import { useRouter} from 'next/navigation';
-import { SearchMovie } from '@/modules/home/search-movie';
+import { SearchMovie } from '@/modules/home';
 import { MagnifyingGlassCircleIcon, XMarkIcon } from '@heroicons/react/24/outline';
 
 export const PostForm = () => {

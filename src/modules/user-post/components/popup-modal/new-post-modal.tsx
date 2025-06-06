@@ -1,6 +1,6 @@
 'use client';
 import { XMarkIcon } from '@heroicons/react/24/outline';
-import { PostForm } from '@/modules/user-post/components/post/post-form';
+import { PostForm } from '@/modules/user-post';
 
 interface CreatePostModalProps {
   isOpen: boolean;
