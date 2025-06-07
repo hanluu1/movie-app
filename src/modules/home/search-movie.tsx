@@ -2,7 +2,7 @@
 import React, { useState, useEffect } from 'react';
 import Image from 'next/image';
 import { XMarkIcon } from '@heroicons/react/24/outline';
-
+import { supabase } from '@/lib/supabaseClient';
 const API_KEY = process.env.NEXT_PUBLIC_TMDB_API_KEY;
 
 interface Movie {
@@ -63,6 +63,27 @@ export const SearchMovie = ({ onSelect, mode = 'navigate' }: SearchMovieProps) =
 
     fetchMoviesOrTv();
   }, [query]);
+
+  const handleAddToList = async (movie: Movie, status: 'watched' | 'to-watch') => {
+  const movieTitle = movie.title || movie.name;
+  const imageUrl = movie.poster_path
+    ? `https://image.tmdb.org/t/p/w500${movie.poster_path}`
+    : '';
+
+  const { error } = await supabase.from('track_movies').insert({
+    movie_id: movie.id.toString(),
+    movie_title: movieTitle,
+    poster_url: imageUrl,
+    status: status,
+  });
+
+  if (error) {
+    console.error(`Error adding to ${status} list:`, error);
+    alert('Something went wrong.');
+  } else {
+    alert(`Added "${movieTitle}" to ${status === 'watched' ? 'Watched' : 'To Watch'} list`);
+  }
+};
 
   return (
     <div className="flex flex-col my-2 items-center">
@@ -151,7 +172,7 @@ export const SearchMovie = ({ onSelect, mode = 'navigate' }: SearchMovieProps) =
                         className="bg-gray-700 hover:bg-gray-600 text-white px-3 py-1 rounded"
                         onClick={(e) => {
                           e.stopPropagation(); 
-                          alert(`Added "${movieTitle}" to Watched list`);
+                          handleAddToList(movie, 'watched');
                         }}
                       >
                         Watched
@@ -160,7 +181,7 @@ export const SearchMovie = ({ onSelect, mode = 'navigate' }: SearchMovieProps) =
                         className="bg-gray-700 hover:bg-gray-600 text-white px-3 py-1 rounded"
                         onClick={(e) => {
                           e.stopPropagation();
-                          alert(`Added "${movieTitle}" to Will Watch list`);
+                          handleAddToList(movie, 'to-watch');
                         }}
                       >
                         To Watch
