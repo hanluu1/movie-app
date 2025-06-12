@@ -65,25 +65,25 @@ export const SearchMovie = ({ onSelect, mode = 'navigate' }: SearchMovieProps) =
   }, [query]);
 
   const handleAddToList = async (movie: Movie, status: 'watched' | 'to-watch') => {
-  const movieTitle = movie.title || movie.name;
-  const imageUrl = movie.poster_path
-    ? `https://image.tmdb.org/t/p/w500${movie.poster_path}`
-    : '';
+    const movieTitle = movie.title || movie.name;
+    const imageUrl = movie.poster_path
+      ? `https://image.tmdb.org/t/p/w500${movie.poster_path}`
+      : '';
 
-  const { error } = await supabase.from('track_movies').insert({
-    movie_id: movie.id.toString(),
-    movie_title: movieTitle,
-    poster_url: imageUrl,
-    status: status,
-  });
+    const { error } = await supabase.from('track_movies').insert({
+      movie_id: movie.id.toString(),
+      movie_title: movieTitle,
+      poster_url: imageUrl,
+      status: status,
+    });
 
-  if (error) {
-    console.error(`Error adding to ${status} list:`, error);
-    alert('Something went wrong.');
-  } else {
-    alert(`Added "${movieTitle}" to ${status === 'watched' ? 'Watched' : 'To Watch'} list`);
-  }
-};
+    if (error) {
+      console.error(`Error adding to ${status} list:`, error);
+      alert('Something went wrong.');
+    } else {
+      alert(`Added "${movieTitle}" to ${status === 'watched' ? 'Watched' : 'To Watch'} list`);
+    }
+  };
 
   return (
     <div className="flex flex-col my-2 items-center">
