@@ -11,9 +11,24 @@ export default function MyMoviesPage () {
         poster_url: string;
         movie_title: string;
         status: string;
+        movie_overview: string;
     };
     const [watchedMovies, setWatchedMovies] = useState<Movie[]>([]);
     const [unwatchedMovies, setUnwatchedMovies] = useState<Movie[]>([]);
+
+    const refetchMovieDetails = async () => {
+      const {data, error} = await supabase
+        .from('track_movies')
+        .select('*');
+      if (error) {
+        console.error('Error fetching movie details:', error);
+        return [];
+      }
+    
+      setWatchedMovies(data.filter(movie => movie.status === 'watched'));
+      setUnwatchedMovies(data.filter(movie => movie.status === 'to-watch'));
+    }
+    
     useEffect(() => {
       const fetchMovies = async () => {
         const {data, error} = await supabase
@@ -24,8 +39,12 @@ export default function MyMoviesPage () {
           setUnwatchedMovies(data.filter(movie => movie.status === 'to-watch'));
         }
       };
+      
       fetchMovies();
+      refetchMovieDetails();
     }, []);
+    
+    
 
     return (
       <div className="flex flex-col min-h-screen w-full bg-gradient-to-br from-gray-900 via-black to-gray-800 text-white transition-all duration-300">
@@ -39,7 +58,8 @@ export default function MyMoviesPage () {
                   setShowSearch(false);
                   window.location.href = `/movie-more-info/${movie.id}`;
                 }
-              }/>
+              }
+              onRefetch={refetchMovieDetails}/>
           </div>
         )}
         <div className="flex flex-row gap-4 mx-auto my-10 p-6">
@@ -47,7 +67,7 @@ export default function MyMoviesPage () {
             <div className="flex justify-center items-center text-xl py-1 bg-gray-900 border border-gray-700 rounded-2xl font-semibold">Watched</div>
             <div className="flex flex-col gap-2 overflow-x-auto">
               {watchedMovies.map((movie, index) => (
-                <div key={index} className="flex gap-3">
+                <div key={index} className="flex flex-row gap-2">
                   <Image
                     src={movie.poster_url}
                     alt={movie.movie_title}
@@ -55,17 +75,21 @@ export default function MyMoviesPage () {
                     height={150}
                     className="w-[100px] h-auto rounded"                  
                   />
-                  <div className="text-xl text-white">{movie.movie_title}</div>
+                  <div className='flex flex-col max-w-[50%] gap-2'>
+                    <div className="text-xl text-white">{movie.movie_title}</div>
+                    <div className='text-sm text-gray-300'>{movie.movie_overview}</div>
+                  </div>
+                  
                 </div>
               ))}
             </div>
           </div>
 
           <div className="flex flex-col gap-4">
-            <div className="flex justify-center items-center text-xl py-1 bg-gray-900 border border-gray-700 rounded-2xl font-semibold">Watched</div>
+            <div className="flex justify-center items-center text-xl py-1 bg-gray-900 border border-gray-700 rounded-2xl font-semibold">To Watch</div>
             <div className="flex flex-col gap-2 overflow-x-auto">
               {unwatchedMovies.map((movie, index) => (
-                <div key={index} className="flex gap-3">
+                <div key={index} className="flex flex-row gap-2">
                   <Image
                     src={movie.poster_url}
                     alt={movie.movie_title}
@@ -73,7 +97,11 @@ export default function MyMoviesPage () {
                     height={150}
                     className="w-[100px] h-auto rounded"                  
                   />
-                  <div className="text-xl text-white">{movie.movie_title}</div>
+                  <div className='flex flex-col max-w-[50%] gap-2'>
+                    <div className="text-xl text-white">{movie.movie_title}</div>
+                    <div className='text-sm text-gray-300'>{movie.movie_overview}</div>
+                  </div>
+                  
                 </div>
               ))}
             </div>

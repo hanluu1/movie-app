@@ -44,8 +44,6 @@ async function fetchMovieDetails (id: string) {
 
   throw new Error('Movie or TV show not found');
 }
-
-
 export default async function MoviePage ({ params }: MovieDetailProps) {
   const movie = await fetchMovieDetails(params.id);
 

@@ -15,10 +15,11 @@ interface Movie {
 
 interface SearchMovieProps {
   onSelect: (movie: { title: string; image: string; overview: string }) => void;
+  onRefetch?: () => void; 
   mode?: 'select' | 'navigate';
 }
 
-export const SearchMovie = ({ onSelect, mode = 'navigate' }: SearchMovieProps) => {
+export const SearchMovie = ({ onSelect, onRefetch, mode = 'navigate' }: SearchMovieProps) => {
   const [query, setQuery] = useState('');
   const [results, setResults] = useState<Movie[]>([]);
   const [showSearchInput, setShowSearchInput] = useState(true);
@@ -69,19 +70,36 @@ export const SearchMovie = ({ onSelect, mode = 'navigate' }: SearchMovieProps) =
     const imageUrl = movie.poster_path
       ? `https://image.tmdb.org/t/p/w500${movie.poster_path}`
       : '';
-
-    const { error } = await supabase.from('track_movies').insert({
-      movie_id: movie.id.toString(),
-      movie_title: movieTitle,
-      poster_url: imageUrl,
-      status: status,
-    });
-
+    //check if movie already exists in the database
+    const { data: existingMovies, error: fetchError } = await supabase
+      .from('track_movies')
+      .select('id')
+      .eq('movie_id', movie.id.toString())
+      .eq('status', status)
+      .maybeSingle();
+    if (fetchError && fetchError.code !== 'PGRST116') {
+      console.error('Error checking existing movies:', fetchError);
+      alert('Something went wrong while checking the movie list.');
+      return;
+    }
+    if (existingMovies) { return alert(`"${movieTitle}" is already in your ${status === 'watched' ? 'Watched' : 'To Watch'} list.`); }
+    //insert add movie to the database
+    const { error } = await supabase
+      .from('track_movies')
+      .insert({
+        movie_id: movie.id.toString(),
+        movie_title: movieTitle,
+        poster_url: imageUrl,
+        movie_overview: movie.overview || '',
+        status,
+      })
+    
+    if (onRefetch) {
+      onRefetch();
+    }
     if (error) {
       console.error(`Error adding to ${status} list:`, error);
       alert('Something went wrong.');
-    } else {
-      alert(`Added "${movieTitle}" to ${status === 'watched' ? 'Watched' : 'To Watch'} list`);
     }
   };
 
