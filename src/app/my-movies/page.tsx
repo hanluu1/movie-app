@@ -1,6 +1,6 @@
 'use client';
 import { supabase } from '@/lib/supabaseClient';
-import { useState, useEffect } from 'react';
+import { useState, useEffect, act } from 'react';
 import { Header } from '@/components';
 import { SearchMovie } from '@/modules/home';
 import Image from 'next/image';
@@ -15,6 +15,7 @@ export default function MyMoviesPage () {
     };
     const [watchedMovies, setWatchedMovies] = useState<Movie[]>([]);
     const [unwatchedMovies, setUnwatchedMovies] = useState<Movie[]>([]);
+    const [activeTab, setActiveTab] = useState<'watched' | 'to-watch'|'all'>('watched');
 
     const refetchMovieDetails = async () => {
       const {data, error} = await supabase
@@ -31,7 +32,7 @@ export default function MyMoviesPage () {
     
     useEffect(() => {
       const fetchMovies = async () => {
-        const {data, error} = await supabase
+        const {data} = await supabase
           .from('track_movies')
           .select('*');
         if (data) {
@@ -62,50 +63,74 @@ export default function MyMoviesPage () {
               onRefetch={refetchMovieDetails}/>
           </div>
         )}
-        <div className="flex flex-row gap-4 mx-auto my-10 p-6">
-          <div className="flex flex-col gap-4">
-            <div className="flex justify-center items-center text-xl py-1 bg-gray-900 border border-gray-700 rounded-2xl font-semibold">Watched</div>
-            <div className="flex flex-col gap-2 overflow-x-auto">
-              {watchedMovies.map((movie, index) => (
-                <div key={index} className="flex flex-row gap-2">
-                  <Image
-                    src={movie.poster_url}
-                    alt={movie.movie_title}
-                    width={100}
-                    height={150}
-                    className="w-[100px] h-auto rounded"                  
-                  />
-                  <div className='flex flex-col max-w-[50%] gap-2'>
-                    <div className="text-xl text-white">{movie.movie_title}</div>
-                    <div className='text-sm text-gray-300'>{movie.movie_overview}</div>
-                  </div>
-                  
-                </div>
-              ))}
-            </div>
+        <div className="flex flex-col gap-4 mx-auto my-10 p-6">
+          <div className='flex flex-row gap-2'>
+            <button
+              className={`px-4 py-2 rounded ${activeTab === 'all' ? 'bg-white text-black' : 'bg-gray-700'}`}
+              onClick={() => setActiveTab('all')}
+            >
+            All
+            </button>
+            <button
+              className={`px-4 py-2 rounded ${activeTab === 'watched' ? 'bg-white text-black' : 'bg-gray-700'}`}
+              onClick={() => setActiveTab('watched')}
+            >
+            Watched
+            </button>
+            <button
+              className={`px-4 py-2 rounded ${activeTab === 'to-watch' ? 'bg-white text-black' : 'bg-gray-700'}`}
+              onClick={() => setActiveTab('to-watch')}
+            >
+            To Watch
+            </button>
           </div>
 
-          <div className="flex flex-col gap-4">
-            <div className="flex justify-center items-center text-xl py-1 bg-gray-900 border border-gray-700 rounded-2xl font-semibold">To Watch</div>
-            <div className="flex flex-col gap-2 overflow-x-auto">
-              {unwatchedMovies.map((movie, index) => (
-                <div key={index} className="flex flex-row gap-2">
-                  <Image
-                    src={movie.poster_url}
-                    alt={movie.movie_title}
-                    width={100}
-                    height={150}
-                    className="w-[100px] h-auto rounded"                  
-                  />
-                  <div className='flex flex-col max-w-[50%] gap-2'>
-                    <div className="text-xl text-white">{movie.movie_title}</div>
-                    <div className='text-sm text-gray-300'>{movie.movie_overview}</div>
-                  </div>
+          {activeTab === 'all' || activeTab === 'watched' ? (
+            <div className="flex flex-col gap-4">
+              <div className="flex flex-col gap-2 ">
+                {watchedMovies.map((movie, index) => (
+                  <div key={index} className="flex flex-row gap-2">
+                    <Image
+                      src={movie.poster_url}
+                      alt={movie.movie_title}
+                      width={100}
+                      height={150}
+                      className="w-[100px] h-auto rounded"                  
+                    />
+                    <div className='flex flex-col gap-2'>
+                      <div className="text-xl text-white">{movie.movie_title}</div>
+                      <div className='text-sm text-gray-300'>{movie.movie_overview}</div>
+                    </div>
                   
-                </div>
-              ))}
+                  </div>
+                ))}
+              </div>
             </div>
-          </div>
+          ) : null}
+
+          {activeTab === 'all' || activeTab === 'to-watch' ? (
+            <div className="flex flex-col gap-4">
+              <div className="flex flex-col gap-2">
+                {unwatchedMovies.map((movie, index) => (
+                  <div key={index} className="flex flex-row gap-2">
+                    <Image
+                      src={movie.poster_url}
+                      alt={movie.movie_title}
+                      width={100}
+                      height={150}
+                      className="w-[100px] h-auto rounded"                  
+                    />
+                    <div className='flex flex-col gap-2'>
+                      <div className="text-xl text-white">{movie.movie_title}</div>
+                      <div className='text-sm text-gray-300'>{movie.movie_overview}</div>
+                    </div>
+                  
+                  </div>
+                ))}
+              </div>
+            </div>
+          ) : null}
+          
 
         </div>
       </div>
