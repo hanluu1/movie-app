@@ -24,7 +24,7 @@ export function Header ({
     <div className="relative flex items-center justify-between px-6 py-5 bg-gray-900 border-b border-gray-700 shadow-md">
       <Link href='/'>
         <div
-        className="font-logo text-4xl tracking-tight text-white leading-none"
+          className="font-logo text-4xl tracking-tight text-white leading-none"
         >
           ReelEmotions
         </div>
