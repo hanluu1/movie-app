@@ -63,7 +63,7 @@ export default function MyMoviesPage () {
               onRefetch={refetchMovieDetails}/>
           </div>
         )}
-        <div className="flex flex-col gap-4 mx-auto my-10 p-6">
+        <div className="flex flex-col w-full gap-4 mx-auto my-2 p-6">
           <div className='flex flex-row gap-2'>
             <button
               className={`px-4 py-2 rounded ${activeTab === 'all' ? 'bg-white text-black' : 'bg-gray-700'}`}
@@ -97,9 +97,39 @@ export default function MyMoviesPage () {
                       height={150}
                       className="w-[100px] h-auto rounded"                  
                     />
-                    <div className='flex flex-col gap-2'>
-                      <div className="text-xl text-white">{movie.movie_title}</div>
-                      <div className='text-sm text-gray-300'>{movie.movie_overview}</div>
+                    <div className='flex flex-col gap-1'>
+                      <div className="text-lg font-bold text-white hover:text-zinc-300 transition">
+                        {movie.movie_title}
+                      </div>
+                      <div className="text-sm text-gray-500">{movie.movie_overview}</div>
+                      <div className='flex flex-row gap-2 mt-1'>
+                        <button
+                          className="bg-gray-700 hover:bg-gray-600 text-white px-3 py-1 rounded"
+                          onClick={(e) => {
+                            e.preventDefault();
+                            window.location.href = `/movie-more-info/${movie.movie_id}`;
+                          }}
+                        >
+                          More info
+                        </button>
+                        <button 
+                          className="bg-gray-700 hover:bg-gray-600 text-white px-3 py-1 rounded"
+                          onClick={async (e) => {
+                            e.preventDefault();
+                            const { error } = await supabase
+                              .from('track_movies')
+                              .delete()
+                              .eq('movie_id', movie.movie_id);
+                            if (error) {
+                              console.error('Error removing movie:', error);
+                            } else {
+                              refetchMovieDetails();
+                            }
+                          }}
+                        >
+                          Remove
+                        </button>
+                      </div>
                     </div>
                   
                   </div>
@@ -120,9 +150,41 @@ export default function MyMoviesPage () {
                       height={150}
                       className="w-[100px] h-auto rounded"                  
                     />
-                    <div className='flex flex-col gap-2'>
-                      <div className="text-xl text-white">{movie.movie_title}</div>
-                      <div className='text-sm text-gray-300'>{movie.movie_overview}</div>
+                    <div className='flex flex-col gap-1'>
+                      <div className="text-lg font-bold text-white hover:text-zinc-300 transition">
+                        {movie.movie_title}
+                      </div>
+                      <div className="text-sm text-gray-500">
+                        {movie.movie_overview}
+                      </div>
+                      <div className='flex flex-row gap-2 mt-1'>
+                        <button
+                          className="bg-gray-700 hover:bg-gray-600 text-white px-3 py-1 rounded"
+                          onClick={(e) => {
+                            e.preventDefault();
+                            window.location.href = `/movie-more-info/${movie.movie_id}`;
+                          }}
+                        >
+                          More info
+                        </button>
+                        <button 
+                          className="bg-gray-700 hover:bg-gray-600 text-white px-3 py-1 rounded"
+                          onClick={async (e) => {
+                            e.preventDefault();
+                            const { error } = await supabase
+                              .from('track_movies')
+                              .delete()
+                              .eq('movie_id', movie.movie_id);
+                            if (error) {
+                              console.error('Error removing movie:', error);
+                            } else {
+                              refetchMovieDetails();
+                            }
+                          }}
+                        >
+                          Remove
+                        </button>
+                      </div>
                     </div>
                   
                   </div>
