@@ -1,6 +1,7 @@
 
 import Image from 'next/image';
 import { Header } from '@/components';
+
 const API_KEY = process.env.NEXT_PUBLIC_TMDB_API_KEY;
 
 interface MovieDetailProps {
