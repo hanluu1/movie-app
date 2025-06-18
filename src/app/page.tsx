@@ -7,7 +7,7 @@ import { Header } from "@/components";
 import { SearchMovie } from "@/modules/home";
 import { AllPost } from "@/modules/user-post";
 import { CreatePostModal } from "@/modules/user-post";
-import { HomeIcon, PlusIcon, GlobeAltIcon } from "@heroicons/react/24/outline";
+import { HomeIcon, PlusIcon, GlobeAltIcon, FilmIcon } from "@heroicons/react/24/outline";
 
 
 export default function Home () {
@@ -29,14 +29,11 @@ export default function Home () {
         </div>
       )}
       <div className="flex flex-col items-center px-4 py-4">
-        <div className="flex flex-row justify-between items-center bg-gray-900 border border-gray-700 rounded-2xl w-full max-w-2xl p-4">
-         
-          <Link href='my-movies'><HomeIcon  className="h-6 w-6 cursor-pointer text-gray-300 hover:text-blue-400 transition" /></Link>
-          
+        <div className="flex flex-row justify-between items-center bg-gray-900 border border-gray-700 rounded-2xl w-full max-w-2xl px-6 py-4">
+          <Link href='my-movies'><FilmIcon  className="h-6 w-6 cursor-pointer text-gray-300 hover:text-blue-400 transition" /></Link>
           <GlobeAltIcon className="h-6 w-6 cursor-pointer text-gray-300 hover:text-blue-400 transition" />
-          
           <PlusIcon className="h-6 w-6 cursor-pointer text-gray-300 hover:text-blue-400 transition" onClick={()=> setShowCreatePostModal(true)}/>
-          
+
         </div>
         
         <div className="w-full max-w-4xl">

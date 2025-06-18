@@ -3,7 +3,7 @@
 import { useRouter } from 'next/navigation';
 import React from 'react';
 import { supabase } from '@/lib/supabaseClient';
-import { MagnifyingGlassIcon,  } from '@heroicons/react/24/outline';
+import { MagnifyingGlassIcon } from '@heroicons/react/24/outline';
 import Link from 'next/link';
 
 export function Header ({
