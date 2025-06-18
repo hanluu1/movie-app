@@ -122,13 +122,13 @@ export const PostForm = () => {
         <div>{selectedMovie ? 'Edit picked movie' : 'Select a show/movie'}</div>
       </div>
       {showMovieSearch && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50">
-          <div className="bg-white p-4 rounded shadow-lg max-w-lg w-full max-h-[80vh] overflow-y-auto relative">
+        <div className="min-h-40 fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50">
+          <div className="bg-gray-900 p-4 rounded shadow-lg w-[600px] max-w-[90vw] h-[450px] overflow-y-auto relative">
             <button
               onClick={() => setShowMovieSearch(false)}
               className="absolute top-2 right-2 z-10 gap-2 cursor-pointer"
             >Close</button>
-            <div className="pt-4">
+            <div className="flex justify-center">
               <SearchMovie
                 mode='select'
                 onSelect={(movie) => {
@@ -144,17 +144,17 @@ export const PostForm = () => {
       )}
       <input
         type="text"
-        placeholder="Post Title"
+        placeholder="Title your post"
         value={title}
         onChange={(e) => setTitle(e.target.value)}
-        className="border rounded p-2"
+        className="rounded p-2 bg-gray-800"
       />
 
       <textarea
-        placeholder="Write your thoughts..."
+        placeholder="Tell us about your experience with this movie/show"
         value={content}
         onChange={(e) => setContent(e.target.value)}
-        className="border rounded p-2 h-32 resize-none"
+        className=" rounded p-2 resize-none h-40 bg-gray-800"
       />
 
       {/* <input

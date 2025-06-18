@@ -157,8 +157,8 @@ export const SearchMovie = ({ onSelect, onRefetch, mode = 'navigate' }: SearchMo
   };
 
   return (
-    <div className="flex justify-end w-full px-4 pt-4"> 
-      <div className="relative w-full max-w-sm">
+    <div className="flex justify-center w-full px-4 pt-4"> 
+      <div className="relative w-full">
         <input
           value={query}
           onChange={(e) => setQuery(e.target.value)}
