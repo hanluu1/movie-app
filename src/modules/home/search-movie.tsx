@@ -37,7 +37,7 @@ export const SearchMovie = ({ onSelect, onRefetch, mode = 'navigate' }: SearchMo
 
   const getImageUrl = (path: string) => path ? `https://image.tmdb.org/t/p/w500${path}` : '';
 
-  const handleAddToList = async (movie: Movie, status: 'watched' | 'to-watch') => {
+  const handleAddToList = async (movie: Movie, status: 'watched' | 'to-watch' | 'watching') => {
     const title = movie.title || movie.name;
     const poster = getImageUrl(movie.poster_path);
 
@@ -54,22 +54,27 @@ export const SearchMovie = ({ onSelect, onRefetch, mode = 'navigate' }: SearchMo
     }
 
     if (exists) {
-      return alert(`"${title}" is already in your ${status === 'watched' ? 'Watched' : 'To Watch'} list.`);
+      return alert(`Movie "${title}" is already in your ${status} list.`);
     }
+    
+    const { error } = await supabase
+      .from('track_movies')
+      .insert({
+        movie_id: movie.id.toString(),
+        movie_title: title,
+        poster_url: poster,
+        movie_release: movie.release_date || '',
+        status,
+      });
 
-    const { error } = await supabase.from('track_movies').insert({
-      movie_id: movie.id.toString(),
-      movie_title: title,
-      poster_url: poster,
-      movie_release: movie.release_date || '',
-      status,
-    });
-
-    if (onRefetch) onRefetch();
+    
     if (error) {
       console.error('Insert error:', error);
       alert('Failed to add movie.');
+    } else {
+      alert(`Movie "${title}" added to your ${status} list.`);
     }
+    if (onRefetch) onRefetch();
   };
 
   const handleMovieClick = (movie: Movie) => {
@@ -126,6 +131,15 @@ export const SearchMovie = ({ onSelect, onRefetch, mode = 'navigate' }: SearchMo
               }}
             >
               Watched
+            </button>
+            <button
+              className=" px-2 py-1 bg-gray-700 hover:bg-gray-600 rounded text-white"
+              onClick={(e) => {
+                e.stopPropagation();
+                handleAddToList(movie, 'watching');
+              }}
+            >
+              Watching
             </button>
             <button
               className=" px-2 py-1 bg-gray-700 hover:bg-gray-600 rounded text-white"
