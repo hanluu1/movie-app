@@ -162,7 +162,6 @@ export default function MyMoviesPage () {
             </div>
           </div>
         ) : null}
-
         {activeTab === 'all' || activeTab === 'watching' ? (
           <div className="flex flex-col gap-4">
             <div className="flex flex-col gap-2">
