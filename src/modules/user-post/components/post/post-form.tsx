@@ -126,7 +126,7 @@ export const PostForm = () => {
           <div className="bg-gray-900 p-4 rounded shadow-lg w-[600px] max-w-[90vw] h-[450px] overflow-y-auto relative">
             <button
               onClick={() => setShowMovieSearch(false)}
-              className="absolute top-2 right-2 z-10 gap-2 cursor-pointer"
+              className="absolute top-2 right-2 z-10 cursor-pointer text-white hover:text-gray-500"
             >Close</button>
             <div className="flex justify-center">
               <SearchMovie
