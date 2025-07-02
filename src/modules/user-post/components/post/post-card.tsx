@@ -63,7 +63,9 @@ export const PostCard = ({ id, movieTitle, movieImage, postTitle, createdAt, pos
   
           <div className="flex justify-between items-center mt-2 text-sm text-gray-300">
             <button
-              onClick={() => {
+              onClick={(e) => {
+                e.stopPropagation();
+                e.preventDefault();
                 setLiked((prev) => !prev);
                 if (onLike) onLike();
               }}
@@ -78,7 +80,11 @@ export const PostCard = ({ id, movieTitle, movieImage, postTitle, createdAt, pos
               Like {upvotes}
             </button>
             <button
-              onClick={onComment}
+              onClick={(e) => {
+                e.stopPropagation();
+                e.preventDefault();
+                if (onComment) onComment();
+              }}
               className="flex items-center gap-1 bg-gray-700 hover:bg-gray-600 text-white px-4 py-2 rounded-lg transition"
             >
               <ChatBubbleLeftRightIcon className="h-5 w-5" />
