@@ -38,7 +38,7 @@ export default function PostDetailPage () {
 
   const fetchPost = async () => {
     const { data, error } = await supabase
-      .from('Post')
+      .from('posts')
       .select('*')
       .eq('id', id)
       .single();
@@ -53,7 +53,7 @@ export default function PostDetailPage () {
 
   const fetchComments = async () => {
     const { data, error } = await supabase
-      .from('Comments')
+      .from('comments')
       .select('*')
       .eq('post_id', id)
       .order('created_at', { ascending: true });
@@ -69,7 +69,7 @@ export default function PostDetailPage () {
     if (!post) return;
 
     const { error } = await supabase
-      .from('Post')
+      .from('posts')
       .update({ upvotes: post.upvotes + 1 })
       .eq('id', post.id);
 
@@ -84,7 +84,7 @@ export default function PostDetailPage () {
     if (newComment.trim() === '') return;
 
     const { error } = await supabase
-      .from('Comments')
+      .from('comments')
       .insert({ post_id: id, content: newComment });
 
     if (error) {
@@ -100,7 +100,7 @@ export default function PostDetailPage () {
     if (!confirmDelete) return;
 
     const { error } = await supabase
-      .from('Post')
+      .from('posts')
       .delete()
       .eq('id', id);
 

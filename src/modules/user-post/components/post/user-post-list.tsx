@@ -33,7 +33,7 @@ export const AllPost = () => {
     if (!post) return;
   
     const { error } = await supabase
-      .from('Post')
+      .from('posts')
       .update({ upvotes: post.upvotes + 1 })
       .eq('id', postId);
   
@@ -50,7 +50,7 @@ export const AllPost = () => {
 
   const fetchPosts = async () => {
     const { data, error } = await supabase
-      .from('Post')
+      .from('posts')
       .select('id, title, content, movie_title, movie_image, created_at, upvotes')
       .order(sort, { ascending: false });
 

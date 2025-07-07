@@ -24,7 +24,7 @@ export const EditPostForm = ({ postId, title, content, imageUrl, onCancel, onSav
     setIsSaving(true);
 
     const { error } = await supabase
-      .from('Post')
+      .from('posts')
       .update({
         title: editedTitle,
         content: editedContent,

@@ -25,7 +25,7 @@ export const CommentModal = ({ postId, isOpen, onClose }: CommentModalProps) => 
 
   const fetchComments = async () => {
     const { data, error } = await supabase
-      .from('Comments')
+      .from('comments')
       .select('*')
       .eq('post_id', postId)
       .order('created_at', { ascending: true });
@@ -39,7 +39,7 @@ export const CommentModal = ({ postId, isOpen, onClose }: CommentModalProps) => 
     if (!newComment.trim()) return;
 
     const { error } = await supabase
-      .from('Comments')
+      .from('comments')
       .insert({ post_id: postId, content: newComment });
 
     if (!error) {
