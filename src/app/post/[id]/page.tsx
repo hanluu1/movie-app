@@ -83,9 +83,19 @@ export default function PostDetailPage () {
   const handleAddComment = async () => {
     if (newComment.trim() === '') return;
 
+    const { data: { user } } = await supabase.auth.getUser();
+    if (!user) {
+      alert('You must be logged in to comment.');
+      return;
+    }
+
     const { error } = await supabase
       .from('comments')
-      .insert({ post_id: id, content: newComment });
+      .insert({
+        post_id: id,
+        content: newComment,
+        user_id: user.id, // ✅ link to auth user
+      });
 
     if (error) {
       console.error('Error adding comment:', error);
@@ -216,7 +226,7 @@ export default function PostDetailPage () {
             />
             <button
               onClick={handleAddComment}
-              className="bg-gray-700 hover:bg-gray-600 text-white px-4 py-2 rounded-lg self-end hover:bg-gray-400 hover:text-white"
+              className="bg-gray-700 text-white px-4 py-2 rounded-lg self-end hover:bg-gray-400 hover:text-white"
             >
               Add Comment
             </button>

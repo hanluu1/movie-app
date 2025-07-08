@@ -2,17 +2,31 @@
 
 import React, { useState } from "react";
 import Link from "next/link";
-
+import { useEffect } from "react";
+import { supabase } from "@/lib/supabaseClient";
 import { Header } from "@/components";
 import { SearchMovie } from "@/modules/home";
 import { AllPost } from "@/modules/user-post";
 import { CreatePostModal } from "@/modules/user-post";
-import { HomeIcon, PlusIcon, GlobeAltIcon, FilmIcon } from "@heroicons/react/24/outline";
+import {PlusIcon, GlobeAltIcon, FilmIcon } from "@heroicons/react/24/outline";
 
 
 export default function Home () {
+  const [user, setUser] = useState(null);
+  const [loading, setLoading] = useState(true);
   const[showSearch, setShowSearch] = useState(false);
   const [showCreatePostModal, setShowCreatePostModal] = useState(false);
+  useEffect(() => {
+    const getUser = async () => {
+      const { data: { user } } = await supabase.auth.getUser();
+      setUser(user);
+      setLoading(false);
+    };
+    getUser();
+  }, []);
+  if (loading) {
+    return <div className="text-white text-center mt-10">Loading...</div>;
+  }
   return (
     <div className="flex flex-col min-h-screen w-full bg-gradient-to-br from-gray-900 via-black to-gray-800 text-white transition-all duration-300">
       <Header showSearchIcon={true} showSearch={() => setShowSearch(prev => !prev)} />

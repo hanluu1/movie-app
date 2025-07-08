@@ -37,10 +37,18 @@ export const CommentModal = ({ postId, isOpen, onClose }: CommentModalProps) => 
 
   const handleAddComment = async () => {
     if (!newComment.trim()) return;
+    const { data: { user } } = await supabase.auth.getUser();
 
+    if (!user) {
+      console.error('User not authenticated');
+      return;
+    }
     const { error } = await supabase
       .from('comments')
-      .insert({ post_id: postId, content: newComment });
+      .insert({ post_id: postId, 
+        content: newComment,
+        user_id: user.id,
+      });
 
     if (!error) {
       setNewComment('');

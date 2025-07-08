@@ -22,15 +22,23 @@ export const EditPostForm = ({ postId, title, content, imageUrl, onCancel, onSav
     if (!editedTitle.trim()) return;
 
     setIsSaving(true);
-
+    const { data: { user } } = await supabase.auth.getUser();
+    if (!user) {
+      console.error('User not authenticated');
+      setIsSaving(false);
+      return;
+    }
+    
     const { error } = await supabase
       .from('posts')
       .update({
         title: editedTitle,
         content: editedContent,
         image_url: editedImageUrl,
+        
       })
-      .eq('id', postId);
+      .eq('id', postId)
+      .eq('user_id', user.id);
 
     if (error) {
       console.error('Error updating post:', error);

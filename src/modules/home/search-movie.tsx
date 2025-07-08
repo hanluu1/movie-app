@@ -56,10 +56,14 @@ export const SearchMovie = ({ onSelect, onRefetch, mode = 'navigate' }: SearchMo
     if (exists) {
       return alert(`Movie "${title}" is already in your ${status} list.`);
     }
-    
+    const {data: { user } } = await supabase.auth.getUser();
+    if (!user) {
+      return alert('You must be logged in to add movies to your list.');
+    }
     const { error } = await supabase
       .from('track_movies')
       .insert({
+        user_id: user.id,
         movie_id: movie.id.toString(),
         movie_title: title,
         poster_url: poster,
