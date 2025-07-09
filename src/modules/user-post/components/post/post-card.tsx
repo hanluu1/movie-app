@@ -3,7 +3,7 @@ import React from 'react';
 import { useState } from 'react';
 import Link from 'next/link';
 import Image from 'next/image';
-import { ChatBubbleLeftRightIcon, BookmarkIcon } from '@heroicons/react/16/solid';
+import { ChatBubbleLeftRightIcon } from '@heroicons/react/16/solid';
 import { HandThumbUpIcon as HandThumbUpSolid } from '@heroicons/react/16/solid';
 import { HandThumbUpIcon as HandThumbUpOutline } from '@heroicons/react/24/outline';
 
@@ -61,7 +61,7 @@ export const PostCard = ({ id, movieTitle, movieImage, postTitle, createdAt, pos
             />
           )}
   
-          <div className="flex justify-between items-center mt-2 text-sm text-gray-300">
+          <div className="flex items-center gap-5 mt-2 text-sm text-gray-300">
             <button
               onClick={(e) => {
                 e.stopPropagation();
@@ -69,7 +69,7 @@ export const PostCard = ({ id, movieTitle, movieImage, postTitle, createdAt, pos
                 setLiked((prev) => !prev);
                 if (onLike) onLike();
               }}
-              className={`flex items-center gap-1 px-4 py-2 rounded-lg transition
+              className={`flex items-center justify-center w-1/2 gap-1 px-4 py-2 rounded-lg transition
               ${liked ? 'bg-blue-600 text-white' : 'bg-gray-700 hover:bg-gray-600 text-white'}`}
             >
               {liked ? (
@@ -85,17 +85,12 @@ export const PostCard = ({ id, movieTitle, movieImage, postTitle, createdAt, pos
                 e.preventDefault();
                 if (onComment) onComment();
               }}
-              className="flex items-center gap-1 bg-gray-700 hover:bg-gray-600 text-white px-4 py-2 rounded-lg transition"
+              className="flex items-center justify-center w-1/2 gap-1 bg-gray-700 hover:bg-gray-600 text-white px-4 py-2 rounded-lg transition"
             >
               <ChatBubbleLeftRightIcon className="h-5 w-5" />
               Comment
             </button>
-            <button
-              className="flex items-center gap-1 bg-gray-700 hover:bg-gray-600 text-white px-4 py-2 rounded-lg transition"
-            >
-              <BookmarkIcon className="h-5 w-5" />
-              Save
-            </button>
+            
           </div>
         </div>
       </Link>

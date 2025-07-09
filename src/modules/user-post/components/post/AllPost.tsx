@@ -28,21 +28,54 @@ export const AllPost = () => {
     setShowCommentModal(false);
     setActivePostId(null);
   };
-  const handleUpvote = async (postId: number) => {
-    const post = posts.find(p => p.id === postId);
-    if (!post) return;
-  
-    const { error } = await supabase
-      .from('posts')
-      .update({ upvotes: post.upvotes + 1 })
-      .eq('id', postId);
-  
-    if (error) {
-      console.error('Error upvoting post:', error);
-    } else {
-      fetchPosts();
+  const handleToggleLike = async (postId: number) => {
+    const {
+      data: { user },
+      error: userError,
+    } = await supabase.auth.getUser();
+
+    if (userError || !user) {
+      console.error("Auth error:", userError);
+      return;
     }
+
+    const { data: existingLike, error: fetchError } = await supabase
+      .from("post_likes")
+      .select("id")
+      .eq("user_id", user.id)
+      .eq("post_id", postId)
+      .single();
+
+    if (fetchError && fetchError.code !== "PGRST116") {
+      console.error("Error checking like:", fetchError);
+      return;
+    }
+
+    if (existingLike) {
+      const { error: deleteError } = await supabase
+        .from("post_likes")
+        .delete()
+        .eq("id", existingLike.id);
+
+      if (deleteError) {
+        console.error("Error unliking post:", deleteError);
+      }
+    } else {
+      const { error: insertError } = await supabase.from("post_likes").insert({
+        user_id: user.id,
+        post_id: postId,
+      });
+
+      if (insertError) {
+        console.error("Error liking post:", insertError?.message, insertError);
+      }
+    }
+
+    // Optional: wait briefly
+    await new Promise((resolve) => setTimeout(resolve, 200));
+    fetchPosts();
   };
+
   
   useEffect(() => {
     fetchPosts();
@@ -75,7 +108,7 @@ export const AllPost = () => {
             createdAt={post.created_at}
             upvotes={post.upvotes}
             postContent={post.content}
-            onLike={() => handleUpvote(post.id)}
+            onLike={() => handleToggleLike(post.id)}
             onComment={() => openCommentModal(post.id)}
           />
         ))}
