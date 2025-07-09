@@ -77,23 +77,29 @@ export default function AuthPage () {
 
   
   return (
-    <div className="min-h-screen bg-gradient-to-br from-gray-900 via-black to-gray-800 flex items-center justify-center">
+    <div className="flex flex-col gap-5 min-h-screen bg-gradient-to-br from-gray-900 via-black to-gray-800 items-center justify-center sm:flex-row sm:gap-20">  
+      <div className="flex flex-col gap-2 items-center mb-8">
+        <div className=" text-4xl text-gray-300 font-sans mb-1 sm:text-5xl">
+          Welcome to
+        </div>
+        <div className="font-logo text-3xl tracking-tight text-white leading-none sm:text-4xl">
+          ReelEmotions
+        </div>
+      </div>
       <div className="w-full max-w-md bg-gray-900 border border-gray-700 p-8 rounded-2xl shadow-2xl">
+        <div className='flex items-center justify-center text-white text-2xl mb-3'>Please {isLogin ? 'Log In to continue' : 'Sign Up'} </div>
         <form onSubmit={handleSubmit} className="flex flex-col gap-4">
           {!isLogin && (
-            <>
-              <div className="text-2xl font-bold text-white text-center mb-2">
-                Create An Account
-              </div>
-              <input
-                className="bg-gray-800 border border-gray-600 text-white placeholder-gray-400 p-3 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
-                type="text"
-                placeholder="Username"
-                value={username}
-                onChange={(e) => setUsername(e.target.value)}
-                required
-              />
-            </>
+
+            <input
+              className="bg-gray-800 border border-gray-600 text-white placeholder-gray-400 p-3 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+              type="text"
+              placeholder="Username"
+              value={username}
+              onChange={(e) => setUsername(e.target.value)}
+              required
+            />
+            
           )}
           <input
             className="bg-gray-800 border border-gray-600 text-white placeholder-gray-400 p-3 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
