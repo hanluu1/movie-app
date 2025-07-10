@@ -12,6 +12,7 @@ interface Post {
   title: string;
   created_at: string;
   upvotes: number;
+  profiles: {username: string} | null;
 }
 
 export const AllPost = () => {  
@@ -71,12 +72,10 @@ export const AllPost = () => {
       }
     }
 
-    // Optional: wait briefly
     await new Promise((resolve) => setTimeout(resolve, 200));
     fetchPosts();
   };
 
-  
   useEffect(() => {
     fetchPosts();
   },);
@@ -84,7 +83,7 @@ export const AllPost = () => {
   const fetchPosts = async () => {
     const { data, error } = await supabase
       .from('posts')
-      .select('id, title, content, movie_title, movie_image, created_at, upvotes')
+      .select('id, profiles(username), title, content, movie_title, movie_image, created_at, upvotes')
       .order(sort, { ascending: false });
 
     if (error) {
@@ -102,6 +101,7 @@ export const AllPost = () => {
           <PostCard
             key={post.id}
             id={post.id}
+            username={post.profiles?.username || 'Anonymous'}
             movieTitle={post.movie_title}
             movieImage={post.movie_image}
             postTitle={post.title}

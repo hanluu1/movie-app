@@ -18,10 +18,12 @@ interface PostCardProps {
     onLike?: () => void;
     onComment?: () => void;
     postImage?: string;
+    username?: string;
 }
 
-export const PostCard = ({ id, movieTitle, movieImage, postTitle, createdAt, postContent, upvotes, postImage, onLike, onComment }: PostCardProps) => {
+export const PostCard = ({ id, username, movieTitle, movieImage, postTitle, createdAt, postContent, upvotes, postImage, onLike, onComment }: PostCardProps) => {
   const [liked, setLiked] = useState(false);
+ 
 
   return (
     <div className="bg-gray-900 border border-gray-700 rounded-2xl w-full max-w-2xl mx-auto p-6 shadow-xl hover:shadow-blue-900/40 transition duration-300">
@@ -29,12 +31,13 @@ export const PostCard = ({ id, movieTitle, movieImage, postTitle, createdAt, pos
         <div className="flex flex-col gap-4">
           <div className="flex justify-between gap-4">
             <div className="flex flex-col w-4/5">
-              <h2 className="text-2xl font-bold text-white">
-                {postTitle}
-              </h2>
-              <span className="text-sm text-gray-400">
+              <div className='font-semibold'>{username}</div>
+              <div className="text-sm text-gray-400">
                 {new Date(createdAt).toLocaleString()}
-              </span>
+              </div>
+              <div className="text-2xl font-bold text-white">
+                {postTitle}
+              </div>
               <p className="text-gray-300 mt-2">{postContent}</p>
             </div>
   
