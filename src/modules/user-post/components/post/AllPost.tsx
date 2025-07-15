@@ -78,12 +78,12 @@ export const AllPost = () => {
 
   useEffect(() => {
     fetchPosts();
-  },);
+  }, [sort]);
 
   const fetchPosts = async () => {
     const { data, error } = await supabase
       .from('posts')
-      .select('id, profiles(username), title, content, movie_title, movie_image, created_at, upvotes')
+      .select('*, profiles(username)')
       .order(sort, { ascending: false });
 
     if (error) {
@@ -92,7 +92,7 @@ export const AllPost = () => {
       setPosts(data || []);
     }
   };
-
+  
   return (
     <div className="flex flex-col py-4 mx-10">
       <div className="flex flex-col gap-4 justify-center items-center">
