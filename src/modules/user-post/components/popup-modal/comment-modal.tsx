@@ -7,15 +7,16 @@ interface Comment {
   id: string;
   content: string;
   created_at: string;
+  profiles: {username: string} | null;
 }
-
 interface CommentModalProps {
   postId: number;
+  username?: string;
   isOpen: boolean;
   onClose: () => void;
 }
 
-export const CommentModal = ({ postId, isOpen, onClose }: CommentModalProps) => {
+export const CommentModal = ({ postId, username, isOpen, onClose }: CommentModalProps) => {
   const [comments, setComments] = useState<Comment[]>([]);
   const [newComment, setNewComment] = useState('');
 
@@ -86,10 +87,13 @@ export const CommentModal = ({ postId, isOpen, onClose }: CommentModalProps) => 
           {comments.length > 0 ? (
             comments.map((comment) => (
               <div key={comment.id} className="border p-3 rounded-lg bg-gray-100">
-                <p>{comment.content}</p>
-                <div className="text-sm text-gray-500">
+                <div className="font-semibold text-gray-800">
+                  {username}
+                </div>
+                <div className="text-xs text-gray-500">
                   {new Date(comment.created_at).toLocaleString()}
                 </div>
+                <div>{comment.content}</div>
               </div>
             ))
           ) : (

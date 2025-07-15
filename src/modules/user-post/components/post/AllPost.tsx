@@ -13,6 +13,7 @@ interface Post {
   created_at: string;
   upvotes: number;
   profiles: {username: string} | null;
+  content?: string;
 }
 
 export const AllPost = () => {  
@@ -117,6 +118,7 @@ export const AllPost = () => {
       {showCommentModal && activePostId && (
         <CommentModal
           postId={activePostId}
+          username={posts.find(post => post.id === activePostId)?.profiles?.username}
           isOpen={showCommentModal}
           onClose={closeCommentModal}
         />

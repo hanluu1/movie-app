@@ -8,7 +8,7 @@ import { HandThumbUpIcon as HandThumbUpSolid } from '@heroicons/react/16/solid';
 import { HandThumbUpIcon as HandThumbUpOutline } from '@heroicons/react/24/outline';
 
 interface PostCardProps {
-    id: number;
+    id: string;
     movieTitle: string | null;
     movieImage: string | null;
     postTitle: string;
