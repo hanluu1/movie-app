@@ -8,7 +8,7 @@ import { CommentModal } from '@/modules/user-post';
 interface Post {
   movie_image: string | null;
   movie_title: string | null;
-  id: number;
+  id: string;
   title: string;
   created_at: string;
   upvotes: number;

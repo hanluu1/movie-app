@@ -53,7 +53,7 @@ export const PostForm = () => {
   };
 
   return (
-    <div className="flex flex-col gap-4 mx-auto text-black">
+    <div className="flex flex-col gap-4 mx-auto text-white">
       {/* Movie Info Section */}
       {selectedMovie && (
         <div className="flex flex-row border p-4 rounded-lg shadow mb-6 gap-6">
