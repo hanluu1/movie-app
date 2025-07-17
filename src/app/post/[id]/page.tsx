@@ -14,12 +14,15 @@ interface Post {
   upvotes: number;
   movie_title?: string;
   movie_image?: string;
+  user_id: string;
 }
 
 interface Comment {
   id: string;
   content: string;
   created_at: string;
+  profiles: {username: string} | null;
+
 }
 
 export default function PostDetailPage () {
@@ -29,13 +32,24 @@ export default function PostDetailPage () {
   const [newComment, setNewComment] = useState('');
   const [loading, setLoading] = useState(true);
   const [edit, setEdit] = useState(false);
-  useEffect(() => {
-    if (id) {
-      fetchPost();
-      fetchComments();
-    }
-  }, [id]);
+  const [currentUser, setCurrentUser] = useState<string | null>(null);  
 
+  useEffect(() => {
+    const fetchUserAndData = async () => {
+      const { data: { user } } = await supabase.auth.getUser();
+      if (user) {
+        setCurrentUser(user.id);
+      }
+
+      if (id) {
+        await fetchPost();
+        await fetchComments();
+      }
+      setLoading(false);
+    };
+
+    fetchUserAndData();
+  }, [id]);
   const fetchPost = async () => {
     const { data, error } = await supabase
       .from('posts')
@@ -54,7 +68,7 @@ export default function PostDetailPage () {
   const fetchComments = async () => {
     const { data, error } = await supabase
       .from('comments')
-      .select('*')
+      .select('*, profiles(username)')
       .eq('post_id', id)
       .order('created_at', { ascending: true });
 
@@ -202,13 +216,14 @@ export default function PostDetailPage () {
               >
                 Edit Post
               </button>
-
-              <button
-                onClick={handleDeletePost}
-                className="bg-gray-700 hover:bg-gray-600 text-white px-4 py-2 rounded-lg "
-              >
+              {currentUser && post.user_id === currentUser && (
+                <button
+                  onClick={handleDeletePost}
+                  className="bg-gray-700 hover:bg-gray-600 text-white px-4 py-2 rounded-lg "
+                >
                 Delete Post
-              </button>
+                </button>)}
+              
             </div>
           </div>
         )}
@@ -232,12 +247,18 @@ export default function PostDetailPage () {
             </button>
           </div>
 
-          <div className="flex flex-col gap-4">
+          <div className="flex flex-col gap-3">
             {comments.length > 0 ? (
-              comments.map((comment) => (
-                <div key={comment.id} className="border p-4 rounded-lg">
-                  <p>{comment.content}</p>
-                  <div className="text-sm text-gray-400">{new Date(comment.created_at).toLocaleString()}</div>
+              comments.map((comment, idx) => (
+                <div key={comment.id} 
+                  className={`pb-4 ${idx !== comments.length - 1 ? 'border-b border-gray-700 mb-2' : ''}`}>
+                  <div className="font-semibold text-white">
+                    {comment.profiles?.username || 'Anonymous'}
+                  </div>
+                  <div className="text-xs text-gray-500">
+                    {new Date(comment.created_at).toLocaleString()}
+                  </div>
+                  <div>{comment.content}</div>
                 </div>
               ))
             ) : (

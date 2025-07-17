@@ -61,7 +61,7 @@ export const CommentModal = ({ postId, username, isOpen, onClose }: CommentModal
 
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50 text-black">
-      <div className="bg-gray-900 w-[80%] max-w-xl mx-auto my-10 p-6 border border-gray-700 rounded-lg relative shadow-lg overflow-y-auto">
+      <div className="bg-gray-800 w-[80%] max-w-xl mx-auto my-10 p-6 border border-gray-700 rounded-lg relative shadow-lg overflow-y-auto">
         <XMarkIcon
           onClick={onClose}
           className="absolute w-7 h-7 top-2 right-4 text-gray-500 cursor-pointer"
@@ -85,19 +85,20 @@ export const CommentModal = ({ postId, username, isOpen, onClose }: CommentModal
 
         <div className="flex flex-col gap-4">
           {comments.length > 0 ? (
-            comments.map((comment) => (
-              <div key={comment.id} className="border p-3 rounded-lg bg-gray-100">
-                <div className="font-semibold text-gray-800">
+            comments.map((comment, idx) => (
+              <div key={comment.id}                   
+                className={`pb-4 ${idx !== comments.length - 1 ? 'border-b border-gray-700 mb-2' : ''}`}>
+                <div className="font-semibold text-white">
                   {username}
                 </div>
-                <div className="text-xs text-gray-500">
+                <div className="text-xs text-white">
                   {new Date(comment.created_at).toLocaleString()}
                 </div>
-                <div>{comment.content}</div>
+                <div className='text-white'>{comment.content}</div>
               </div>
             ))
           ) : (
-            <p className="text-sm text-gray-600">No comments yet.</p>
+            <p className="text-sm text-white">No comments yet.</p>
           )}
         </div>
       </div>
