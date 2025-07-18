@@ -2,7 +2,7 @@
 
 import React, { useState } from "react";
 import Link from "next/link";
-import { useEffect } from "react";
+import { useEffect, useRef } from "react";
 import { supabase } from "@/lib/supabaseClient";
 import { Header } from "@/components";
 import { SearchMovie } from "@/modules/home";
@@ -10,12 +10,12 @@ import { AllPost } from "@/modules/user-post";
 import { CreatePostModal } from "@/modules/user-post";
 import {PlusIcon, GlobeAltIcon, FilmIcon } from "@heroicons/react/24/outline";
 
-
 export default function Home () {
   const [user, setUser] = useState(null);
   const [loading, setLoading] = useState(true);
   const[showSearch, setShowSearch] = useState(false);
   const [showCreatePostModal, setShowCreatePostModal] = useState(false);
+  const postRef = useRef<{refetch: () => void}>(null);
   useEffect(() => {
     const getUser = async () => {
       const { data: { user } } = await supabase.auth.getUser();
@@ -51,12 +51,16 @@ export default function Home () {
         </div>
         
         <div className="w-full max-w-4xl">
-          <AllPost />
+          <AllPost ref={postRef} />
         </div>
       </div>
       <CreatePostModal
         isOpen={showCreatePostModal}
         onClose={() => setShowCreatePostModal(false)}
+        onCreated={() => {
+          setShowCreatePostModal(false)
+          postRef.current?.refetch();
+        }}
       />
     </div>
   );

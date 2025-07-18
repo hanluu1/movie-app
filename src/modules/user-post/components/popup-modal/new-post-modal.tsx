@@ -5,9 +5,10 @@ import { PostForm } from '@/modules/user-post';
 interface CreatePostModalProps {
   isOpen: boolean;
   onClose: () => void;
+  onCreated: () => void;
 }
 
-export const CreatePostModal = ({ isOpen, onClose }: CreatePostModalProps) => {
+export const CreatePostModal = ({ isOpen, onClose, onCreated }: CreatePostModalProps) => {
   if (!isOpen) return null;
 
   return (
@@ -20,8 +21,9 @@ export const CreatePostModal = ({ isOpen, onClose }: CreatePostModalProps) => {
           onClick={onClose}
           className="absolute top-2 right-2 w-7 h-7 text-gray-500 cursor-pointer"
         />
-        <div className='pt-4'><PostForm /></div>
-        
+        <div className='pt-4'>
+          <PostForm onCreated={onCreated} />
+        </div>
       </div>
     </div>
   );

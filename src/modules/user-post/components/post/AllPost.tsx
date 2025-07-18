@@ -1,6 +1,6 @@
 'use client';
 
-import { useEffect, useState } from 'react';
+import { useEffect, useState, forwardRef, useImperativeHandle } from 'react';
 import { supabase } from '@/lib/supabaseClient';
 import { PostCard } from '@/modules/user-post';
 import { CommentModal } from '@/modules/user-post';
@@ -16,11 +16,14 @@ interface Post {
   content?: string;
 }
 
-export const AllPost = () => {  
+export const AllPost = forwardRef((props, ref) => {  
   const [posts, setPosts] = useState<Post[]>([]);
   const [sort, setSort] = useState<'created_at' | 'upvotes'>('created_at');
   const [showCommentModal, setShowCommentModal] = useState(false);
   const [activePostId, setActivePostId] = useState<number | null>(null);
+  useImperativeHandle(ref, () => ({
+    refetch: fetchPosts
+  }));
   const openCommentModal = (postId: number) => {
     setActivePostId(postId);
     setShowCommentModal(true);
@@ -86,14 +89,14 @@ export const AllPost = () => {
       .from('posts')
       .select('*, profiles(username)')
       .order(sort, { ascending: false });
-
+   
     if (error) {
       console.error('Error fetching posts:', error);
     } else {
       setPosts(data || []);
     }
   };
-  
+
   return (
     <div className="flex flex-col py-4 mx-10">
       <div className="flex flex-col gap-4 justify-center items-center">
@@ -125,4 +128,6 @@ export const AllPost = () => {
       )}
     </div>
   );
-};
+});
+
+AllPost.displayName = 'AllPost';

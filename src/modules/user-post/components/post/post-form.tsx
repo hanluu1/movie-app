@@ -3,13 +3,10 @@
 import { useState } from 'react';
 import Image from 'next/image';
 import { supabase } from '@/lib/supabaseClient';
-import { useRouter} from 'next/navigation';
 import { SearchMovie } from '@/modules/home';
 import { MagnifyingGlassCircleIcon } from '@heroicons/react/24/outline';
 
-export const PostForm = () => {
-  const router = useRouter();
-
+export const PostForm = ({onCreated}:{onCreated?: () => void}) => {
   const [title, setTitle] = useState('');
   const [content, setContent] = useState('');
   const [isSubmitting, setIsSubmitting] = useState(false);
@@ -46,9 +43,10 @@ export const PostForm = () => {
       console.error('Error creating post:', error.message);
       alert('Failed to create post.');
     } else {
-      router.push('/');
+      if (onCreated) {
+        onCreated();
+      }
     }
-
     setIsSubmitting(false);
   };
 
