@@ -18,13 +18,13 @@ interface Post {
 
 export const AllPost = forwardRef((props, ref) => {  
   const [posts, setPosts] = useState<Post[]>([]);
-  const [sort, setSort] = useState<'created_at' | 'upvotes'>('created_at');
+  const [sort] = useState<'created_at' | 'upvotes'>('created_at');
   const [showCommentModal, setShowCommentModal] = useState(false);
-  const [activePostId, setActivePostId] = useState<number | null>(null);
+  const [activePostId, setActivePostId] = useState<string | null>(null);
   useImperativeHandle(ref, () => ({
     refetch: fetchPosts
   }));
-  const openCommentModal = (postId: number) => {
+  const openCommentModal = (postId: string) => {
     setActivePostId(postId);
     setShowCommentModal(true);
   };
@@ -33,7 +33,7 @@ export const AllPost = forwardRef((props, ref) => {
     setShowCommentModal(false);
     setActivePostId(null);
   };
-  const handleToggleLike = async (postId: number) => {
+  const handleToggleLike = async (postId: string) => {
     const {
       data: { user },
       error: userError,

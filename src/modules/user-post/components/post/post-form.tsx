@@ -90,7 +90,11 @@ export const PostForm = ({onCreated}:{onCreated?: () => void}) => {
               <SearchMovie
                 mode='select'
                 onSelect={(movie) => {
-                  setSelectedMovie(movie);
+                  setSelectedMovie({
+                    title: movie.title,
+                    image: movie.image,
+                    overview: movie.overview,
+                  });
                   setShowMovieSearch(false);
                   setTitle('');
                   setContent('');

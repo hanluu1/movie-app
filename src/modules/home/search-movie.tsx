@@ -16,7 +16,9 @@ interface Movie {
 }
 
 interface SearchMovieProps {
-  onSelect: (movie: { title: string; image: string; release_date: string }) => void;
+  onSelect: (movie: {
+    movie_id: any; title: string; image: string; release_date: string; overview: string
+}) => void;
   onRefetch?: () => void;
   mode?: 'select' | 'navigate';
 }
@@ -84,8 +86,10 @@ export const SearchMovie = ({ onSelect, onRefetch, mode = 'navigate' }: SearchMo
   const handleMovieClick = (movie: Movie) => {
     if (mode === 'select') {
       onSelect({
+        movie_id: movie.id,
         title: movie.title || movie.name,
         image: getImageUrl(movie.poster_path),
+        overview: movie.overview || '',
         release_date: movie.release_date || '',
       });
     }

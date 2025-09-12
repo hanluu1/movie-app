@@ -1,14 +1,9 @@
 
 import Image from 'next/image';
 import { Header } from '@/components';
+import { notFound } from 'next/navigation';
 
 const API_KEY = process.env.NEXT_PUBLIC_TMDB_API_KEY;
-
-interface MovieDetailProps {
-  params: {
-    id: string;
-  };
-}
 
 async function fetchMovieDetails (id: string) {
   const endpoints = [
@@ -38,15 +33,17 @@ async function fetchMovieDetails (id: string) {
 
       return {
         ...details,
-        cast: credits.cast,
+        cast: credits.casts,
       };
     }
   }
 
   throw new Error('Movie or TV show not found');
 }
-export default async function MoviePage ({ params }: MovieDetailProps) {
-  const movie = await fetchMovieDetails(params.id);
+export default async function MoviePage ({ params }: { params: Promise<{ id: string }>; }) {
+  const { id } = await params;
+  const movie = await fetchMovieDetails(id);
+  if (!movie) notFound();
 
   const {
     title,
@@ -56,6 +53,7 @@ export default async function MoviePage ({ params }: MovieDetailProps) {
     release_date,
     first_air_date,
     genres = [],
+    movie_id,
   } = movie;
 
   return (
@@ -104,9 +102,7 @@ export default async function MoviePage ({ params }: MovieDetailProps) {
                 .join(', ')}
             </div>
           )}
-               
         </div> 
-        
       </div>
     </div>
   );

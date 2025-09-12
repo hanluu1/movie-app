@@ -1,6 +1,7 @@
 'use client';
 
 import React, { useState } from "react";
+import type { User } from '@supabase/auth-js';
 import Link from "next/link";
 import { useEffect, useRef } from "react";
 import { supabase } from "@/lib/supabaseClient";
@@ -9,9 +10,8 @@ import { SearchMovie } from "@/modules/home";
 import { AllPost } from "@/modules/user-post";
 import { CreatePostModal } from "@/modules/user-post";
 import {PlusIcon, GlobeAltIcon, FilmIcon } from "@heroicons/react/24/outline";
-
 export default function Home () {
-  const [user, setUser] = useState(null);
+  const [user, setUser] = useState<User | null>(null);
   const [loading, setLoading] = useState(true);
   const[showSearch, setShowSearch] = useState(false);
   const [showCreatePostModal, setShowCreatePostModal] = useState(false);
@@ -37,7 +37,7 @@ export default function Home () {
             onSelect={
               (movie) => {
                 setShowSearch(false);
-                window.location.href = `/movie-more-info/${movie.id}`;
+                window.location.href = `/movie-more-info/${movie.movie_id}`;
               }
             }/>
         </div>
@@ -64,5 +64,4 @@ export default function Home () {
       />
     </div>
   );
-  
 }

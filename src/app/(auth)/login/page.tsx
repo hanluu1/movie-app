@@ -40,6 +40,10 @@ export default function AuthPage () {
         return;
       }
       // Check if user profile already exists
+      if (!user) {
+        setError('User not found after login.');
+        return;
+      }
       const { data: existingProfile } = await supabase
         .from('profiles')
         .select('id')

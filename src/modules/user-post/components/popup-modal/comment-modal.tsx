@@ -10,7 +10,7 @@ interface Comment {
   profiles: {username: string} | null;
 }
 interface CommentModalProps {
-  postId: number;
+  postId: string;
   username?: string;
   isOpen: boolean;
   onClose: () => void;

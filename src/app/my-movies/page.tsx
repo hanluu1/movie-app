@@ -68,7 +68,7 @@ export default function MyMoviesPage () {
             onSelect={
               (movie) => {
                 setShowSearch(false);
-                window.location.href = `/movie-more-info/${movie.id}`;
+                window.location.href = `/movie-more-info/${movie.movie_id}`;
               }
             }
             onRefetch={refetchMovieDetails}/>

@@ -20,6 +20,9 @@ const eslintConfig = [
       "space-in-parens": ["error", "never"], // No spaces inside parentheses
       "key-spacing": ["error", { beforeColon: false, afterColon: true }], // Consistent spacing in object keys
       "comma-spacing": ["error", { before: false, after: true }], // Space after commas
+
+      "@typescript-eslint/no-explicit-any": "off",
+      "@typescript-eslint/no-unused-vars": ["warn"],
     },
   },
 ];

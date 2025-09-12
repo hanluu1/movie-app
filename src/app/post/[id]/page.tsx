@@ -1,15 +1,16 @@
 'use client';
-import { useEffect, useState } from 'react';
+import { useCallback, useEffect, useState } from 'react';
 import { useParams } from 'next/navigation';
 import { supabase } from '@/lib/supabaseClient';
 import { Header } from '@/components';
 import { EditPostForm } from '@/modules/user-post';
 import Image from 'next/image';
+
 interface Post {
   id: string;
   title: string;
   content: string;
-  image_url: string;
+  image_url: string | string[]; 
   created_at: string;
   upvotes: number;
   movie_title?: string;
@@ -21,36 +22,23 @@ interface Comment {
   id: string;
   content: string;
   created_at: string;
-  profiles: {username: string} | null;
-
+  profiles: { username: string } | null;
 }
 
 export default function PostDetailPage () {
-  const { id } = useParams();
+  const params = useParams<{ id: string }>();
+  const id = params.id;
+
   const [post, setPost] = useState<Post | null>(null);
   const [comments, setComments] = useState<Comment[]>([]);
   const [newComment, setNewComment] = useState('');
   const [loading, setLoading] = useState(true);
   const [edit, setEdit] = useState(false);
-  const [currentUser, setCurrentUser] = useState<string | null>(null);  
+  const [currentUser, setCurrentUser] = useState<string | null>(null);
 
-  useEffect(() => {
-    const fetchUserAndData = async () => {
-      const { data: { user } } = await supabase.auth.getUser();
-      if (user) {
-        setCurrentUser(user.id);
-      }
-
-      if (id) {
-        await fetchPost();
-        await fetchComments();
-      }
-      setLoading(false);
-    };
-
-    fetchUserAndData();
-  }, [id]);
-  const fetchPost = async () => {
+  // Memoized fetchers to be safely used in effects & handlers
+  const fetchPost = useCallback(async () => {
+    if (!id) return;
     const { data, error } = await supabase
       .from('posts')
       .select('*')
@@ -60,12 +48,13 @@ export default function PostDetailPage () {
     if (error) {
       console.error('Error fetching post:', error);
     } else {
-      setPost(data);
+      setPost(data as Post);
       setLoading(false);
     }
-  };
+  }, [id]);
 
-  const fetchComments = async () => {
+  const fetchComments = useCallback(async () => {
+    if (!id) return;
     const { data, error } = await supabase
       .from('comments')
       .select('*, profiles(username)')
@@ -75,13 +64,24 @@ export default function PostDetailPage () {
     if (error) {
       console.error('Error fetching comments:', error);
     } else {
-      setComments(data || []);
+      setComments((data as Comment[]) || []);
     }
-  };
+  }, [id]);
+
+  useEffect(() => {
+    (async () => {
+      const { data: { user } } = await supabase.auth.getUser();
+      if (user) setCurrentUser(user.id);
+
+      if (id) {
+        await Promise.all([fetchPost(), fetchComments()]);
+      }
+      setLoading(false);
+    })();
+  }, [id, fetchPost, fetchComments]);
 
   const handleUpvote = async () => {
     if (!post) return;
-
     const { error } = await supabase
       .from('posts')
       .update({ upvotes: post.upvotes + 1 })
@@ -90,7 +90,7 @@ export default function PostDetailPage () {
     if (error) {
       console.error('Error upvoting:', error);
     } else {
-      fetchPost(); 
+      await fetchPost(); // re-fetch with fresh count
     }
   };
 
@@ -108,25 +108,22 @@ export default function PostDetailPage () {
       .insert({
         post_id: id,
         content: newComment,
-        user_id: user.id, // ✅ link to auth user
+        user_id: user.id,
       });
 
     if (error) {
       console.error('Error adding comment:', error);
     } else {
       setNewComment('');
-      fetchComments(); 
+      await fetchComments();
     }
   };
+
   const handleDeletePost = async () => {
     const confirmDelete = window.confirm('Are you sure you want to delete this post?');
-
     if (!confirmDelete) return;
 
-    const { error } = await supabase
-      .from('posts')
-      .delete()
-      .eq('id', id);
+    const { error } = await supabase.from('posts').delete().eq('id', id);
 
     if (error) {
       console.error('Error deleting post:', error);
@@ -149,11 +146,11 @@ export default function PostDetailPage () {
             postId={post.id}
             title={post.title}
             content={post.content || ''}
-            imageUrl={post.image_url || ''}
+            imageUrl={(Array.isArray(post.image_url) ? '' : post.image_url) || ''}
             onCancel={() => setEdit(false)}
-            onSave={() => {
+            onSave={async () => {
               setEdit(false);
-              fetchPost();
+              await fetchPost();
             }}
           />
         ) : (
@@ -161,9 +158,11 @@ export default function PostDetailPage () {
             <div className="flex flex-row justify-between min-w-96">
               <div className="flex flex-col">
                 <h1 className="text-3xl font-bold mb-2">{post.title}</h1>
-                <div className="text-gray-500 text-sm mb-4">Posted on {new Date(post.created_at).toLocaleString()}</div>
+                <div className="text-gray-500 text-sm mb-4">
+                  Posted on {new Date(post.created_at).toLocaleString()}
+                </div>
               </div>
-              
+
               <div className="flex flex-col items-center w-36">
                 {post.movie_image && (
                   <Image
@@ -176,11 +175,15 @@ export default function PostDetailPage () {
                 )}
 
                 {post.movie_title && (
-                  <div className="flex items-center justify-center text-sm font-semibold text-gray-300 mb-2">{post.movie_title}</div>
+                  <div className="flex items-center justify-center text-sm font-semibold text-gray-300 mb-2">
+                    {post.movie_title}
+                  </div>
                 )}
               </div>
             </div>
+
             <p className="text-lg mb-6">{post.content}</p>
+
             {Array.isArray(post.image_url)
               ? post.image_url.map((url, idx) => (
                 <Image
@@ -200,8 +203,8 @@ export default function PostDetailPage () {
                   height={150}
                   className="w-full rounded-lg mb-4"
                 />
-              )
-            }
+              )}
+
             <div className="flex gap-4 mb-6">
               <button
                 onClick={handleUpvote}
@@ -216,14 +219,15 @@ export default function PostDetailPage () {
               >
                 Edit Post
               </button>
+
               {currentUser && post.user_id === currentUser && (
                 <button
                   onClick={handleDeletePost}
                   className="bg-gray-700 hover:bg-gray-600 text-white px-4 py-2 rounded-lg "
                 >
-                Delete Post
-                </button>)}
-              
+                  Delete Post
+                </button>
+              )}
             </div>
           </div>
         )}
@@ -250,8 +254,10 @@ export default function PostDetailPage () {
           <div className="flex flex-col gap-3">
             {comments.length > 0 ? (
               comments.map((comment, idx) => (
-                <div key={comment.id} 
-                  className={`pb-4 ${idx !== comments.length - 1 ? 'border-b border-gray-700 mb-2' : ''}`}>
+                <div
+                  key={comment.id}
+                  className={`pb-4 ${idx !== comments.length - 1 ? 'border-b border-gray-700 mb-2' : ''}`}
+                >
                   <div className="font-semibold text-white">
                     {comment.profiles?.username || 'Anonymous'}
                   </div>
