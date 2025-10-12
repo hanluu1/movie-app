@@ -7,7 +7,6 @@ import { supabase } from "@/lib/supabaseClient";
 import { Header } from "@/layout";
 import { SearchMovie } from "@/modules/home";
 import { AllPost, CreatePostModal } from "@/modules/user-post";
-import {motion, useReducedMotion} from 'framer-motion';
 import {
   PlusIcon,
   GlobeAltIcon,
