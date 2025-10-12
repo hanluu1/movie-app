@@ -2,7 +2,7 @@
 import { useCallback, useEffect, useState } from 'react';
 import { useParams } from 'next/navigation';
 import { supabase } from '@/lib/supabaseClient';
-import { Header } from '@/components';
+import { Header } from '@/layout';
 import { EditPostForm } from '@/modules/user-post';
 import Image from 'next/image';
 

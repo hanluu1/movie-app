@@ -1,6 +1,6 @@
 
 import Image from 'next/image';
-import { Header } from '@/components';
+import { Header } from '@/layout';
 import { notFound } from 'next/navigation';
 
 const API_KEY = process.env.NEXT_PUBLIC_TMDB_API_KEY;

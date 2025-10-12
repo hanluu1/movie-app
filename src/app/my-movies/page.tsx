@@ -1,7 +1,7 @@
 'use client';
 import { supabase } from '@/lib/supabaseClient';
 import { useState, useEffect } from 'react';
-import { Header } from '@/components';
+import { Header } from '@/layout';
 import { SearchMovie } from '@/modules/home';
 import Image from 'next/image';
 export default function MyMoviesPage () {
