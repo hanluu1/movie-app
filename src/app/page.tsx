@@ -38,47 +38,30 @@ export default function Home () {
 
   return (
     <div className="flex flex-col min-h-screen w-full bg-gradient-to-br from-gray-900 via-black to-gray-800 text-white transition-all duration-300">
-      <Header showSearchIcon={true} showSearch={() => setShowSearch(prev => !prev)} />
 
-      {showSearch && (
-        <div className="w-full">
-          <SearchMovie
-            mode="navigate"
-            onSelect={(movie) => {
-              setShowSearch(false);
-              window.location.href = `/movie-more-info/${movie.movie_id}`;
-            }}
-          />
-        </div>
-      )}
-
-      <div className="flex flex-col items-center px-4 py-4">
+      <div className="flex flex-col items-center">
         {user && (
-          <div className="flex flex-row justify-between items-center bg-gray-900 border border-gray-700 rounded-2xl w-full max-w-2xl px-6 py-4">
-            <Link href="my-movies" aria-label="My Movies">
-              <FilmIcon className="h-6 w-6 cursor-pointer text-gray-300 hover:text-blue-400 transition" />
-            </Link>
+          <div className="flex flex-col justify-between w-full">
+            
+            <Header showSearchIcon={true} showSearch={() => setShowSearch(prev => !prev)} />
 
-            <GlobeAltIcon
-              className="h-6 w-6 cursor-pointer text-gray-300 hover:text-blue-400 transition"
-              aria-hidden="true"
-            />
-
-            <button
-              type="button"
-              aria-label="Create post"
-              onClick={() => setShowCreatePostModal(true)}
-              className="p-0 m-0 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-400/40"
-              title="Create post"
-            >
-              <PlusIcon className="h-6 w-6 text-gray-300 hover:text-blue-400 transition" />
-            </button>
+            {showSearch && (
+              <div className="w-full">
+                <SearchMovie
+                  mode="navigate"
+                  onSelect={(movie) => {
+                    setShowSearch(false);
+                    window.location.href = `/movie-more-info/${movie.movie_id}`;
+                  }}
+                />
+              </div>
+            )}
           </div>
         )}
 
-        <div className="w-full max-w-4xl mt-4">
+        <div className="flex min-h-screen items-center justify-center w-full ">
           {!user && (
-            <div className="relative overflow-hidden rounded-2xl  p-6 md:p-8 mb-6">
+            <div className="flex justify-center items-center overflow-hidden rounded-2xl p-6 md:p-8 mb-6">
              
               <div className="flex items-start gap-4">
                 
@@ -110,7 +93,7 @@ export default function Home () {
                     </li>
                   </ul>
 
-                  <div className="mt-6 flex flex-col sm:flex-row gap-3">
+                  <div className="mt-6 flex justify-end sm:flex-row gap-3">
                     <Link
                       href="/login"
                       className="inline-flex items-center justify-center rounded-xl
@@ -124,9 +107,34 @@ export default function Home () {
               </div>
             </div>
           )}
+          <div className="flex flex-col w-full max-w-4xl px-4 py-4">
+            {user && (
+              <div className="flex flex-row justify-between items-center bg-gray-900 border border-gray-700 rounded-2xl w-full px-6 py-4">
+                
+
+                <GlobeAltIcon
+                  className="h-6 w-6 cursor-pointer text-gray-300 hover:text-blue-400 transition"
+                  aria-hidden="true"
+                />
+
+                <button
+                  type="button"
+                  aria-label="Create post"
+                  onClick={() => setShowCreatePostModal(true)}
+                  className="p-0 m-0 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-400/40"
+                  title="Create post"
+                >
+                  <PlusIcon className="h-6 w-6 text-gray-300 hover:text-blue-400 transition" />
+                </button>
+                <Link href="my-movies" aria-label="My Movies">
+                  <BookmarkIcon className="h-6 w-6 cursor-pointer text-gray-300 hover:text-blue-400 transition" />
+                </Link>
+              </div>
+            )}
 
 
-          <AllPost ref={postRef} />
+            <AllPost ref={postRef} />
+          </div>
         </div>
       </div>
 
