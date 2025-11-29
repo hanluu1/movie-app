@@ -123,7 +123,7 @@ export default function AuthPage () {
           />
           <button
             type="submit"
-            className=" bg-gradient-to-r from-cyan-500 to-blue-600 text-white font-semibold py-3 rounded-lg transition duration-200"
+            className=" bg-gradient-to-r from-blue-600 to-cyan-500 text-white font-semibold py-3 rounded-lg transition duration-200"
           >
             {isLogin ? 'Log In' : 'Sign Up'}
           </button>
