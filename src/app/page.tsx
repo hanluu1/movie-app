@@ -103,7 +103,7 @@ export default function Home () {
           </section>
         )}
         <div className="flex min-h-screen w-full flex-col items-center justify-center">
-          <div className="flex flex-col w-full max-w-4xl mx-auto px-4 py-4">
+          <div className="flex flex-col w-full max-w-2xl px-4 py-4">
             {user && (
               <div className="flex flex-row justify-between items-center bg-gray-900 border border-gray-700 rounded-2xl px-6 py-4">
                 <GlobeAltIcon
