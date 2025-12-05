@@ -14,6 +14,7 @@ import {
   ChatBubbleLeftRightIcon,
   BookmarkIcon,
 } from "@heroicons/react/24/outline";
+import { ActionBar } from "@/modules/navigation/action-bar";
 
 export default function Home () {
   const [user, setUser] = useState<User | null>(null);
@@ -104,26 +105,7 @@ export default function Home () {
         )}
         <div className="flex min-h-screen w-full flex-col items-center justify-center">
           <div className="flex flex-col w-full max-w-2xl px-4 py-4">
-            {user && (
-              <div className="flex flex-row justify-between items-center bg-gray-900 border border-gray-700 rounded-2xl px-6 py-4">
-                <GlobeAltIcon
-                  className="h-6 w-6 cursor-pointer text-gray-300 hover:text-blue-400 transition"
-                  aria-hidden="true"
-                />
-                <button
-                  type="button"
-                  aria-label="Create post"
-                  onClick={() => setShowCreatePostModal(true)}
-                  className="p-0 m-0 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-400/40"
-                  title="Create post"
-                >
-                  <PlusIcon className="h-6 w-6 text-gray-300 hover:text-blue-400 transition" />
-                </button>
-                <Link href="my-movies" aria-label="My Movies">
-                  <BookmarkIcon className="h-6 w-6 cursor-pointer text-gray-300 hover:text-blue-400 transition" />
-                </Link>
-              </div>
-            )}
+            {user && <ActionBar onCreatePost={() => setShowCreatePostModal(true)} />}
             <AllPost ref={postRef} />
           </div>
         </div>
