@@ -27,5 +27,6 @@ export const ActionBar = ({ onCreatePost }: ActionBarProps) => {
         <BookmarkIcon className="h-6 w-6 cursor-pointer text-gray-300 hover:text-blue-400 transition" />
       </Link>
     </div>
+
   );
 }

@@ -2,7 +2,6 @@
 
 import React, { useState, useEffect, useRef } from "react";
 import type { User } from '@supabase/auth-js';
-import Link from "next/link";
 import { supabase } from "@/lib/supabaseClient";
 import { Header } from "@/layout";
 import { SearchMovie } from "@/modules/home";
