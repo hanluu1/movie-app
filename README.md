@@ -1,42 +1,25 @@
 **🎬 Reel Emotion**
-Reel Emotions is a full-stack movie review web app that allows users to search for movies, post reviews, upvote helpful content, and organize their personal movie lists. Built with a strong focus on responsive UI, seamless user interactions, and clean design, Reel Emotions delivers a polished front-end experience powered by modern frontend technologies.
-
+Reel Emotions is a movie review web app that lets users to search for movies, share reviews, upvote helpful content, and organize their personal movie watchlists.
 **🌟 Live Demo**
-🔗 Visit Reel Emotions: Comming soon
+🔗 Visit Reel Emotions: https://reel-emotions.vercel.app/
 
 **✨ Features**
 🎨 Frontend Highlights 
 - Built with Next.js and Tailwind CSS for fast performance and responsive design.
-- Dynamic Search Experience with debounced input and instant results.
-- Detailed Movie Pages including posters, descriptions, release info, and community reviews.
-- Interactive Review System
-    - Users can add, edit, delete, and upvote reviews.
-    - Reviews are sorted by most helpful (upvotes) or most recent.
-- My movies Dashboard
-    - Users can organize movies into Watched, To-Watch, or view All with smooth tabbed filtering.
-    - Uses a consistent UI component design for movie cards across the app.
-- Optimized for mobile and desktop with responsive layouts.
+- Dynamic movie search with debounced input and instant results.
+- Detailed movie pages including posters, descriptions, release info, and community reviews.
+- Mobile-first layouts optimized for both desktop and mobile devices
+📝 Interactive Review System
+- Users can add, edit, delete, and upvote reviews.
+- Reviews are sorted by most helpful (upvotes) or most recent.
+- Real-time UI updates for a seamless user experience
+🎥 My Movies Dashboard
+- Organize movies into Watched, To-Watch, or All
+- Smooth tab-based filtering with consistent movie card components
+- Centralized hub for managing personal movie lists
 
-**🧠 Frontend Stack**
-- Framework: Next.js
-- Styling: Tailwind CSS 
-- Icons: Heroicon
-- Forms & Validation: React Hooks + Custom form handlers
-
-**🔐 Authentication**
-- Currently integrated with Supabase Auth for secure login and session management.
-- Protected routes ensure only logged-in users can post and manage reviews.
-- In progress: migrating to a custom REST API backend to replace Supabase for full control over authentication and data flow.
-
-**🗄️ Backend & Database** 
-- Supabase (current)
-    - Stores movie reviews and upvotes
-    - Handles user data and auth
-    - Tracks watchlists (watched/ watching/ to-watch)
-
-- Custom REST API (coming soon)
-    - Will handle authentication, data flow, and business logic internally
-    - Provides more flexibility and scalability for future features
-
-**🧪 Coming Soon**
-- Full migration to custom REST API backend for complete backend control
+**🧠 Tech Stack**
+- Frontend: Next.js, tailwind CSS
+- Database: Supabase (PostgreSQL)
+- Auth: Supabase Auth for secure login and session management.
+- Deployment: Vercel
