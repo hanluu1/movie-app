@@ -23,47 +23,38 @@ export default function AuthPage () {
       listener.subscription.unsubscribe();
     };
   }, [router]);
+  const handleLogin = async () => {
+    const{ data, error } = await supabase.auth.signInWithPassword({
+      email,
+      password,
+    });
+    if (error) {
+      setError(error.message);
+    }
+    if (!data.user) {
+      setError('User not found');
+    }
 
-  const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
-    setError('');
-
-    if (isLogin) {
-    // LOGIN FLOW
-      const { data: { user }, error } = await supabase.auth.signInWithPassword({
-        email,
-        password,
-      });
-
-      if (error) {
-        setError(error.message);
-        return;
-      }
-      // Check if user profile already exists
-      if (!user) {
-        setError('User not found after login.');
-        return;
-      }
-      const { data: existingProfile } = await supabase
-        .from('profiles')
-        .select('id')
-        .eq('id', user.id)
-        .maybeSingle();
-
-      if (!existingProfile) {
-        const { error: profileError } = await supabase.from('profiles').insert([
-          { id: user.id, username },
-        ]);
-
-        if (profileError) {
-          console.error('Profile insert error:', profileError.message);
-          setError('Logged in, but failed to create user profile.');
-          return;
-        }
-      }
+    const { data: profileData, error: profileError } = await supabase
+      .from('profiles')
+      .select('*')
+      .eq('id', data.user?.id)
+      .maybeSingle();
+    if (profileError) {
+      console.error('Profile fetch error:', profileError.message);
       return;
     }
-    // SIGNUP FLOW
+    if (!profileData) {
+      const { error: insertError } = await supabase.from('profiles').insert([
+        { id: data.user?.id, username },
+      ]);
+      if (insertError) {
+        console.error('Profile insert error:', insertError.message);
+      }
+    }
+
+  };
+  const handleSignup = async () => {
     if (!username.trim()) {
       setError('Username is required.');
       return;
@@ -75,13 +66,23 @@ export default function AuthPage () {
       return;
     }
 
-    alert('Signup successful! Please check your email to confirm, then log in.');
+    alert('Signup successful!');
     setIsLogin(true);
+  };
+
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    setError('');
+    if (isLogin) {
+      await handleLogin();
+    } else {
+      await handleSignup();
+    }
   };
 
   
   return (
-    <div className="flex flex-col gap-5 min-h-screen bg-gradient-to-br from-gray-900 via-black to-gray-800 items-center justify-center sm:flex-row sm:gap-20">  
+    <div className="flex flex-col gap-5 min-h-screen bg-gradient-to-br from-gray-900 via-black to-gray-800 items-center justify-center sm:flex-row sm:gap-20">    
       <div className="flex flex-col gap-2 items-center mb-8">
         <div className=" text-4xl text-gray-300 font-sans mb-1 sm:text-5xl">
           Welcome to
@@ -91,10 +92,11 @@ export default function AuthPage () {
         </div>
       </div>
       <div className="w-full max-w-md bg-gray-900 border border-gray-700 p-8 rounded-2xl shadow-2xl">
-        <div className='flex items-center justify-center text-white text-2xl mb-3'>Please {isLogin ? 'Log In to continue' : 'Sign Up'} </div>
+        <div className='flex items-center justify-center text-white text-2xl mb-3'>
+          Please {isLogin ? 'Log In to continue' : 'Sign Up'} 
+        </div>
         <form onSubmit={handleSubmit} className="flex flex-col gap-4">
           {!isLogin && (
-
             <input
               className="bg-gray-800 border border-gray-600 text-white placeholder-gray-400 p-3 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
               type="text"
