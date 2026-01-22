@@ -17,12 +17,13 @@ interface PostCardProps {
     postContent?: string;
     onLike?: () => void;
     onComment?: () => void;
+    isLiked?: boolean;
     postImage?: string;
     username?: string;
 }
 
-export const PostCard = ({ id, username, movieTitle, movieImage, postTitle, createdAt, postContent, upvotes, postImage, onLike, onComment }: PostCardProps) => {
-  const [liked, setLiked] = useState(false);
+export const PostCard = ({ id, username, movieTitle, movieImage, postTitle, createdAt, postContent, upvotes, postImage, onLike, onComment, isLiked=false }: PostCardProps) => {
+  const [liked, setLiked] = useState(isLiked);
  
 
   return (

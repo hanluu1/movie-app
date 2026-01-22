@@ -14,6 +14,8 @@ interface Post {
   upvotes: number;
   profiles: {username: string} | null;
   content?: string;
+  post_likes?: { user_id: string }[];
+  isLiked?: boolean;
 }
 
 export const AllPost = forwardRef((props, ref) => {  
@@ -34,50 +36,36 @@ export const AllPost = forwardRef((props, ref) => {
     setActivePostId(null);
   };
   const handleToggleLike = async (postId: string) => {
-    const {
-      data: { user },
-      error: userError,
-    } = await supabase.auth.getUser();
+    const { data: { user }, error: userError, } = await supabase.auth.getUser();
 
     if (userError || !user) {
-      console.error("Auth error:", userError);
+      console.error('User not authenticated');
       return;
     }
 
-    const { data: existingLike, error: fetchError } = await supabase
-      .from("post_likes")
-      .select("id")
-      .eq("user_id", user.id)
-      .eq("post_id", postId)
-      .single();
+    //find post and check if liked
+    const post = posts.find(p => p.id === postId);
+    if (!post) return;
 
-    if (fetchError && fetchError.code !== "PGRST116") {
-      console.error("Error checking like:", fetchError);
-      return;
-    }
+    const isPostLiked = post.isLiked;
 
-    if (existingLike) {
-      const { error: deleteError } = await supabase
-        .from("post_likes")
+    setPosts(posts.map(p => 
+      p.id === postId 
+        ? { ...p, isLiked: !isPostLiked, upvotes: p.upvotes + (isPostLiked ? -1 : 1) } 
+        : p));
+
+    //update supabase
+    if (isPostLiked) {
+      await supabase
+        .from('post_likes')
         .delete()
-        .eq("id", existingLike.id);
-
-      if (deleteError) {
-        console.error("Error unliking post:", deleteError);
-      }
+        .eq('post_id', postId)
+        .eq('user_id', user.id);
     } else {
-      const { error: insertError } = await supabase.from("post_likes").insert({
-        user_id: user.id,
-        post_id: postId,
-      });
-
-      if (insertError) {
-        console.error("Error liking post:", insertError?.message, insertError);
-      }
+      await supabase
+        .from('post_likes')
+        .insert([{ post_id: postId, user_id: user.id }]);
     }
-
-    await new Promise((resolve) => setTimeout(resolve, 200));
-    fetchPosts();
   };
 
   useEffect(() => {
@@ -85,6 +73,8 @@ export const AllPost = forwardRef((props, ref) => {
   }, [sort]);
 
   const fetchPosts = async () => {
+    const { data: {user} } = await supabase.auth.getUser();
+
     const { data, error } = await supabase
       .from('posts')
       .select('*, profiles(username)')
@@ -92,9 +82,26 @@ export const AllPost = forwardRef((props, ref) => {
    
     if (error) {
       console.error('Error fetching posts:', error);
-    } else {
-      setPosts(data || []);
+      return;
+    } 
+    // If user is logged in, get their likes
+    let userLikes: string[] = [];
+    if (user) {
+      const { data: likesData } = await supabase
+        .from('post_likes')
+        .select('post_id')
+        .eq('user_id', user.id);
+    
+      userLikes = likesData?.map(like => like.post_id) || [];
     }
+
+    // Add isLiked to each post
+    const postsWithLikeStatus = data?.map(post => ({
+      ...post,
+      isLiked: userLikes.includes(post.id)
+    })) || [];
+  
+    setPosts(postsWithLikeStatus);
   };
 
   return (
@@ -111,6 +118,7 @@ export const AllPost = forwardRef((props, ref) => {
             createdAt={post.created_at}
             upvotes={post.upvotes}
             postContent={post.content}
+            isLiked={post.isLiked}
             onLike={() => handleToggleLike(post.id)}
             onComment={() => openCommentModal(post.id)}
           />
