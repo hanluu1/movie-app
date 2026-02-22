@@ -70,6 +70,56 @@ export const AllPost = forwardRef((props, ref) => {
 
   useEffect(() => {
     fetchPosts();
+
+    const channel = supabase
+      .channel('post_changes')
+      .on(
+        'postgres_changes',
+        { event: '*', schema: 'public', table: 'post_likes' },
+        async (payload) => {
+          console.log('Like change:', payload);
+        
+          const { data: { user } } = await supabase.auth.getUser();
+        
+          if (payload.eventType === 'INSERT') {
+            const { post_id, user_id } = payload.new;
+            setPosts(prev => prev.map(post => 
+              post.id === post_id 
+                ? { 
+                  ...post, 
+                  upvotes: post.upvotes + 1,
+                  isLiked: user?.id === user_id ? true : post.isLiked 
+                }
+                : post
+            ));
+          } else if (payload.eventType === 'DELETE') {
+            const { post_id, user_id } = payload.old;
+            setPosts(prev => prev.map(post => 
+              post.id === post_id 
+                ? { 
+                  ...post, 
+                  upvotes: post.upvotes - 1,
+                  isLiked: user?.id === user_id ? false : post.isLiked 
+                }
+                : post
+            ));
+          }
+        }
+      )
+      .on(
+        'postgres_changes',
+        { event: '*', schema: 'public', table: 'posts' },
+        () => {
+          fetchPosts();
+        }
+      )
+      .subscribe((status) => {
+        console.log('Subscription status:', status);
+      });
+
+    return () => {
+      supabase.removeChannel(channel);
+    };
   }, [sort]);
 
   const fetchPosts = async () => {

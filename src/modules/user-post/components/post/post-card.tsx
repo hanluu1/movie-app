@@ -1,5 +1,5 @@
 'use client';
-import React from 'react';
+import React, { useEffect } from 'react';
 import { useState } from 'react';
 import Link from 'next/link';
 import Image from 'next/image';
@@ -24,7 +24,10 @@ interface PostCardProps {
 
 export const PostCard = ({ id, username, movieTitle, movieImage, postTitle, createdAt, postContent, upvotes, postImage, onLike, onComment, isLiked=false }: PostCardProps) => {
   const [liked, setLiked] = useState(isLiked);
- 
+
+  useEffect(() => {
+    setLiked(isLiked);
+  }, [isLiked]);
 
   return (
     <div className="bg-gray-900 border border-gray-700 rounded-2xl w-full max-w-2xl mx-auto p-6 shadow-xl hover:shadow-blue-900/40 transition duration-300">
