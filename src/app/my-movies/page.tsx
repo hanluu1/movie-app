@@ -75,6 +75,7 @@ export default function MyMoviesPage () {
         </div>
       )}
       <div className="flex flex-col w-full gap-4 mx-auto my-2 p-6">
+        {/* layout for save movies page */}
         <div className='flex flex-row gap-2'>
           <input
             type="text"
@@ -109,7 +110,7 @@ export default function MyMoviesPage () {
             To Watch
           </button>
         </div>
-
+        {/* filter save movies based on status */}
         {activeTab === 'all' || activeTab === 'watched' ? (
           <div className="flex flex-col gap-4">
             <div className="flex flex-col gap-2 ">

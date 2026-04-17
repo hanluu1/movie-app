@@ -12,6 +12,8 @@ module.exports = {
         logo: ['var(--font-anton)'],
         sans: ['var(--font-geist-sans)'],
         mono: ['var(--font-geist-mono)'],
+        'archivo-black': ['var(--font-archivo-black)', 'sans-serif'],
+        'dm-sans': ['var(--font-dm-sans)', 'sans-serif'],
       },
     },
     plugins: [],
