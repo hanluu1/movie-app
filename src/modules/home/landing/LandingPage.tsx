@@ -1,26 +1,63 @@
 'use client';
 
 import Link from 'next/link';
+import { PencilSquareIcon, UserGroupIcon, SparklesIcon } from '@heroicons/react/24/outline';
 
-const features = [
-  { icon: '🎬', title: 'Your Voice Matters', desc: 'Every review counts. Share your perspective without getting lost in a sea of content.' },
-  { icon: '🔥', title: 'Real-Time Updates', desc: 'See what others are watching right now. Your reviews sync across all devices instantly.' },
-  { icon: '🎯', title: 'Clean & Fast', desc: 'No ads, no distractions. Just a beautiful interface focused on movies and meaningful conversations.' },
-  { icon: '💬', title: 'Build Together', desc: 'Help shape this community from day one. Your feedback directly influences what we build.' },
-  { icon: '📱', title: 'Works Everywhere', desc: 'Beautiful on desktop, perfect on mobile. Take your movie journal wherever you go.' },
-  { icon: '⚡', title: 'Privacy First', desc: "Your data is yours. No tracking, no selling your information. Just movies." },
+const steps = [
+  {
+    Icon: PencilSquareIcon,
+    title: 'Share What Moves You',
+    desc: 'Write about movies that meant something to you. Not just "it was good" — but how it moved you. What stuck with you? What did it make you feel or remember?',
+  },
+  {
+    Icon: UserGroupIcon,
+    title: 'Find Your People',
+    desc: "We connect you with others who loved or didn't love the same movies for similar reasons. When someone resonates with your perspective, you'll know.",
+  },
+  {
+    Icon: SparklesIcon,
+    title: 'Discover Together',
+    desc: "See recommendations from people who actually get your taste. When they love something, there's a good chance you will too.",
+  },
+];
+
+const examples = [
+  {
+    initials: 'MR',
+    name: 'Marcus',
+    role: 'Action enthusiast',
+    movie: 'Shadow Warriors',
+    text: 'As someone who grew up watching classic kung fu movies with my dad, this brought back so many memories. The fight choreography is incredible, but what surprised me most was the emotional depth. The final fight scene made me cry, not because of the action, but because of what it represented.',
+    highlight: '✨ 18 people with similar taste connected with this',
+  },
+  {
+    initials: 'SK',
+    name: 'Sarah',
+    role: 'Mystery lover',
+    movie: 'Echoes of Tomorrow',
+    text: "I'm obsessed with shows that trust their audience to piece things together, and this nails it. The non-linear storytelling might confuse some people, but I love puzzles. If you loved Dark or Severance, you'll appreciate how this show respects your intelligence.",
+    highlight: '✨ 31 people found their taste match through this review',
+  },
+  {
+    initials: 'HL',
+    name: 'Han',
+    role: 'Thriller fan',
+    movie: 'The Midnight Archive',
+    text: "This film hit me differently than I expected. The way it explores isolation reminded me of my own experiences during the pandemic. I loved how the director uses silence—there are these long, quiet moments that let you sit with the character's emotions.",
+    highlight: '✨ 24 people resonated with this perspective',
+  },
 ];
 
 const valueProps = [
-  { icon: '🚀', title: 'Fresh Start', desc: "No legacy baggage. We're building exactly what movie lovers need, nothing more." },
-  { icon: '⚡', title: 'No Ads, Ever', desc: "Your attention isn't for sale. We're building a sustainable platform, not a billboard." },
-  { icon: '🎨', title: 'You Shape It', desc: 'Early members directly influence features. This is your platform as much as ours.' },
+  { icon: '💭', title: 'Your Perspective Matters', desc: "This isn't about \"correct\" opinions. Share your unique take on films and find others who see movies the way you do." },
+  { icon: '🤝', title: 'Real Connections', desc: "Connect with people through shared taste. When someone loves what you love for the same reasons, that's your movie soulmate." },
+  { icon: '✨', title: 'Discover Your Way', desc: "Get recommendations from people who share your taste, not just what's trending." },
 ];
 
 
 export default function LandingPage () {
-  const scrollToFeatures = () => {
-    document.getElementById('features')?.scrollIntoView({ behavior: 'smooth' });
+  const scrollToHowItWorks = () => {
+    document.getElementById('how-it-works')?.scrollIntoView({ behavior: 'smooth' });
   };
 
   return (
@@ -54,25 +91,25 @@ export default function LandingPage () {
             className="inline-block px-4 py-2 mb-8 rounded-2xl text-sm font-semibold text-amber-800"
             style={{ background: 'linear-gradient(135deg, #FEF3C7, #FDE68A)', animation: 'slideDown 0.8s ease-out' }}
           >
-            ✨ New platform launching
+            ✨ Find your movie tribe
           </div>
 
           <h1
             className="font-archivo-black leading-[1.1] mb-6 tracking-tight"
             style={{ fontSize: 'clamp(2.5rem, 8vw, 5rem)', animation: 'slideUp 0.8s ease-out 0.2s both' }}
           >
-            Share Your{' '}
+            Connect With People Who{' '}
             <span className="bg-gradient-to-br from-red-600 to-orange-600 bg-clip-text text-transparent">
-              Movie Moments
+              Get Your Taste
             </span>
-            {' '}That Matter
           </h1>
 
           <p
             className="text-stone-600 mb-12 leading-relaxed"
             style={{ fontSize: 'clamp(1.1rem, 2.5vw, 1.5rem)', animation: 'slideUp 0.8s ease-out 0.4s both' }}
           >
-            A fresh space for genuine movie discussions. No algorithms, no clutter. Just you and fellow film lovers.
+            Find others who see films the way you do. Real people, real taste and {' '}
+            <span className="whitespace-nowrap">beyond ratings.</span>
           </p>
 
           <div
@@ -84,11 +121,11 @@ export default function LandingPage () {
                 className="w-full sm:w-auto text-white px-10 py-4 rounded-xl font-bold text-lg transition-all duration-300 hover:-translate-y-1"
                 style={{ background: 'linear-gradient(135deg, #DC2626, #EA580C)', boxShadow: '0 8px 24px rgba(220,38,38,0.25)' }}
               >
-                Be an Early Member
+                Find Your Crowd
               </button>
             </Link>
             <button
-              onClick={scrollToFeatures}
+              onClick={scrollToHowItWorks}
               className="w-full sm:w-auto bg-white text-stone-900 border-2 border-stone-200 px-10 py-4 rounded-xl font-semibold text-lg transition-all duration-300 hover:border-red-600 hover:text-red-600 hover:-translate-y-0.5"
             >
               See How It Works
@@ -97,49 +134,90 @@ export default function LandingPage () {
         </div>
       </section>
 
-      {/* Features */}
-      <section id="features" className="py-24 px-8 max-w-7xl mx-auto">
-        <h2
-          className="font-archivo-black text-center mb-16 tracking-tight"
-          style={{ fontSize: 'clamp(2rem, 5vw, 3rem)' }}
-        >
-          Built for genuine movie lovers
-        </h2>
-        <div className="grid gap-8" style={{ gridTemplateColumns: 'repeat(auto-fit, minmax(300px, 1fr))' }}>
-          {features.map(({ icon, title, desc }) => (
-            <div
-              key={title}
-              className="bg-white p-10 rounded-2xl border border-stone-200 transition-all duration-300 hover:-translate-y-2 hover:shadow-[0_20px_40px_rgba(28,25,23,0.1)] hover:border-red-600"
-            >
-              <div
-                className="w-14 h-14 rounded-xl flex items-center justify-center text-4xl mb-6"
-                style={{ background: 'linear-gradient(135deg, #FEE2E2, #FED7AA)' }}
-              >
-                {icon}
+      {/* How It Works */}
+      <section id="how-it-works" className="py-24 px-8 bg-white">
+        <div className="max-w-6xl mx-auto">
+          <h2
+            className="font-archivo-black text-center mb-10 tracking-tight"
+            style={{ fontSize: 'clamp(2rem, 5vw, 3rem)' }}
+          >
+            Built for genuine film lovers
+          </h2>
+          <div className="grid gap-12" style={{ gridTemplateColumns: 'repeat(auto-fit, minmax(280px, 1fr))' }}>
+            {steps.map(({ Icon, title, desc }) => (
+              <div key={title} className="text-center">
+                <div
+                  className="rounded-full flex items-center justify-center mx-auto mb-6"
+                  style={{ width: 64, height: 64, background: 'linear-gradient(135deg, #FEE2E2, #FED7AA)' }}
+                >
+                  <Icon className="w-7 h-7" style={{ color: '#DC2626' }} />
+                </div>
+                <h3 className="text-2xl font-bold mb-4">{title}</h3>
+                <p className="text-stone-600 leading-relaxed text-[1.05rem]">{desc}</p>
               </div>
-              <h3 className="text-2xl font-bold mb-4">{title}</h3>
-              <p className="text-stone-600 leading-relaxed">{desc}</p>
-            </div>
-          ))}
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* Real Perspectives */}
+      <section className="py-24 px-8 bg-stone-50">
+        <div className="max-w-6xl mx-auto">
+          <h2
+            className="font-archivo-black text-center mb-4 tracking-tight"
+            style={{ fontSize: 'clamp(2rem, 5vw, 3rem)' }}
+          >
+            Real perspectives, real connections
+          </h2>
+          <p className="text-center text-xl text-stone-600 mb-12 leading-relaxed">See how people share what movies mean to them</p>
+          <div className="grid gap-6" style={{ gridTemplateColumns: 'repeat(auto-fit, minmax(320px, 1fr))' }}>
+            {examples.map(({ initials, name, role, movie, text, highlight }) => (
+              <div
+                key={name}
+                className="bg-white rounded-2xl p-8 border border-stone-200 transition-all duration-300 hover:shadow-xl hover:border-red-600"
+              >
+                <div className="flex items-center gap-4 mb-4">
+                  <div
+                    className="w-12 h-12 rounded-full flex items-center justify-center text-white font-bold text-lg flex-shrink-0"
+                    style={{ background: 'linear-gradient(135deg, #DC2626, #EA580C)' }}
+                  >
+                    {initials}
+                  </div>
+                  <div>
+                    <div className="font-bold">{name}</div>
+                    <div className="text-sm text-stone-500">{role}</div>
+                  </div>
+                </div>
+                <div className="text-sm font-bold text-red-600 mb-3">{movie}</div>
+                <p className="text-stone-600 leading-relaxed italic mb-4">{text}</p>
+                <div
+                  className="px-4 py-3 rounded-lg text-sm font-semibold"
+                  style={{ background: 'linear-gradient(135deg, #FEE2E2, #FED7AA)', color: '#7C2D12' }}
+                >
+                  {highlight}
+                </div>
+              </div>
+            ))}
+          </div>
         </div>
       </section>
 
       {/* Value Props */}
-      <section className="py-20 px-8 relative overflow-hidden" style={{ background: 'linear-gradient(135deg, #1C1917, #292524)' }}>
+      <section className="py-24 px-8 relative overflow-hidden" style={{ background: 'linear-gradient(135deg, #1C1917, #292524)' }}>
         <div className="absolute top-0 left-0 right-0 h-px" style={{ background: 'linear-gradient(90deg, transparent, #DC2626, transparent)' }} />
-        <div className="max-w-4xl mx-auto text-center">
+        <div className="max-w-6xl mx-auto">
           <h2
-            className="font-archivo-black text-white mb-6 tracking-tight"
+            className="font-archivo-black text-white text-center mb-4 tracking-tight"
             style={{ fontSize: 'clamp(2rem, 5vw, 3rem)' }}
           >
-            Why ReelEmotions?
+            Why join ReelEmotions?
           </h2>
-          <p className="text-xl text-stone-400 mb-12 leading-relaxed">Built different from the ground up</p>
-          <div className="grid gap-8" style={{ gridTemplateColumns: 'repeat(auto-fit, minmax(250px, 1fr))' }}>
+          <p className="text-center text-xl text-stone-400 mb-12 leading-relaxed">A different kind of movie community</p>
+          <div className="grid gap-6" style={{ gridTemplateColumns: 'repeat(auto-fit, minmax(280px, 1fr))' }}>
             {valueProps.map(({ icon, title, desc }) => (
               <div
                 key={title}
-                className="p-8 rounded-2xl border transition-all duration-300 hover:-translate-y-1"
+                className="p-10 rounded-2xl border transition-all duration-300 hover:-translate-y-1 text-center"
                 style={{ background: 'rgba(255,255,255,0.05)', borderColor: 'rgba(255,255,255,0.1)' }}
                 onMouseEnter={e => {
                   (e.currentTarget as HTMLDivElement).style.background = 'rgba(255,255,255,0.08)';
@@ -158,21 +236,21 @@ export default function LandingPage () {
           </div>
         </div>
       </section>
-      
+
       {/* Final CTA */}
       <section className="py-24 px-8 text-center" style={{ background: 'linear-gradient(180deg, #FAFAF9 0%, white 100%)' }}>
         <h2 className="font-archivo-black mb-6 tracking-tight" style={{ fontSize: 'clamp(2rem, 5vw, 3.5rem)' }}>
-          Ready to be part of this?
+          Find your movie tribe today
         </h2>
-        <p className="text-xl text-stone-600 mb-10 max-w-xl mx-auto">
-          Join as a founding member and help build the movie community you&apos;ve always wanted.
+        <p className="text-xl text-stone-600 mb-10 max-w-xl mx-auto leading-relaxed">
+          Join people who experience movies the way you do. Share your taste, make connections, discover together.
         </p>
         <Link href="/login">
           <button
             className="text-white px-10 py-4 rounded-xl font-bold text-lg transition-all duration-300 hover:-translate-y-1"
             style={{ background: 'linear-gradient(135deg, #DC2626, #EA580C)', boxShadow: '0 8px 24px rgba(220,38,38,0.25)' }}
           >
-            Sign up now
+            Start Connecting
           </button>
         </Link>
       </section>
@@ -182,7 +260,7 @@ export default function LandingPage () {
         <span className="font-archivo-black text-2xl bg-gradient-to-br from-red-600 to-orange-600 bg-clip-text text-transparent">
           REELEMOTIONS
         </span>
-        <p className="text-stone-400 mt-4">© 2026 ReelEmotions. Share your movie moments.</p>
+        <p className="text-stone-400 mt-4">© 2026 ReelEmotions. Connect through cinema.</p>
       </footer>
 
     </div>
