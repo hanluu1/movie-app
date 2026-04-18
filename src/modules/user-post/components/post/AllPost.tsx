@@ -16,6 +16,7 @@ interface Post {
   content?: string;
   post_likes?: { user_id: string }[];
   isLiked?: boolean;
+  comment_count?: number;
 }
 
 export const AllPost = forwardRef((props, ref) => {  
@@ -123,62 +124,58 @@ export const AllPost = forwardRef((props, ref) => {
   }, [sort]);
 
   const fetchPosts = async () => {
-    const { data: {user} } = await supabase.auth.getUser();
+    const { data: { user } } = await supabase.auth.getUser();
 
-    const { data, error } = await supabase
-      .from('posts')
-      .select('*, profiles(username)')
-      .order(sort, { ascending: false });
-   
-    if (error) {
-      console.error('Error fetching posts:', error);
+    const [postsResult, commentsResult, likesResult] = await Promise.all([
+      supabase.from('posts').select('*, profiles(username)').order(sort, { ascending: false }),
+      supabase.from('comments').select('post_id'),
+      user
+        ? supabase.from('post_likes').select('post_id').eq('user_id', user.id)
+        : Promise.resolve({ data: [] as { post_id: string }[] }),
+    ]);
+
+    if (postsResult.error) {
+      console.error('Error fetching posts:', postsResult.error);
       return;
-    } 
-    // If user is logged in, get their likes
-    let userLikes: string[] = [];
-    if (user) {
-      const { data: likesData } = await supabase
-        .from('post_likes')
-        .select('post_id')
-        .eq('user_id', user.id);
-    
-      userLikes = likesData?.map(like => like.post_id) || [];
     }
 
-    // Add isLiked to each post
-    const postsWithLikeStatus = data?.map(post => ({
+    const commentCountMap: Record<string, number> = {};
+    for (const c of (commentsResult.data || [])) {
+      commentCountMap[c.post_id] = (commentCountMap[c.post_id] || 0) + 1;
+    }
+
+    const userLikes = likesResult.data?.map(like => like.post_id) || [];
+
+    setPosts((postsResult.data || []).map(post => ({
       ...post,
-      isLiked: userLikes.includes(post.id)
-    })) || [];
-  
-    setPosts(postsWithLikeStatus);
+      isLiked: userLikes.includes(post.id),
+      comment_count: commentCountMap[post.id] || 0,
+    })));
   };
 
   return (
-    <div className="flex flex-col py-4 mx-auto">
-      <div className="flex flex-col gap-4 justify-center items-center">
-        {posts.map((post) => (
-          <PostCard
-            key={post.id}
-            id={post.id}
-            username={post.profiles?.username || 'Anonymous'}
-            movieTitle={post.movie_title}
-            movieImage={post.movie_image}
-            postTitle={post.title}
-            createdAt={post.created_at}
-            upvotes={post.upvotes}
-            postContent={post.content}
-            isLiked={post.isLiked}
-            onLike={() => handleToggleLike(post.id)}
-            onComment={() => openCommentModal(post.id)}
-          />
-        ))}
-         
-      </div>
+    <div className="flex flex-col gap-4 w-full">
+      {posts.map((post) => (
+        <PostCard
+          key={post.id}
+          id={post.id}
+          username={post.profiles?.username || 'Anonymous'}
+          movieTitle={post.movie_title}
+          movieImage={post.movie_image}
+          postTitle={post.title}
+          createdAt={post.created_at}
+          upvotes={post.upvotes}
+          postContent={post.content}
+          isLiked={post.isLiked}
+          commentCount={post.comment_count || 0}
+          onLike={() => handleToggleLike(post.id)}
+          onComment={() => openCommentModal(post.id)}
+        />
+      ))}
       {showCommentModal && activePostId && (
         <CommentModal
           postId={activePostId}
-          username={posts.find(post => post.id === activePostId)?.profiles?.username}
+          username={posts.find(post => post.id === activePostId)?.profiles?.username ?? undefined}
           isOpen={showCommentModal}
           onClose={closeCommentModal}
         />
