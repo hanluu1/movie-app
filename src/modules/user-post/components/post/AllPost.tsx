@@ -175,7 +175,6 @@ export const AllPost = forwardRef((props, ref) => {
       {showCommentModal && activePostId && (
         <CommentModal
           postId={activePostId}
-          username={posts.find(post => post.id === activePostId)?.profiles?.username ?? undefined}
           isOpen={showCommentModal}
           onClose={closeCommentModal}
         />
