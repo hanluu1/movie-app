@@ -34,7 +34,16 @@ export const PostCard = ({ id, username, movieTitle, movieImage, postTitle, crea
 
   useEffect(() => { setLiked(isLiked); }, [isLiked]);
 
-  const initials = (username ?? 'AN').slice(0, 2).toUpperCase();
+  const getInitials = (username: string) => {
+    const parts = username.trim().split(/\s+/);
+    if (parts.length >= 2) {
+      return (parts[0][0] + parts[parts.length - 1][0]).toUpperCase();
+    } else {
+      return username.slice(0, 2).toUpperCase();
+    }
+  };
+
+  const initials = username ? getInitials(username) : '??';  
   const isLong = (postContent?.length ?? 0) > READ_MORE_THRESHOLD;
 
   return (
@@ -123,12 +132,12 @@ export const PostCard = ({ id, username, movieTitle, movieImage, postTitle, crea
           <ChatBubbleLeftEllipsisIcon className="w-4 h-4" />
           <span>{commentCount}</span>
         </button>
-        {/* <button
+        <button
           className="ml-auto flex items-center gap-1.5 text-sm font-semibold px-4 py-1.5 rounded-lg transition-all duration-300 hover:opacity-80"
           style={{ background: 'linear-gradient(135deg, #FEF3C7, #FDE68A)', color: '#92400E' }}
         >
           <SparklesIcon className="w-4 h-4" /> Similar taste
-        </button> */}
+        </button>
       </div>
     </div>
   );

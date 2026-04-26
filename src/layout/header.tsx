@@ -4,7 +4,7 @@ import { useRouter } from 'next/navigation';
 import { useRef, useState, useEffect } from 'react';
 import { supabase } from '@/lib/supabaseClient';
 import { searchMoviesAndTv, Movie } from '@/utils/tmdb';
-import { BookmarkIcon } from '@heroicons/react/24/outline';
+import { ArrowRightOnRectangleIcon } from '@heroicons/react/24/outline';
 import Link from 'next/link';
 import Image from 'next/image';
 import type { User } from '@supabase/auth-js';
@@ -16,12 +16,25 @@ export function Header ({ onCreatePost }: {
 }) {
   const router = useRouter();
   const [user, setUser] = useState<User | null>(null);
+  const [profile, setProfile] = useState<{username: string} | null>(null);
   const [query, setQuery] = useState('');
   const [results, setResults] = useState<Movie[]>([]);
   const searchRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
-    supabase.auth.getUser().then(({ data: { user } }) => setUser(user));
+    const init = async () => {
+      const { data: { user } } = await supabase.auth.getUser();
+      setUser(user);
+      if (user) {
+        const { data: profileData } = await supabase
+          .from('profiles')
+          .select('username')
+          .eq('id', user.id)
+          .single();
+        if (profileData) setProfile(profileData);
+      }
+    };
+    init();
   }, []);
 
   useEffect(() => {
@@ -48,7 +61,16 @@ export function Header ({ onCreatePost }: {
     router.push('/login');
   };
 
-  const initials = (user?.email ?? 'RE').slice(0, 2).toUpperCase();
+  const getInitials = (username: string) => {
+    const parts = username.trim().split(/\s+/);
+    if (parts.length >= 2) {
+      return (parts[0][0] + parts[parts.length - 1][0]).toUpperCase();
+    } else {
+      return username.slice(0, 2).toUpperCase();
+    }
+  };
+
+  const initials = profile ? getInitials(profile.username) : '??';
 
   return (
     <header className="font-dm-sans sticky top-0 bg-stone-50/95 backdrop-blur-md border-b border-stone-200 px-4 sm:px-8 py-4 z-50">
@@ -113,17 +135,10 @@ export function Header ({ onCreatePost }: {
             </button>
           )}
 
-          {/* Bookmark */}
-          <Link href="/my-movies">
-            <button className="w-10 h-10 border border-stone-200 bg-white rounded-full flex items-center justify-center transition-all duration-300 hover:bg-stone-50 hover:scale-105">
-              <BookmarkIcon className="w-5 h-5 text-stone-600" />
-            </button>
-          </Link>
-
-          {/* User avatar / sign out */}
+          {/* user profile */}
           {user && (
             <button
-              onClick={handleSignOut}
+              onClick={() => router.push('/my-movies')}
               className="w-10 h-10 rounded-full flex items-center justify-center text-white font-bold text-sm flex-shrink-0 transition-all duration-300 hover:scale-105"
               style={{ background: 'linear-gradient(135deg, #DC2626, #EA580C)' }}
               title="Sign out"
@@ -131,6 +146,16 @@ export function Header ({ onCreatePost }: {
               {initials}
             </button>
           )}
+
+          {/* User avatar / sign out */}
+          <button
+            onClick={handleSignOut}
+            className="w-10 h-10 flex items-center justify-center text-stone-600 hover:text-red-600 bg-stone-100 hover:bg-red-50 border border-stone-200 hover:border-red-200 rounded-full transition-all duration-300 hover:scale-105"
+            title="Sign out"
+          >
+            <ArrowRightOnRectangleIcon className="w-5 h-5" />
+          </button>
+        
         </div>
       </div>
     </header>
