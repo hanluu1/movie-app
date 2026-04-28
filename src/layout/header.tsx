@@ -22,8 +22,12 @@ export function Header ({ onCreatePost }: {
   const searchRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
+    const cached = localStorage.getItem('profile_username');
+    if (cached) setProfile({ username: cached });
+
     const init = async () => {
-      const { data: { user } } = await supabase.auth.getUser();
+      const { data: { session } } = await supabase.auth.getSession();
+      const user = session?.user ?? null;
       setUser(user);
       if (user) {
         const { data: profileData } = await supabase
@@ -31,7 +35,10 @@ export function Header ({ onCreatePost }: {
           .select('username')
           .eq('id', user.id)
           .single();
-        if (profileData) setProfile(profileData);
+        if (profileData) {
+          setProfile(profileData);
+          localStorage.setItem('profile_username', profileData.username);
+        }
       }
     };
     init();
@@ -58,6 +65,7 @@ export function Header ({ onCreatePost }: {
 
   const handleSignOut = async () => {
     await supabase.auth.signOut();
+    localStorage.removeItem('profile_username');
     router.push('/login');
   };
 
@@ -70,7 +78,7 @@ export function Header ({ onCreatePost }: {
     }
   };
 
-  const initials = profile ? getInitials(profile.username) : '??';
+  const initials = profile ? getInitials(profile.username) : '';
 
   return (
     <header className="font-dm-sans sticky top-0 bg-stone-50/95 backdrop-blur-md border-b border-stone-200 px-4 sm:px-8 py-4 z-50">
@@ -138,7 +146,7 @@ export function Header ({ onCreatePost }: {
           {/* user profile */}
           {user && (
             <button
-              onClick={() => router.push('/my-movies')}
+              onClick={() => router.push('/my-profiles')}
               className="w-10 h-10 rounded-full flex items-center justify-center text-white font-bold text-sm flex-shrink-0 transition-all duration-300 hover:scale-105"
               style={{ background: 'linear-gradient(135deg, #DC2626, #EA580C)' }}
               title="Sign out"

@@ -1,9 +1,9 @@
 'use client';
-import React, { useEffect, useState } from 'react';
+import { useEffect, useState } from 'react';
 import Link from 'next/link';
 import Image from 'next/image';
 import { useRouter } from 'next/navigation';
-import { HeartIcon, ChatBubbleLeftEllipsisIcon, SparklesIcon } from '@heroicons/react/24/outline';
+import { HeartIcon, ChatBubbleLeftEllipsisIcon} from '@heroicons/react/24/outline';
 import { HeartIcon as HeartSolidIcon } from '@heroicons/react/24/solid';
 
 interface PostCardProps {
@@ -131,12 +131,6 @@ export const PostCard = ({ id, username, movieTitle, movieImage, postTitle, crea
         >
           <ChatBubbleLeftEllipsisIcon className="w-4 h-4" />
           <span>{commentCount}</span>
-        </button>
-        <button
-          className="ml-auto flex items-center gap-1.5 text-sm font-semibold px-4 py-1.5 rounded-lg transition-all duration-300 hover:opacity-80"
-          style={{ background: 'linear-gradient(135deg, #FEF3C7, #FDE68A)', color: '#92400E' }}
-        >
-          <SparklesIcon className="w-4 h-4" /> Similar taste
         </button>
       </div>
     </div>

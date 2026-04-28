@@ -3,46 +3,24 @@
 import { useRef, useState, useEffect } from 'react';
 import Image from 'next/image';
 import Link from 'next/link';
-import {
-  FireIcon, TvIcon, TagIcon, ChatBubbleLeftRightIcon,
-  BoltIcon, FaceSmileIcon, FilmIcon, RocketLaunchIcon,
-  EyeIcon, HeartIcon, ExclamationTriangleIcon, SparklesIcon,
-  GlobeAltIcon, MagnifyingGlassIcon, StarIcon, QuestionMarkCircleIcon,
-  BookmarkIcon, PencilSquareIcon, InformationCircleIcon,
-} from '@heroicons/react/24/outline';
-import { supabase } from '@/lib/supabaseClient';
+import { FireIcon, TvIcon, FilmIcon, StarIcon, PencilSquareIcon, InformationCircleIcon} from '@heroicons/react/24/outline';
 import { getTrendingMovies, getTrendingTV, TrendingMovie, TrendingTV } from '@/utils/tmdb';
 import { AllPost, CreatePostModal } from '@/modules/user-post';
+import { WatchlistButtons } from '@/components/buttons/WatchlistButtons';
 import { Header } from '@/layout';
 
-const GENRES = [
-  { name: 'Action', Icon: BoltIcon },
-  { name: 'Comedy', Icon: FaceSmileIcon },
-  { name: 'Drama', Icon: FilmIcon },
-  { name: 'Sci-Fi', Icon: RocketLaunchIcon },
-  { name: 'Horror', Icon: EyeIcon },
-  { name: 'Romance', Icon: HeartIcon },
-  { name: 'Thriller', Icon: ExclamationTriangleIcon },
-  { name: 'Animation', Icon: SparklesIcon },
-  { name: 'Adventure', Icon: GlobeAltIcon },
-  { name: 'Crime', Icon: MagnifyingGlassIcon },
-  { name: 'Fantasy', Icon: StarIcon },
-  { name: 'Mystery', Icon: QuestionMarkCircleIcon },
-];
-
-type Tab = 'all' | 'movies' | 'tv';
 
 const overlayBtnBase = 'w-full text-[11px] font-bold py-1.5 rounded-lg transition-colors flex items-center justify-center gap-1';
 
-function MediaCard ({ id, title, posterPath, year, rating, index, onReview, onWatchlist }: {
+function MediaCard ({ id, title, posterPath, year, rating, index, onReview, releaseDate }: {
   id: number;
   title: string;
   posterPath: string | null;
   year: string;
+  releaseDate: string;
   rating: number;
   index: number;
   onReview: () => void;
-  onWatchlist: () => void;
 }) {
   return (
     <div className="group relative bg-white rounded-xl overflow-hidden border border-stone-200">
@@ -73,9 +51,13 @@ function MediaCard ({ id, title, posterPath, year, rating, index, onReview, onWa
           <button onClick={onReview} className={`${overlayBtnBase} bg-white text-stone-900 hover:bg-red-50`}>
             <PencilSquareIcon className="w-3 h-3" /> Review
           </button>
-          <button onClick={onWatchlist} className={`${overlayBtnBase} text-white border border-white/30 hover:bg-white/10`}>
-            <BookmarkIcon className="w-3 h-3" /> Watchlist
-          </button>
+          <WatchlistButtons
+            movieId={id}
+            title={title}
+            posterPath={posterPath}
+            releaseDate={releaseDate}
+            variant="overlay"
+          />
           <Link href={`/movie-more-info/${id}`} className={`${overlayBtnBase} text-white border border-white/30 hover:bg-white/10`}>
             <InformationCircleIcon className="w-3 h-3" /> Detail
           </Link>
@@ -101,6 +83,7 @@ function SectionHeader ({ Icon, title }: { Icon: React.ElementType; title: strin
 export default function DiscoverPage () {
   const postRef = useRef<{ refetch: () => void } | null>(null);
   const [showCreatePostModal, setShowCreatePostModal] = useState(false);
+  const [preselectedMovie, setPreselectedMovie] = useState<{ id: number; title: string; name: string; overview: string; poster_path: string; release_date?: string } | null>(null);
   const [showBanner, setShowBanner] = useState(true);
   const [trending, setTrending] = useState<TrendingMovie[]>([]);
   const [trendingTV, setTrendingTV] = useState<TrendingTV[]>([]);
@@ -114,13 +97,10 @@ export default function DiscoverPage () {
     setShowBanner(false);
   };
 
-  const addToWatchlist = async (movieId: number) => {
-    const { data: { user } } = await supabase.auth.getUser();
-    if (!user) return;
-    await supabase.from('track_movies').insert({ user_id: user.id, movie_id: movieId });
+  const openReview = (movie?: { id: number; title: string; name: string; overview: string; poster_path: string; release_date?: string }) => {
+    setPreselectedMovie(movie ?? null);
+    setShowCreatePostModal(true);
   };
-
-  const openReview = () => setShowCreatePostModal(true);
 
   const sidebar = (
     <aside className="flex flex-col gap-8">
@@ -138,8 +118,8 @@ export default function DiscoverPage () {
               year={movie.release_date?.slice(0, 4) ?? ''}
               rating={movie.vote_average}
               index={i}
-              onReview={openReview}
-              onWatchlist={() => addToWatchlist(movie.id)}
+              releaseDate={movie.release_date ?? ''}
+              onReview={() => openReview({ id: movie.id, title: movie.title, name: '', overview: '', poster_path: movie.poster_path ?? '', release_date: movie.release_date })}
             />
           ))}
         </div>
@@ -158,8 +138,8 @@ export default function DiscoverPage () {
               year={show.first_air_date?.slice(0, 4) ?? ''}
               rating={show.vote_average}
               index={i}
-              onReview={openReview}
-              onWatchlist={() => addToWatchlist(show.id)}
+              releaseDate={show.first_air_date ?? ''}
+              onReview={() => openReview({ id: show.id, title: '', name: show.name, overview: '', poster_path: show.poster_path ?? '', release_date: show.first_air_date })}
             />
           ))}
         </div>
@@ -170,7 +150,7 @@ export default function DiscoverPage () {
 
   return (
     <div className="font-dm-sans bg-stone-50 min-h-screen text-stone-900">
-      <Header onCreatePost={openReview} />
+      <Header onCreatePost={() => openReview()} />
 
       <div className="max-w-[1400px] mx-auto px-4 sm:px-8 py-8">
 
@@ -185,7 +165,7 @@ export default function DiscoverPage () {
               </div>
               <div className="flex items-center gap-3 flex-shrink-0">
                 <button
-                  onClick={openReview}
+                  onClick={() => openReview()}
                   className="bg-white text-red-600 font-bold px-6 py-2.5 rounded-xl text-sm hover:bg-red-50 transition-all"
                 >
                   Share What Moves You
@@ -228,6 +208,7 @@ export default function DiscoverPage () {
           setShowCreatePostModal(false);
           postRef.current?.refetch();
         }}
+        preselectedMovie={preselectedMovie ?? undefined}
       />
     </div>
   );
