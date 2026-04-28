@@ -1,6 +1,7 @@
 import Image from 'next/image';
 import Link from 'next/link';
 import { Header } from '@/layout';
+import { WatchlistButtons } from '@/components/buttons/WatchlistButtons';
 import { notFound } from 'next/navigation';
 
 const API_KEY = process.env.NEXT_PUBLIC_TMDB_API_KEY;
@@ -172,6 +173,13 @@ export default async function MoviePage ({ params }: { params: Promise<{ id: str
                   </div>
                 )}
               </div>
+
+              <WatchlistButtons
+                movieId={movie.id}
+                title={displayTitle}
+                posterPath={poster_path ?? null}
+                releaseDate={release_date || first_air_date || ''}
+              />
             </div>
           </div>
         </div>

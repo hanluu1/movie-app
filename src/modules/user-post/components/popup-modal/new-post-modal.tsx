@@ -8,6 +8,7 @@ interface CreatePostModalProps {
   isOpen: boolean;
   onClose: () => void;
   onCreated: () => void;
+  preselectedMovie?: MovieResult;
 }
 
 interface MovieResult {
@@ -31,7 +32,7 @@ const TMDB_GENRES: Record<number, string> = {
 
 const RATING_LABELS = ['Terrible', 'Poor', 'Average', 'Good', 'Excellent'];
 
-export const CreatePostModal = ({ isOpen, onClose, onCreated }: CreatePostModalProps) => {
+export const CreatePostModal = ({ isOpen, onClose, onCreated, preselectedMovie }: CreatePostModalProps) => {
   const [step, setStep] = useState<1 | 2 | 'success'>(1);
   const [searchQuery, setSearchQuery] = useState('');
   const [searchResults, setSearchResults] = useState<MovieResult[]>([]);
@@ -54,8 +55,11 @@ export const CreatePostModal = ({ isOpen, onClose, onCreated }: CreatePostModalP
       setReviewTitle('');
       setReviewContent('');
       setContainsSpoilers(false);
+    } else if (preselectedMovie) {
+      setSelectedMovie(preselectedMovie);
+      setStep(2);
     }
-  }, [isOpen]);
+  }, [isOpen, preselectedMovie]);
 
   useEffect(() => {
     const fetchResults = async () => {

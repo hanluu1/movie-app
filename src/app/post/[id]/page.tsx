@@ -14,6 +14,7 @@ import {
   PencilSquareIcon,
   TrashIcon,
 } from '@heroicons/react/24/outline';
+import { WatchlistButtons } from '@/components/buttons/WatchlistButtons';
 import { HeartIcon as HeartSolidIcon } from '@heroicons/react/24/solid';
 
 interface Post {
@@ -37,6 +38,7 @@ interface Comment {
 }
 
 interface MovieDetails {
+  tmdbId: number;
   genres: string[];
   cast: string[];
   director: string | null;
@@ -104,7 +106,7 @@ async function fetchMovieDetails (title: string, posterUrl?: string): Promise<Mo
       (mediaType === 'tv' ? creditsData.crew?.find((c: any) => c.job === 'Executive Producer')?.name : null) ??
       null;
 
-    return { genres, cast, director, year, mediaType };
+    return { tmdbId: result.id, genres, cast, director, year, mediaType };
   } catch {
     return null;
   }
@@ -315,6 +317,15 @@ export default function PostDetailPage () {
                           </div>
                         )}
                       </>
+                    )}
+
+                    {movieDetails && (
+                      <WatchlistButtons
+                        movieId={movieDetails.tmdbId}
+                        title={post.movie_title!}
+                        posterPath={post.movie_image?.match(/\/p\/w\d+(\/.+)/)?.[1] ?? null}
+                        releaseDate={movieDetails.year}
+                      />
                     )}
 
                     {!movieDetails && (
