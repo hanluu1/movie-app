@@ -30,15 +30,11 @@ const TMDB_GENRES: Record<number, string> = {
   10759: 'Action & Adventure',
 };
 
-const RATING_LABELS = ['Terrible', 'Poor', 'Average', 'Good', 'Excellent'];
-
 export const CreatePostModal = ({ isOpen, onClose, onCreated, preselectedMovie }: CreatePostModalProps) => {
   const [step, setStep] = useState<1 | 2 | 'success'>(1);
   const [searchQuery, setSearchQuery] = useState('');
   const [searchResults, setSearchResults] = useState<MovieResult[]>([]);
   const [selectedMovie, setSelectedMovie] = useState<MovieResult | null>(null);
-  const [rating, setRating] = useState(0);
-  const [hoverRating, setHoverRating] = useState(0);
   const [reviewTitle, setReviewTitle] = useState('');
   const [reviewContent, setReviewContent] = useState('');
   const [containsSpoilers, setContainsSpoilers] = useState(false);
@@ -50,8 +46,6 @@ export const CreatePostModal = ({ isOpen, onClose, onCreated, preselectedMovie }
       setSearchQuery('');
       setSearchResults([]);
       setSelectedMovie(null);
-      setRating(0);
-      setHoverRating(0);
       setReviewTitle('');
       setReviewContent('');
       setContainsSpoilers(false);
@@ -230,32 +224,6 @@ export const CreatePostModal = ({ isOpen, onClose, onCreated, preselectedMovie }
             {/* Step 2 — Review form */}
             {step === 2 && (
               <div>
-                <div className="mb-8">
-                  <label className="block font-bold text-base text-stone-900 mb-3">Your rating</label>
-                  <div className="flex gap-1 mb-2">
-                    {[1, 2, 3, 4, 5].map((star) => (
-                      <button
-                        key={star}
-                        onMouseEnter={() => setHoverRating(star)}
-                        onMouseLeave={() => setHoverRating(0)}
-                        onClick={() => setRating(star)}
-                        className="reel-star border-none bg-transparent cursor-pointer p-0"
-                        style={{
-                          fontSize: '2.5rem',
-                          lineHeight: 1,
-                          color: star <= (hoverRating || rating) ? '#FBBF24' : '#E7E5E4',
-                          transform: star <= (hoverRating || rating) ? 'scale(1.15)' : 'scale(1)',
-                        }}
-                      >
-                        ★
-                      </button>
-                    ))}
-                  </div>
-                  <div className="text-stone-500 text-sm font-medium h-5">
-                    {rating > 0 ? `${rating} out of 5 stars — ${RATING_LABELS[rating - 1]}` : ''}
-                  </div>
-                </div>
-
                 <div className="mb-8">
                   <label className="block font-bold text-base text-stone-900 mb-3" htmlFor="reviewTitle">Review title</label>
                   <input

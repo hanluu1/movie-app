@@ -149,7 +149,7 @@ export function Header ({ onCreatePost }: {
               onClick={() => router.push('/my-profiles')}
               className="w-10 h-10 rounded-full flex items-center justify-center text-white font-bold text-sm flex-shrink-0 transition-all duration-300 hover:scale-105"
               style={{ background: 'linear-gradient(135deg, #DC2626, #EA580C)' }}
-              title="Sign out"
+              title="My Profile"
             >
               {initials}
             </button>
