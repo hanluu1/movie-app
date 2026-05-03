@@ -17,8 +17,22 @@ export default function AuthPage () {
 
   useEffect(() => {
     const { data: listener } = supabase.auth.onAuthStateChange(async (event, session) => {
+      // Only auto-redirect on the login page if user is already fully signed in with a profile
       if (event === 'SIGNED_IN' && session?.user) {
-        router.push('/');
+        try {
+          const user = session.user;
+          const { data: profileData, error: profileError } = await supabase
+            .from('profiles')
+            .select('*')
+            .eq('id', user.id)
+            .maybeSingle();
+          if (profileError) console.error('Profile fetch error:', profileError.message);
+          if (profileData?.username) {
+            router.push('/');
+          }
+        } catch (err) {
+          console.error('Error checking profile on sign-in:', err);
+        }
       }
     });
     return () => { listener.subscription.unsubscribe(); };
@@ -30,19 +44,24 @@ export default function AuthPage () {
     if (!data.user) { setError('User not found'); return; }
 
     const { data: profileData, error: profileError } = await supabase
-      .from('profiles').select('*').eq('id', data.user.id).maybeSingle();
+      .from('profiles').select('username').eq('id', data.user.id).maybeSingle();
     if (profileError) { console.error('Profile fetch error:', profileError.message); return; }
-    if (!profileData) {
-      const { error: insertError } = await supabase.from('profiles').insert([{ id: data.user.id, username }]);
-      if (insertError) { console.error('Profile insert error:', insertError.message); }
+    if (!profileData?.username) {
+      router.push('/complete-profile');
+      return;
     }
+    // onAuthStateChange handles redirect to / when profile is complete
   };
 
   const handleSignup = async () => {
     if (!username.trim()) { setError('Username is required.'); return; }
-    const { error } = await supabase.auth.signUp({ email, password });
+    const { error } = await supabase.auth.signUp({
+      email,
+      password,
+      options: { data: { username } },
+    });
     if (error) { setError(error.message); return; }
-    alert('Signup successful!');
+    alert('Signup successful! Check your email to confirm your account.');
     setIsLogin(true);
   };
 
@@ -55,7 +74,7 @@ export default function AuthPage () {
   const handleGoogleLogin = async () => {
     await supabase.auth.signInWithOAuth({
       provider: 'google',
-      options: { redirectTo: `${window.location.origin}/` },
+      options: { redirectTo: `${window.location.origin}/complete-profile` },
     });
   };
 
@@ -91,7 +110,7 @@ export default function AuthPage () {
               REELEMOTIONS
             </div>
             <h1 className="font-archivo-black text-[1.75rem] tracking-tight mb-2" style={{ color: '#7C2D12' }}>
-              Become a Founding Member
+              Become a Member
             </h1>
             <p className="text-[0.95rem]" style={{ color: '#92400E' }}>Join early and influence other users</p>
           </div>
