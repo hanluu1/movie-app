@@ -1,5 +1,5 @@
 # **🎬 Reel Emotion**
-Reel Emotions is a movie review web app that lets users to search for movies, share reviews, upvote helpful content, and organize their personal movie watchlists in clean, responsive interface
+Reel Emotions is a movie review web app that lets users to search for movies, share reviews, upvote helpful content, and organize their personal movie watchlists in clean, responsive interface.
 
 ## 🌟 Live Demo
 🔗 Visit Reel Emotions: https://reel-emotions.vercel.app/
