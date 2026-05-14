@@ -2,6 +2,7 @@
 
 import { useRef, useState, useEffect } from 'react';
 import { searchMoviesAndTv, Movie } from '@/utils/tmdb';
+import { MagnifyingGlassIcon } from '@heroicons/react/24/outline';
 import Link from 'next/link';
 import Image from 'next/image';
 
@@ -20,7 +21,7 @@ interface Props {
   autoFocus?: boolean;
 }
 
-export function MovieSearch({ variant = 'floating', onSelect, excludeRef, className, resultsClassName, autoFocus }: Props) {
+export function MovieSearch ({ variant = 'floating', onSelect, excludeRef, className, resultsClassName, autoFocus }: Props) {
   const [query, setQuery] = useState('');
   const [results, setResults] = useState<Movie[]>([]);
   const containerRef = useRef<HTMLDivElement>(null);
@@ -101,7 +102,7 @@ export function MovieSearch({ variant = 'floating', onSelect, excludeRef, classN
   return (
     <div className={className}>
       <div className="relative">
-        <SearchIcon size={14} />
+        <MagnifyingGlassIcon />
         <input
           type="text"
           value={query}

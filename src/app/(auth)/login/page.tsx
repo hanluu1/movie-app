@@ -3,8 +3,8 @@
 import { useRouter } from 'next/navigation';
 import { useState, useEffect } from 'react';
 import { supabase } from '@/lib/supabaseClient';
-import GoogleIcon from '@/components/icons/GoogleIcon';
-import FormField from '@/components/ui/FormField';
+import GoogleIcon from '@/components/ui/google-icon';
+import FormField from '@/components/ui/form-field';
 
 
 export default function AuthPage () {

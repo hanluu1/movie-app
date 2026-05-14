@@ -3,8 +3,8 @@
 import { useState, useEffect } from 'react';
 import type { User } from '@supabase/auth-js';
 import { supabase } from '@/lib/supabaseClient';
-import LandingPage from '@/modules/home/landing/LandingPage';
-import DiscoverPage from '@/modules/home/discover/DiscoverPage';
+import LandingPage from '@/modules/home/landing';
+import DiscoverPage from '@/modules/home/discover';
 
 export default function Home () {
   const [user, setUser] = useState<User | null>(null);

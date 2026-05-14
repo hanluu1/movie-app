@@ -3,7 +3,7 @@
 import { useEffect, useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { supabase } from '@/lib/supabaseClient';
-import FormField from '@/components/ui/FormField';
+import FormField from '@/components/ui/form-field';
 
 export default function CompleteProfilePage () {
   const router = useRouter();

@@ -1,1 +1,3 @@
-export * from './search-movie'
+export * from './discover';
+export * from './landing';
+

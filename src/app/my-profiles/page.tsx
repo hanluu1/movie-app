@@ -1,8 +1,7 @@
 'use client';
 import { supabase } from '@/lib/supabaseClient';
 import { useState, useEffect } from 'react';
-import { Header } from '@/layout';
-import { SearchMovie } from '@/modules/home';
+import { Header } from '@/components/layout';
 import Image from 'next/image';
 
 type Movie = {
@@ -113,19 +112,6 @@ export default function MyMoviesPage () {
   return (
     <div className="flex flex-col min-h-screen w-full bg-white text-gray-900">
       <Header showSearchIcon={true} showSearch={() => setShowSearch(prev => !prev)} />
-
-      {showSearch && (
-        <div className="w-full border-b border-gray-200">
-          <SearchMovie
-            mode="navigate"
-            onSelect={(movie) => {
-              setShowSearch(false);
-              window.location.href = `/movie-more-info/${movie.movie_id}`;
-            }}
-            onRefetch={fetchMovies}
-          />
-        </div>
-      )}
 
       <div className="flex flex-col w-full max-w-5xl mx-auto px-7 py-7">
         {/* Profile section */}

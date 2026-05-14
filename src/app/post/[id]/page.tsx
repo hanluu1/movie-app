@@ -3,7 +3,7 @@
 import { useCallback, useEffect, useState } from 'react';
 import { useParams, useRouter } from 'next/navigation';
 import { supabase } from '@/lib/supabaseClient';
-import { Header } from '@/layout';
+import { Header } from '@/components/layout';
 import { EditPostForm } from '@/modules/user-post';
 import Image from 'next/image';
 import Link from 'next/link';
@@ -14,7 +14,7 @@ import {
   PencilSquareIcon,
   TrashIcon,
 } from '@heroicons/react/24/outline';
-import { WatchlistButtons } from '@/components/buttons/WatchlistButtons';
+import { WatchlistButtons } from '@/components/movies/watchlist-buttons';
 import { HeartIcon as HeartSolidIcon } from '@heroicons/react/24/solid';
 
 interface Post {

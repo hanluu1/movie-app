@@ -4,7 +4,7 @@ import { useRouter } from 'next/navigation';
 import { useRef, useState, useEffect } from 'react';
 import { supabase } from '@/lib/supabaseClient';
 import { ArrowRightOnRectangleIcon, Bars3Icon, XMarkIcon, MagnifyingGlassIcon, ArrowLeftIcon } from '@heroicons/react/24/outline';
-import { MovieSearch } from '@/components/ui/MovieSearch';
+import { MovieSearch } from '@/components/movies/search-movie';
 import Link from 'next/link';
 import type { User } from '@supabase/auth-js';
 

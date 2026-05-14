@@ -6,8 +6,8 @@ import Link from 'next/link';
 import { FireIcon, TvIcon, FilmIcon, StarIcon, PencilSquareIcon, InformationCircleIcon} from '@heroicons/react/24/outline';
 import { getTrendingMovies, getTrendingTV, TrendingMovie, TrendingTV } from '@/utils/tmdb';
 import { AllPost, CreatePostModal } from '@/modules/user-post';
-import { WatchlistButtons } from '@/components/buttons/WatchlistButtons';
-import { Header } from '@/layout';
+import { WatchlistButtons } from '@/components/movies/watchlist-buttons';
+import { Header } from '@/components/layout';
 
 
 const overlayBtnBase = 'w-full text-[11px] font-bold py-1.5 rounded-lg transition-colors flex items-center justify-center gap-1';
