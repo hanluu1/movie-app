@@ -238,8 +238,7 @@ export default function PostDetailPage () {
           {/* Author header */}
           <div className="px-6 py-5 border-b border-stone-100 flex items-center gap-4">
             <div
-              className="w-12 h-12 rounded-full flex items-center justify-center text-white font-bold text-lg flex-shrink-0"
-              style={{ background: 'linear-gradient(135deg, #DC2626, #EA580C)' }}
+              className="w-12 h-12 rounded-full flex items-center justify-center text-white font-bold text-lg flex-shrink-0 bg-gradient-to-br from-red-600 to-orange-600"
             >
               {getInitials(authorName)}
             </div>
@@ -270,7 +269,7 @@ export default function PostDetailPage () {
               {post.movie_title && (
                 <div className="px-6 py-5 bg-stone-50 border-b border-stone-100 flex gap-6 items-start">
                   {post.movie_image && (
-                    <div className="rounded-lg overflow-hidden flex-shrink-0 shadow" style={{ width: 100, height: 150 }}>
+                    <div className="rounded-lg overflow-hidden flex-shrink-0 shadow w-[100px] h-[150px]">
                       <Image
                         src={post.movie_image}
                         alt={post.movie_title}
@@ -282,8 +281,7 @@ export default function PostDetailPage () {
                   )}
                   <div className="flex-1 min-w-0 pt-1">
                     <h2
-                      className="text-red-600 leading-tight mb-1"
-                      style={{ fontFamily: "'Archivo Black', sans-serif", fontSize: '1.4rem', letterSpacing: '-0.02em' }}
+                      className="font-archivo-black text-[1.4rem] tracking-[-0.02em] text-red-600 leading-tight mb-1"
                     >
                       {post.movie_title}
                     </h2>
@@ -338,13 +336,12 @@ export default function PostDetailPage () {
               {/* Review content */}
               <div className="px-6 py-8">
                 <h1
-                  className="text-stone-900 mb-5 leading-snug"
-                  style={{ fontFamily: "'Archivo Black', sans-serif", fontSize: '1.75rem', letterSpacing: '-0.02em' }}
+                  className="font-archivo-black text-[1.75rem] tracking-[-0.02em] text-stone-900 mb-5 leading-snug"
                 >
                   {post.title}
                 </h1>
                 {post.content && (
-                  <p className="text-stone-600 text-base" style={{ lineHeight: '1.8' }}>
+                  <p className="text-stone-600 text-base leading-[1.8]">
                     {post.content}
                   </p>
                 )}
@@ -354,10 +351,7 @@ export default function PostDetailPage () {
               <div className="px-6 py-4 border-t border-stone-100 flex flex-wrap gap-3 items-center">
                 <button
                   onClick={handleUpvote}
-                  className="px-5 py-3 border rounded-lg font-semibold text-sm flex items-center gap-2 transition-all duration-200"
-                  style={liked
-                    ? { background: 'linear-gradient(135deg, #FEE2E2, #FED7AA)', borderColor: '#DC2626', color: '#DC2626' }
-                    : { background: 'white', borderColor: '#E7E5E4', color: '#44403C' }}
+                  className={`px-5 py-3 border rounded-lg font-semibold text-sm flex items-center gap-2 transition-all duration-200 ${liked ? 'bg-gradient-to-br from-red-100 to-orange-200 border-red-600 text-red-600' : 'bg-white border-stone-200 text-stone-700'}`}
                 >
                   {liked
                     ? <HeartSolidIcon className="w-4 h-4 text-red-600" />
@@ -367,8 +361,7 @@ export default function PostDetailPage () {
 
                 <a
                   href="#comments"
-                  className="px-5 py-3 rounded-lg font-semibold text-sm flex items-center gap-2 text-white no-underline transition-all duration-200 hover:-translate-y-px"
-                  style={{ background: 'linear-gradient(135deg, #DC2626, #EA580C)', boxShadow: '0 2px 8px rgba(220,38,38,0.2)' }}
+                  className="px-5 py-3 rounded-lg font-semibold text-sm flex items-center gap-2 text-white no-underline transition-all duration-200 hover:-translate-y-px bg-gradient-to-br from-red-600 to-orange-600 shadow-[0_2px_8px_rgba(220,38,38,0.2)]"
                 >
                   <ChatBubbleLeftEllipsisIcon className="w-4 h-4" />
                   Comment
@@ -400,8 +393,7 @@ export default function PostDetailPage () {
         {/* Comments section */}
         <div id="comments" className="bg-white rounded-2xl border border-stone-200 px-6 py-6">
           <h3
-            className="text-stone-900 mb-6"
-            style={{ fontFamily: "'Archivo Black', sans-serif", fontSize: '1.25rem', letterSpacing: '-0.02em' }}
+            className="font-archivo-black text-[1.25rem] tracking-[-0.02em] text-stone-900 mb-6"
           >
             Comments ({comments.length})
           </h3>
@@ -412,14 +404,12 @@ export default function PostDetailPage () {
               value={newComment}
               onChange={(e) => setNewComment(e.target.value)}
               placeholder="Share your thoughts on this review..."
-              className="w-full min-h-[80px] px-4 py-4 border-2 border-stone-200 focus:border-red-600 rounded-xl text-base resize-y outline-none transition-colors duration-200"
-              style={{ fontFamily: 'inherit', lineHeight: '1.6' }}
+              className="w-full min-h-[80px] px-4 py-4 border-2 border-stone-200 focus:border-red-600 rounded-xl text-base resize-y outline-none transition-colors duration-200 leading-[1.6]"
             />
             <button
               onClick={handleAddComment}
               disabled={!newComment.trim()}
-              className="mt-3 px-6 py-3 rounded-lg font-bold text-sm text-white border-none cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed transition-all duration-200 hover:-translate-y-px"
-              style={{ background: 'linear-gradient(135deg, #DC2626, #EA580C)', boxShadow: '0 2px 8px rgba(220,38,38,0.2)' }}
+              className="mt-3 px-6 py-3 rounded-lg font-bold text-sm text-white border-none cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed transition-all duration-200 hover:-translate-y-px bg-gradient-to-br from-red-600 to-orange-600 shadow-[0_2px_8px_rgba(220,38,38,0.2)]"
             >
               Post Comment
             </button>
@@ -442,8 +432,7 @@ export default function PostDetailPage () {
                   >
                     <div className="flex items-center gap-3 mb-3">
                       <div
-                        className="w-9 h-9 rounded-full flex items-center justify-center text-white font-bold text-sm flex-shrink-0"
-                        style={{ background: 'linear-gradient(135deg, #DC2626, #EA580C)' }}
+                        className="w-9 h-9 rounded-full flex items-center justify-center text-white font-bold text-sm flex-shrink-0 bg-gradient-to-br from-red-600 to-orange-600"
                       >
                         {getInitials(username)}
                       </div>

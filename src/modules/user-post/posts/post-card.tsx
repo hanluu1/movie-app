@@ -54,8 +54,7 @@ export const PostCard = ({ id, username, movieTitle, movieImage, postTitle, crea
       {/* Header */}
       <div className="flex items-center gap-3 mb-4">
         <div
-          className="w-11 h-11 rounded-full flex items-center justify-center text-white font-bold flex-shrink-0"
-          style={{ background: 'linear-gradient(135deg, #DC2626, #EA580C)' }}
+          className="w-11 h-11 rounded-full flex items-center justify-center text-white font-bold flex-shrink-0 bg-gradient-to-br from-red-600 to-orange-600"
         >
           {initials}
         </div>
@@ -92,8 +91,8 @@ export const PostCard = ({ id, username, movieTitle, movieImage, postTitle, crea
 
         {/* Poster + movie title below — right side */}
         {movieImage && (
-          <div className="flex-shrink-0 flex flex-col items-center gap-2" style={{ width: 88 }}>
-            <div className="relative w-full rounded-lg overflow-hidden" style={{ aspectRatio: '2/3' }}>
+          <div className="flex-shrink-0 flex flex-col items-center gap-2 w-[88px]">
+            <div className="relative w-full rounded-lg overflow-hidden aspect-[2/3]">
               <Image
                 src={movieImage}
                 alt={movieTitle || ''}

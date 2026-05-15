@@ -85,15 +85,13 @@ export default function AuthPage () {
       className="font-dm-sans min-h-screen flex items-center justify-center p-8 bg-stone-50"
     >
       <div
-        className="bg-white rounded-3xl w-full max-w-[480px] overflow-hidden"
-        style={{ boxShadow: '0 24px 48px rgba(28,25,23,0.12)' }}
+        className="bg-white rounded-3xl w-full max-w-[480px] overflow-hidden shadow-[0_24px_48px_rgba(28,25,23,0.12)]"
       >
 
         {/* Header */}
         {isLogin ? (
           <div
-            className="px-6 sm:px-12 pt-12 pb-8 text-center"
-            style={{ background: 'linear-gradient(135deg, #1C1917, #292524)' }}
+            className="px-6 sm:px-12 pt-12 pb-8 text-center bg-gradient-to-br from-stone-900 to-stone-800"
           >
             <div className="font-archivo-black text-[1.75rem] tracking-tight bg-gradient-to-br from-red-600 to-orange-600 bg-clip-text text-transparent mb-4">
               REELEMOTIONS
@@ -103,16 +101,15 @@ export default function AuthPage () {
           </div>
         ) : (
           <div
-            className="px-6 sm:px-12 pt-12 pb-8 text-center"
-            style={{ background: 'linear-gradient(135deg, #FEE2E2, #FED7AA)' }}
+            className="px-6 sm:px-12 pt-12 pb-8 text-center bg-gradient-to-br from-red-100 to-orange-200"
           >
             <div className="font-archivo-black text-[1.75rem] tracking-tight bg-gradient-to-br from-red-600 to-orange-600 bg-clip-text text-transparent mb-4">
               REELEMOTIONS
             </div>
-            <h1 className="font-archivo-black text-[1.75rem] tracking-tight mb-2" style={{ color: '#7C2D12' }}>
+            <h1 className="font-archivo-black text-[1.75rem] tracking-tight mb-2 text-orange-900">
               Become a Member
             </h1>
-            <p className="text-[0.95rem]" style={{ color: '#92400E' }}>Join early and influence other users</p>
+            <p className="text-[0.95rem] text-amber-800">Join early and influence other users</p>
           </div>
         )}
 
@@ -153,8 +150,7 @@ export default function AuthPage () {
 
             <button
               type="submit"
-              className="w-full py-4 text-white font-bold rounded-xl text-[1rem] transition-all duration-300 hover:-translate-y-0.5"
-              style={{ background: 'linear-gradient(135deg, #DC2626, #EA580C)', boxShadow: '0 4px 12px rgba(220,38,38,0.25)' }}
+              className="w-full py-4 text-white font-bold rounded-xl text-[1rem] transition-all duration-300 hover:-translate-y-0.5 bg-gradient-to-br from-red-600 to-orange-600 shadow-[0_4px_12px_rgba(220,38,38,0.25)]"
             >
               {isLogin ? 'Sign In' : 'Create Account'}
             </button>

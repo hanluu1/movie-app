@@ -91,8 +91,7 @@ export function Header ({ onCreatePost }: {
           {onCreatePost && (
             <button
               onClick={onCreatePost}
-              className="hidden sm:flex items-center gap-1.5 text-white px-5 py-2 rounded-3xl font-semibold text-sm transition-all duration-300 hover:-translate-y-0.5 whitespace-nowrap"
-              style={{ background: 'linear-gradient(135deg, #DC2626, #EA580C)', boxShadow: '0 4px 12px rgba(220,38,38,0.25)' }}
+              className="hidden sm:flex items-center gap-1.5 text-white px-5 py-2 rounded-3xl font-semibold text-sm transition-all duration-300 hover:-translate-y-0.5 whitespace-nowrap bg-gradient-to-br from-red-600 to-orange-600 shadow-[0_4px_12px_rgba(220,38,38,0.25)]"
             >
               <span className="text-lg leading-none">+</span>
               <span>Share Your Taste</span>
@@ -103,8 +102,7 @@ export function Header ({ onCreatePost }: {
           {user && (
             <button
               onClick={() => router.push('/my-profiles')}
-              className="hidden sm:flex w-10 h-10 rounded-full items-center justify-center text-white font-bold text-sm flex-shrink-0 transition-all duration-300 hover:scale-105"
-              style={{ background: 'linear-gradient(135deg, #DC2626, #EA580C)' }}
+              className="hidden sm:flex w-10 h-10 rounded-full items-center justify-center text-white font-bold text-sm flex-shrink-0 transition-all duration-300 hover:scale-105 bg-gradient-to-br from-red-600 to-orange-600"
               title="my-profiles"
             >
               {initials}
@@ -146,8 +144,7 @@ export function Header ({ onCreatePost }: {
                     className="w-full flex items-center gap-3 px-4 py-3 hover:bg-stone-50 transition-colors text-left"
                   >
                     <div
-                      className="w-8 h-8 rounded-full flex items-center justify-center text-white font-bold text-xs flex-shrink-0"
-                      style={{ background: 'linear-gradient(135deg, #DC2626, #EA580C)' }}
+                      className="w-8 h-8 rounded-full flex items-center justify-center text-white font-bold text-xs flex-shrink-0 bg-gradient-to-br from-red-600 to-orange-600"
                     >
                       {initials}
                     </div>

@@ -192,12 +192,12 @@ export default function MyMoviesPage () {
             {filteredMovies.length === 0 ? (
               <div className="text-center py-10 text-gray-400 text-sm">No movies found.</div>
             ) : (
-              <div className="grid gap-4" style={{ gridTemplateColumns: 'repeat(auto-fill, minmax(130px, 1fr))' }}>
+              <div className="grid gap-4 grid-cols-[repeat(auto-fill,minmax(130px,1fr))]">
                 {filteredMovies.map((movie, index) => {
                   const badge = statusBadge(movie.status);
                   return (
                     <div key={index} className="group relative cursor-pointer">
-                      <div className="relative w-full rounded-xl overflow-hidden bg-gray-100 border border-gray-200" style={{ aspectRatio: '2/3' }}>
+                      <div className="relative w-full rounded-xl overflow-hidden bg-gray-100 border border-gray-200 aspect-[2/3]">
                         {movie.poster_url && (
                           <Image
                             src={movie.poster_url}

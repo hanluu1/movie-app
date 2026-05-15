@@ -60,36 +60,23 @@ export const CommentModal = ({ postId, isOpen, onClose }: CommentModalProps) => 
 
   return (
     <>
-      <style>{`
-        @keyframes commentModalSlideUp {
-          from { opacity: 0; transform: translateY(40px) scale(0.97); }
-          to { opacity: 1; transform: translateY(0) scale(1); }
-        }
-        .comment-modal { animation: commentModalSlideUp 0.35s cubic-bezier(0.4, 0, 0.2, 1); }
-        .comment-close-btn { transition: all 0.25s ease; }
-        .comment-close-btn:hover { transform: rotate(90deg); }
-      `}</style>
-
       <div
-        className="fixed inset-0 z-50 flex items-center justify-center p-6"
-        style={{ background: 'rgba(28, 25, 23, 0.6)', backdropFilter: 'blur(8px)' }}
+        className="fixed inset-0 z-50 flex items-center justify-center p-6 bg-stone-950/60 backdrop-blur-sm"
         onClick={(e) => e.target === e.currentTarget && onClose()}
       >
         <div
           className="comment-modal bg-white rounded-2xl w-full max-w-xl max-h-[85vh] flex flex-col overflow-hidden"
-          style={{ boxShadow: '0 24px 48px rgba(28, 25, 23, 0.2)' }}
         >
           {/* Header */}
           <div className="px-6 pt-6 pb-5 border-b border-stone-100 flex items-center justify-between flex-shrink-0">
             <h2
-              className="text-stone-900"
-              style={{ fontFamily: "'Archivo Black', sans-serif", fontSize: '1.25rem', letterSpacing: '-0.02em' }}
+              className="text-stone-900 font-archivo-black text-xl tracking-tight"
             >
               Comments ({comments.length})
             </h2>
             <button
               onClick={onClose}
-              className="comment-close-btn w-8 h-8 bg-stone-100 hover:bg-stone-200 rounded-full flex items-center justify-center text-stone-500 hover:text-stone-900 border-none cursor-pointer"
+              className="w-8 h-8 bg-stone-100 hover:bg-stone-200 rounded-full flex items-center justify-center text-stone-500 hover:text-stone-900 border-none cursor-pointer transition-all duration-[250ms] hover:rotate-90"
             >
               <XMarkIcon className="w-4 h-4" />
             </button>
@@ -113,8 +100,7 @@ export const CommentModal = ({ postId, isOpen, onClose }: CommentModalProps) => 
                     >
                       <div className="flex items-center gap-3 mb-2">
                         <div
-                          className="w-8 h-8 rounded-full flex items-center justify-center text-white font-bold text-xs flex-shrink-0"
-                          style={{ background: 'linear-gradient(135deg, #DC2626, #EA580C)' }}
+                          className="w-8 h-8 rounded-full flex items-center justify-center text-white font-bold text-xs flex-shrink-0 bg-gradient-to-br from-red-600 to-orange-600"
                         >
                           {getInitials(username)}
                         </div>
@@ -141,16 +127,14 @@ export const CommentModal = ({ postId, isOpen, onClose }: CommentModalProps) => 
               onKeyDown={(e) => { if (e.key === 'Enter' && (e.metaKey || e.ctrlKey)) handleAddComment(); }}
               placeholder="Share your thoughts..."
               rows={2}
-              className="w-full px-4 py-3 border-2 border-stone-200 focus:border-red-600 rounded-xl text-sm resize-none outline-none transition-colors duration-200"
-              style={{ fontFamily: 'inherit', lineHeight: '1.6' }}
+              className="w-full px-4 py-3 border-2 border-stone-200 focus:border-red-600 rounded-xl text-sm resize-none outline-none transition-colors duration-200 leading-relaxed"
             />
             <div className="flex justify-between items-center mt-2">
               <span className="text-xs text-stone-400">⌘ + Enter to post</span>
               <button
                 onClick={handleAddComment}
                 disabled={!newComment.trim() || isSubmitting}
-                className="px-5 py-2.5 rounded-lg font-bold text-sm text-white border-none cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed transition-all duration-200 hover:-translate-y-px"
-                style={{ background: 'linear-gradient(135deg, #DC2626, #EA580C)', boxShadow: '0 2px 8px rgba(220,38,38,0.2)' }}
+                className="px-5 py-2.5 rounded-lg font-bold text-sm text-white border-none cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed transition-all duration-200 hover:-translate-y-px bg-gradient-to-br from-red-600 to-orange-600 shadow-[0_2px_8px_rgba(220,38,38,0.2)]"
               >
                 {isSubmitting ? 'Posting…' : 'Post Comment'}
               </button>

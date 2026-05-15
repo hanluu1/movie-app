@@ -62,7 +62,7 @@ export default function CompleteProfilePage () {
 
   return (
     <div className="min-h-screen flex items-center justify-center p-8 bg-stone-50">
-      <div className="bg-white rounded-2xl p-8 w-full max-w-md" style={{ boxShadow: '0 12px 32px rgba(0,0,0,0.08)' }}>
+      <div className="bg-white rounded-2xl p-8 w-full max-w-md shadow-[0_12px_32px_rgba(0,0,0,0.08)]">
         <h2 className="text-2xl font-bold mb-4">Complete your profile</h2>
         <p className="text-sm text-stone-600 mb-6">Choose a username so other users can find and mention you.</p>
         <form onSubmit={handleSubmit} className="flex flex-col gap-4">
@@ -70,7 +70,7 @@ export default function CompleteProfilePage () {
           {error && <div className="text-red-600 text-sm">{error}</div>}
           <div className="flex gap-3 mt-2">
             <button type="button" onClick={() => router.push('/')} className="flex-1 py-3 rounded-xl border">Skip</button>
-            <button type="submit" className="flex-1 py-3 rounded-xl text-white" style={{ background: 'linear-gradient(135deg,#DC2626,#EA580C)' }}>{loading ? 'Saving…' : 'Save'}</button>
+            <button type="submit" className="flex-1 py-3 rounded-xl text-white bg-gradient-to-br from-red-600 to-orange-600">{loading ? 'Saving…' : 'Save'}</button>
           </div>
         </form>
       </div>

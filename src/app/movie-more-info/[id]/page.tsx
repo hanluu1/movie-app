@@ -94,13 +94,11 @@ export default async function MoviePage ({ params }: { params: Promise<{ id: str
                   alt={displayTitle}
                   width={220}
                   height={330}
-                  className="w-full h-full object-cover"
-                  style={{ maxHeight: 330 }}
+                  className="w-full h-full object-cover max-h-[330px]"
                 />
               ) : (
                 <div
-                  className="w-full h-[330px] flex items-center justify-center text-stone-400 text-sm"
-                  style={{ background: 'linear-gradient(135deg, #FEE2E2, #FED7AA)' }}
+                  className="w-full h-[330px] flex items-center justify-center text-stone-400 text-sm bg-gradient-to-br from-red-100 to-orange-200"
                 >
                   No poster
                 </div>
@@ -110,8 +108,7 @@ export default async function MoviePage ({ params }: { params: Promise<{ id: str
             {/* Info */}
             <div className="flex-1 px-7 py-7">
               <h1
-                className="text-red-600 leading-tight mb-2"
-                style={{ fontFamily: "'Archivo Black', sans-serif", fontSize: '2rem', letterSpacing: '-0.02em' }}
+                className="font-archivo-black text-[2rem] tracking-[-0.02em] text-red-600 leading-tight mb-2"
               >
                 {displayTitle}
               </h1>
@@ -151,7 +148,7 @@ export default async function MoviePage ({ params }: { params: Promise<{ id: str
 
               {/* Overview */}
               {overview && (
-                <p className="text-stone-600 text-sm leading-relaxed mb-5" style={{ lineHeight: '1.75' }}>
+                <p className="text-stone-600 text-sm leading-[1.75] mb-5">
                   {overview}
                 </p>
               )}

@@ -63,8 +63,7 @@ export function MovieSearch ({ variant = 'floating', onSelect, excludeRef, class
       />
     ) : (
       <div
-        className={variant === 'floating' ? 'w-7 h-10 rounded flex-shrink-0' : 'w-6 h-9 rounded flex-shrink-0'}
-        style={{ background: 'linear-gradient(135deg, #FEE2E2, #FED7AA)' }}
+        className={variant === 'floating' ? 'w-7 h-10 rounded flex-shrink-0 bg-gradient-to-br from-red-100 to-orange-200' : 'w-6 h-9 rounded flex-shrink-0 bg-gradient-to-br from-red-100 to-orange-200'}
       />
     );
 
@@ -102,7 +101,7 @@ export function MovieSearch ({ variant = 'floating', onSelect, excludeRef, class
   return (
     <div className={className}>
       <div className="relative">
-        <MagnifyingGlassIcon />
+        <MagnifyingGlassIcon className="absolute left-2 top-1/2 -translate-y-1/2 w-4 h-4 text-stone-400 pointer-events-none" />
         <input
           type="text"
           value={query}
