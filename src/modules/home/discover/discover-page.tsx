@@ -1,88 +1,21 @@
 'use client';
 
-import { useRef, useState, useEffect } from 'react';
-import { FireIcon, TvIcon, XMarkIcon } from '@heroicons/react/24/outline';
-import { getTrendingMovies, getTrendingTV, TrendingMovie, TrendingTV } from '@/utils/tmdb';
+import { useRef, useState } from 'react';
+import { XMarkIcon } from '@heroicons/react/24/outline';
 import { AllPost, CreatePostModal } from '@/modules/user-post';
 import { Header } from '@/components/layout';
-import MediaCard from './components/media-card';
-
-function SectionHeader ({ Icon, title }: { Icon: React.ElementType; title: string }) {
-  return (
-    <div className="flex items-center gap-2 mb-4">
-      <Icon className="w-5 h-5 text-red-600 flex-shrink-0" />
-      <h3 className="font-archivo-black text-base tracking-tight">{title}</h3>
-    </div>
-  );
-}
+import Sidebar from './components/sidebar';
 
 export default function DiscoverPage () {
   const postRef = useRef<{ refetch: () => void } | null>(null);
   const [showCreatePostModal, setShowCreatePostModal] = useState(false);
   const [preselectedMovie, setPreselectedMovie] = useState<{ id: number; title: string; name: string; overview: string; poster_path: string; release_date?: string } | null>(null);
   const [showBanner, setShowBanner] = useState(true);
-  const [trending, setTrending] = useState<TrendingMovie[]>([]);
-  const [trendingTV, setTrendingTV] = useState<TrendingTV[]>([]);
-
-  useEffect(() => {
-    getTrendingMovies().then(setTrending);
-    getTrendingTV().then(setTrendingTV);
-  }, []);
-
-  const dismissBanner = () => {
-    setShowBanner(false);
-  };
 
   const openReview = (movie?: { id: number; title: string; name: string; overview: string; poster_path: string; release_date?: string }) => {
     setPreselectedMovie(movie ?? null);
     setShowCreatePostModal(true);
   };
-
-  const sidebar = (
-    <aside className="flex flex-col gap-8">
-
-      {/* Trending Movies */}
-      <section>
-        <SectionHeader Icon={FireIcon} title="Trending Movies" />
-        <div className="grid grid-cols-3 gap-2">
-          {trending.slice(0, 6).map((movie, i) => (
-            <MediaCard
-              key={movie.id}
-              id={movie.id}
-              title={movie.title}
-              posterPath={movie.poster_path}
-              year={movie.release_date?.slice(0, 4) ?? ''}
-              rating={movie.vote_average}
-              index={i}
-              releaseDate={movie.release_date ?? ''}
-              onReview={() => openReview({ id: movie.id, title: movie.title, name: '', overview: '', poster_path: movie.poster_path ?? '', release_date: movie.release_date })}
-            />
-          ))}
-        </div>
-      </section>
-
-      {/* Trending TV Shows */}
-      <section>
-        <SectionHeader Icon={TvIcon} title="Trending TV Shows" />
-        <div className="grid grid-cols-3 gap-2">
-          {trendingTV.slice(0, 6).map((show, i) => (
-            <MediaCard
-              key={show.id}
-              id={show.id}
-              title={show.name}
-              posterPath={show.poster_path}
-              year={show.first_air_date?.slice(0, 4) ?? ''}
-              rating={show.vote_average}
-              index={i}
-              releaseDate={show.first_air_date ?? ''}
-              onReview={() => openReview({ id: show.id, title: '', name: show.name, overview: '', poster_path: show.poster_path ?? '', release_date: show.first_air_date })}
-            />
-          ))}
-        </div>
-      </section>
-      
-    </aside>
-  );
 
   return (
     <div className="font-dm-sans bg-stone-50 min-h-screen text-stone-900">
@@ -107,7 +40,7 @@ export default function DiscoverPage () {
                   Share What Moves You
                 </button>
                 <XMarkIcon
-                  onClick={dismissBanner}
+                  onClick={() => setShowBanner(false)}
                   className="text-white/70 hover:text-white transition-colors w-5 h-5 cursor-pointer flex-shrink-0"
                 />
               </div>
@@ -128,7 +61,7 @@ export default function DiscoverPage () {
 
           {/* Sidebar — sticky on desktop */}
           <div className="lg:w-[340px] flex-shrink-0 lg:sticky lg:top-[90px] lg:self-start">
-            {sidebar}
+            <Sidebar onReview={openReview} />
           </div>
 
         </div>

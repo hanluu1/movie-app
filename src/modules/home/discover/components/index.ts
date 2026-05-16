@@ -1,1 +1,2 @@
-export * from './media-card'
+export * from './media-card';
+export { default as Sidebar } from './sidebar';
