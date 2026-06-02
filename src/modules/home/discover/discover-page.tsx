@@ -48,7 +48,7 @@ export default function DiscoverPage () {
           </div>
         )}
 
-        {/* Desktop: reviews left, sidebar right — Mobile: reviews first, sidebar below */}
+        {/* Desktop: reviews left, sidebar right — Mobile: sidebar, reviews */}
         <div className="flex flex-col-reverse lg:flex-row gap-8">
 
           {/* Reviews — main column */}
@@ -60,7 +60,7 @@ export default function DiscoverPage () {
           </main>
 
           {/* Sidebar — sticky on desktop */}
-          <div className="lg:w-[340px] flex-shrink-0 lg:sticky lg:top-[90px] lg:self-start">
+          <div className="lg:w-[450px] flex-shrink-0 lg:sticky lg:top-[90px] lg:self-start">
             <Sidebar onReview={openReview} />
           </div>
 
