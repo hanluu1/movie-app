@@ -1,57 +1,60 @@
-# **🎬 Reel Emotion**
-Reel Emotions is a movie review web app that lets users to search for movies, share reviews, upvote helpful content, and organize their personal movie watchlists in clean, responsive interface.
+# Reel Emotions
 
-## 🌟 Live Demo
-🔗 Visit Reel Emotions: https://reel-emotions.vercel.app/
+A full-stack movie review platform where users can discover trending films, write and upvote reviews, comment on posts, and manage a personal watchlist.
 
-## ✨ Features
+**[Live Demo →](https://reel-emotions.vercel.app/)**
+_
 
-### 🎨 Frontend Highlights 
-- Built with Next.js and Tailwind CSS for fast performance and responsive design.
-- Dynamic movie search with debounced input and instant results.
-- Detailed movie pages including posters, descriptions, release info, and community reviews.
-- Mobile-first layouts optimized for both desktop and mobile devices
+---
 
-### 📝 Interactive Review System
-- Users can add, edit, delete, and upvote reviews.
-- Reviews are sorted by most helpful (upvotes) or most recent.
-- Real-time UI updates for a seamless user experience
+## Features
 
-### 🎥 My Movies Dashboard
-- Organize movies into Watched, To-Watch, or All
-- Smooth tab-based filtering with consistent movie card components
-- Centralized hub for managing personal movie lists
+- **Movie Search** — debounced search across movies and TV shows via the TMDB API, with year filtering and instant results
+- **Community Reviews** — create, edit, delete, and upvote reviews with live like counts via Supabase Realtime subscriptions
+- **Comment Threads** — discuss reviews inline without leaving the feed
+- **Watchlist** — track movies as Watched, Watching, or To-Watch with per-user persistence
+- **Trending Sidebar** — weekly trending movies and TV shows with ranking badges and ratings
+- **Authentication** — email/password and Google OAuth with a profile completion flow
 
-## 🏗️ Architecture 
+## Tech Stack
 
-- **Client:** Next.js (React) with a component-based UI styled using Tailwind CSS
-- **Application Layer:** Next.js API Routes and Server Actions handling data fetching, mutations, and authorization
-- **Backend Services:** Supabase (PostgreSQL database and Auth) and an external Movie API for film metadata
-- **Deployment:** Hosted on Vercel with edge-optimized routing, caching, and serverless execution
+| Layer | Technology |
+|---|---|
+| Frontend | Next.js 16 (App Router), React 19, TypeScript |
+| Styling | Tailwind CSS v4 |
+| Database & Auth | Supabase (PostgreSQL + Auth) |
+| Movie Data | TMDB API |
+| Deployment | Vercel |
 
+## Getting Started
 
-## 🔄 Data Flow
+### Prerequisites
 
-### Feature Flow A
-1. User performs an action in the UI
-2. Request is validated and sent to the server
-3. Server processes logic and updates the database
-4. Updated data is returned and rendered in the UI
+- Node.js 18+
+- A [Supabase](https://supabase.com) project
+- A [TMDB API](https://developer.themoviedb.org) key
 
-### Authentication Flow
-1. User signs up or logs in
-2. Authentication service issues a secure session
-3. Session state controls access to protected routes and data
+### Installation
 
-### Data Management Flow
-1. Authenticated users submit data changes
-2. Server validates permissions
-3. Database is updated and queried
-4. UI reflects changes instantly
+```bash
+git clone https://github.com/hanluu1/movie-app.git
+cd movie-app
+npm install
+```
 
-## 🧠 Tech Stack
-- **Frontend:** Next.js, tailwind CSS
-- **Backend:** Nex.js API Routes & Server Actions
-- **Database:** Supabase (PostgreSQL)
-- **Auth:** Supabase Auth 
-- **Deployment:** Vercel
+Copy the example env file and fill in your credentials:
+
+```bash
+cp .env.example 
+
+```env
+NEXT_PUBLIC_SUPABASE_URL=your_supabase_url
+NEXT_PUBLIC_SUPABASE_ANON_KEY=your_supabase_anon_key
+NEXT_PUBLIC_TMDB_API_KEY=your_tmdb_api_key
+```
+
+```bash
+npm run dev
+```
+
+Open [http://localhost:3000](http://localhost:3000).
