@@ -180,7 +180,7 @@ export function Header ({ onCreatePost }: {
 
       {/* Mobile search overlay */}
       {searchOpen && (
-        <div className="fixed inset-0 bg-white z-[100] flex flex-col sm:hidden">
+        <div className="fixed inset-x-0 top-0 h-dvh bg-white z-[100] flex flex-col sm:hidden">
           <div className="flex items-center gap-3 px-4 py-3 border-b border-stone-200 flex-shrink-0">
             <button
               onClick={() => setSearchOpen(false)}

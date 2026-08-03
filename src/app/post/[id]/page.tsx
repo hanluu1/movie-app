@@ -56,15 +56,15 @@ const TMDB_GENRES: Record<number, string> = {
 };
 
 async function fetchMovieDetails (title: string, posterUrl?: string): Promise<MovieDetails | null> {
-  const key = process.env.NEXT_PUBLIC_TMDB_API_KEY;
-  if (!key || !title) return null;
-  const headers = { Authorization: `Bearer ${key}`, 'Content-Type': 'application/json;charset=utf-8' };
+  if (!title) return null;
   const q = encodeURIComponent(title);
+
 
   try {
     const [movieData, tvData] = await Promise.all([
-      fetch(`https://api.themoviedb.org/3/search/movie?query=${q}`, { headers }).then(r => r.json()),
-      fetch(`https://api.themoviedb.org/3/search/tv?query=${q}`, { headers }).then(r => r.json()),
+      fetch(`/api/tmdb?path=${encodeURIComponent(`/search/movie?query=${q}`)}`).then(r => r.json()),
+      fetch(`/api/tmdb?path=${encodeURIComponent(`/search/tv?query=${q}`)}`).then(r => r.json()),
+
     ]);
 
     const posterPath = posterUrl?.match(/\/p\/w\d+(\/.+)/)?.[1] ?? null;
@@ -95,9 +95,9 @@ async function fetchMovieDetails (title: string, posterUrl?: string): Promise<Mo
     const year = (result.release_date || result.first_air_date || '').slice(0, 4);
 
     const creditsData = await fetch(
-      `https://api.themoviedb.org/3/${mediaType}/${result.id}/credits`,
-      { headers }
+      `/api/tmdb?path=${encodeURIComponent(`/${mediaType}/${result.id}/credits`)}`
     ).then(r => r.json());
+
 
     const cast: string[] = (creditsData.cast || []).slice(0, 3).map((c: any) => c.name);
     const director: string | null =

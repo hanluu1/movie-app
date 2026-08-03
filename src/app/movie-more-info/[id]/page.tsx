@@ -4,7 +4,7 @@ import { Header } from '@/components/layout';
 import { WatchlistButtons } from '@/components/movies/watchlist-buttons';
 import { notFound } from 'next/navigation';
 
-const API_KEY = process.env.NEXT_PUBLIC_TMDB_API_KEY;
+const API_KEY = process.env.TMDB_API_KEY;
 
 const TMDB_HEADERS = {
   Authorization: `Bearer ${API_KEY}`,

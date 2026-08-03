@@ -1,4 +1,8 @@
-const API_KEY = process.env.NEXT_PUBLIC_TMDB_API_KEY;
+// Calls our own server proxy instead of TMDB directly (keeps the key server-side)
+async function tmdbFetch (path: string) {
+  const res = await fetch(`/api/tmdb?path=${encodeURIComponent(path)}`);
+  return res.json();
+}
 
 export interface Movie {
   id: number;
@@ -22,13 +26,7 @@ export interface TrendingMovie {
 
 export async function getTrendingMovies (): Promise<TrendingMovie[]> {
   try {
-    const res = await fetch('https://api.themoviedb.org/3/trending/movie/week', {
-      headers: {
-        Authorization: `Bearer ${API_KEY}`,
-        'Content-Type': 'application/json;charset=utf-8',
-      },
-    });
-    const data = await res.json();
+    const data = await tmdbFetch('/trending/movie/week');
     return (data.results || []).slice(0, 8);
   } catch {
     return [];
@@ -45,13 +43,7 @@ export interface TrendingTV {
 
 export async function getTrendingTV (): Promise<TrendingTV[]> {
   try {
-    const res = await fetch('https://api.themoviedb.org/3/trending/tv/week', {
-      headers: {
-        Authorization: `Bearer ${API_KEY}`,
-        'Content-Type': 'application/json;charset=utf-8',
-      },
-    });
-    const data = await res.json();
+    const data = await tmdbFetch('/trending/tv/week');
     return (data.results || []).slice(0, 8);
   } catch {
     return [];
@@ -60,10 +52,6 @@ export async function getTrendingTV (): Promise<TrendingTV[]> {
 
 const YEAR_SUFFIX_RE = /^(.+?)\s+(\d{4})$/;
 const CURRENT_YEAR = new Date().getFullYear();
-const TMDB_HEADERS = {
-  Authorization: `Bearer ${API_KEY}`,
-  'Content-Type': 'application/json;charset=utf-8',
-};
 
 export async function searchMoviesAndTv (query: string): Promise<Movie[]> {
   if (!query) return [];
@@ -81,8 +69,8 @@ export async function searchMoviesAndTv (query: string): Promise<Movie[]> {
     }
 
     const [movieData, tvData] = await Promise.all([
-      fetch(`https://api.themoviedb.org/3/search/movie?${movieParams}`, { headers: TMDB_HEADERS }).then(r => r.json()),
-      fetch(`https://api.themoviedb.org/3/search/tv?${tvParams}`, { headers: TMDB_HEADERS }).then(r => r.json()),
+      tmdbFetch(`/search/movie?${movieParams}`),
+      tmdbFetch(`/search/tv?${tvParams}`),
     ]);
 
     const results: Movie[] = [...(movieData.results || []), ...(tvData.results || [])];
