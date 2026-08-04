@@ -1,5 +1,7 @@
 'use client';
 
+import { SpeedInsights } from "@vercel/speed-insights/next"
+
 import { useState, useEffect } from 'react';
 import type { User } from '@supabase/auth-js';
 import { supabase } from '@/lib/supabaseClient';
@@ -20,4 +22,5 @@ export default function Home () {
   if (loading) return <div className="min-h-screen bg-stone-50" />;
   if (!user) return <LandingPage />;
   return <DiscoverPage />;
+  <SpeedInsights />
 }
