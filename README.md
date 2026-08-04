@@ -39,22 +39,27 @@ _
 ```bash
 git clone https://github.com/hanluu1/movie-app.git
 cd movie-app
-npm install
+yarn install
 ```
 
 Copy the example env file and fill in your credentials:
 
 ```bash
-cp .env.example 
+cp .env.example .env.local
+```
+
+Then open `.env.local` and add your keys:
 
 ```env
 NEXT_PUBLIC_SUPABASE_URL=your_supabase_url
 NEXT_PUBLIC_SUPABASE_ANON_KEY=your_supabase_anon_key
-NEXT_PUBLIC_TMDB_API_KEY=your_tmdb_api_key
+TMDB_API_KEY=your_tmdb_api_key
 ```
+
+Start the dev server:
 
 ```bash
-npm run dev
+yarn dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000).
+
