@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import { SpeedInsights } from "@vercel/speed-insights/next";
 import { Geist, Geist_Mono, Anton_SC, Archivo_Black, DM_Sans } from "next/font/google";
 import "./styles.css";
 
@@ -33,6 +34,7 @@ export default function RootLayout ({
 
       >
         {children}
+        <SpeedInsights />
       </body>
     </html>
   );
