@@ -87,8 +87,8 @@ export const AllPost = forwardRef((_props, ref) => {
               post.id === post_id 
                 ? { 
                   ...post, 
-                  upvotes: post.upvotes + 1,
-                  isLiked: user?.id === user_id ? true : post.isLiked 
+                  upvotes: user?.id === user_id ? post.upvotes : post.upvotes + 1,
+                  isLiked: user?.id === user_id ? true : post.isLiked
                 }
                 : post
             ));
@@ -98,8 +98,8 @@ export const AllPost = forwardRef((_props, ref) => {
               post.id === post_id 
                 ? { 
                   ...post, 
-                  upvotes: post.upvotes - 1,
-                  isLiked: user?.id === user_id ? false : post.isLiked 
+                  upvotes: user?.id === user_id ? post.upvotes : post.upvotes - 1,
+                  isLiked: user?.id === user_id ? false : post.isLiked
                 }
                 : post
             ));
