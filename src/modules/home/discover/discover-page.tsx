@@ -4,6 +4,8 @@ import { useRef, useState } from 'react';
 import { XMarkIcon } from '@heroicons/react/24/outline';
 import { AllPost, CreatePostModal } from '@/modules/user-post';
 import { Header } from '@/components/layout';
+import { SignInPrompt } from '@/components/ui/sign-in-prompt';
+import { useAuthUser } from '@/hooks/use-auth-user';
 import Sidebar from './components/sidebar';
 
 export default function DiscoverPage () {
@@ -11,8 +13,19 @@ export default function DiscoverPage () {
   const [showCreatePostModal, setShowCreatePostModal] = useState(false);
   const [preselectedMovie, setPreselectedMovie] = useState<{ id: number; title: string; name: string; overview: string; poster_path: string; release_date?: string } | null>(null);
   const [showBanner, setShowBanner] = useState(true);
+  const [authPromptAction, setAuthPromptAction] = useState<string | null>(null);
+  const { user } = useAuthUser();
+
+  // Returns false and opens the sign-in prompt when there is no session, so
+  // callers can bail out of an action they aren't allowed to perform yet.
+  const requireAuth = (action: string) => {
+    if (user) return true;
+    setAuthPromptAction(action);
+    return false;
+  };
 
   const openReview = (movie?: { id: number; title: string; name: string; overview: string; poster_path: string; release_date?: string }) => {
+    if (!requireAuth('share your take')) return;
     setPreselectedMovie(movie ?? null);
     setShowCreatePostModal(true);
   };
@@ -56,7 +69,7 @@ export default function DiscoverPage () {
             <div className="flex items-center gap-2 mb-6">
               <h2 className="font-archivo-black text-2xl sm:text-[1.75rem] tracking-tight">Community Thoughts</h2>
             </div>
-            <AllPost ref={postRef} />
+            <AllPost ref={postRef} isAuthed={!!user} requireAuth={requireAuth} />
           </main>
 
           {/* Sidebar — sticky on desktop */}
@@ -75,6 +88,12 @@ export default function DiscoverPage () {
           postRef.current?.refetch();
         }}
         preselectedMovie={preselectedMovie ?? undefined}
+      />
+
+      <SignInPrompt
+        isOpen={authPromptAction !== null}
+        onClose={() => setAuthPromptAction(null)}
+        action={authPromptAction ?? undefined}
       />
     </div>
   );

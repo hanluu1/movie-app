@@ -19,7 +19,14 @@ interface Post {
   comment_count?: number;
 }
 
-export const AllPost = forwardRef((_props, ref) => {
+interface AllPostProps {
+  /** Whether a session exists — drives optimistic UI that shouldn't fire for guests. */
+  isAuthed?: boolean;
+  /** Returns false (and prompts sign-in) when the action needs an account. */
+  requireAuth?: (action: string) => boolean;
+}
+
+export const AllPost = forwardRef<{ refetch: () => void }, AllPostProps>(({ isAuthed = true, requireAuth }, ref) => {
   const [posts, setPosts] = useState<Post[]>([]);
   const [sort] = useState<'created_at' | 'upvotes'>('created_at');
   const [loading, setLoading] = useState(true);
@@ -29,6 +36,7 @@ export const AllPost = forwardRef((_props, ref) => {
     refetch: fetchPosts
   }));
   const openCommentModal = (postId: string) => {
+    if (requireAuth && !requireAuth('join the discussion')) return;
     setActivePostId(postId);
     setShowCommentModal(true);
   };
@@ -38,6 +46,8 @@ export const AllPost = forwardRef((_props, ref) => {
     setActivePostId(null);
   };
   const handleToggleLike = async (postId: string) => {
+    if (requireAuth && !requireAuth('like this post')) return;
+
     const { data: { user }, error: userError, } = await supabase.auth.getUser();
 
     if (userError || !user) {
@@ -183,6 +193,7 @@ export const AllPost = forwardRef((_props, ref) => {
           postContent={post.content}
           isLiked={post.isLiked}
           commentCount={post.comment_count || 0}
+          canLike={isAuthed}
           onLike={() => handleToggleLike(post.id)}
           onComment={() => openCommentModal(post.id)}
         />

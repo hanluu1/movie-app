@@ -4,12 +4,15 @@ import { useEffect, useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { supabase } from '@/lib/supabaseClient';
 import FormField from '@/components/ui/form-field';
+import { getRedirect } from '@/utils/getRedirect';
 
 export default function CompleteProfilePage () {
   const router = useRouter();
   const [loading, setLoading] = useState(true);
   const [username, setUsername] = useState('');
   const [error, setError] = useState('');
+
+  // Carries the pre-login destination through the OAuth round trip.
 
   useEffect(() => {
     let handled = false;
@@ -25,7 +28,7 @@ export default function CompleteProfilePage () {
           .select('username')
           .eq('id', user.id)
           .maybeSingle();
-        if (profileData?.username) { router.push('/'); return; }
+        if (profileData?.username) { router.push(getRedirect()); return; }
         const meta = (user.user_metadata || {}) as Record<string, string>;
         const suggested = meta.username || meta.name || (user.email ? user.email.split('@')[0] : '');
         setUsername((suggested || '').substring(0, 32));
@@ -50,7 +53,7 @@ export default function CompleteProfilePage () {
       // Upsert profile row with chosen username
       const { error: upsertError } = await supabase.from('profiles').upsert({ id: user.id, username }, { onConflict: 'id' });
       if (upsertError) { setError(upsertError.message); setLoading(false); return; }
-      router.push('/');
+      router.push(getRedirect());
     } catch (err: any) {
       console.error(err);
       setError(err?.message || 'An error occurred');
@@ -69,7 +72,7 @@ export default function CompleteProfilePage () {
           <FormField label="Username" placeholder="your-username" value={username} onChange={e => setUsername(e.target.value)} required />
           {error && <div className="text-red-600 text-sm">{error}</div>}
           <div className="flex gap-3 mt-2">
-            <button type="button" onClick={() => router.push('/')} className="flex-1 py-3 rounded-xl border">Skip</button>
+            <button type="button" onClick={() => router.push(getRedirect())} className="flex-1 py-3 rounded-xl border">Skip</button>
             <button type="submit" className="flex-1 py-3 rounded-xl text-white bg-gradient-to-br from-red-600 to-orange-600">{loading ? 'Saving…' : 'Save'}</button>
           </div>
         </form>

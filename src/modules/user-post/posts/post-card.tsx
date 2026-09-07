@@ -20,6 +20,8 @@ interface PostCardProps {
   postImage?: string;
   username?: string;
   commentCount?: number;
+  /** When false the heart doesn't toggle locally, since the write will be refused. */
+  canLike?: boolean;
 }
 
 function formatDate (dateStr: string) {
@@ -28,7 +30,7 @@ function formatDate (dateStr: string) {
 
 const READ_MORE_THRESHOLD = 160;
 
-export const PostCard = ({ id, username, movieTitle, movieImage, postTitle, createdAt, postContent, upvotes, onLike, onComment, isLiked = false, commentCount = 0 }: PostCardProps) => {
+export const PostCard = ({ id, username, movieTitle, movieImage, postTitle, createdAt, postContent, upvotes, onLike, onComment, isLiked = false, commentCount = 0, canLike = true }: PostCardProps) => {
   const [liked, setLiked] = useState(isLiked);
   const router = useRouter();
 
@@ -116,7 +118,7 @@ export const PostCard = ({ id, username, movieTitle, movieImage, postTitle, crea
         <button
           onClick={(e) => {
             e.stopPropagation();
-            setLiked(prev => !prev);
+            if (canLike) setLiked(prev => !prev);
             onLike?.();
           }}
           className={`flex items-center gap-1.5 text-sm font-semibold transition-colors ${liked ? 'text-red-600' : 'text-stone-500 hover:text-red-600'}`}

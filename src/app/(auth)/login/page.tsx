@@ -3,6 +3,7 @@
 import { useRouter } from 'next/navigation';
 import { useState, useEffect } from 'react';
 import { supabase } from '@/lib/supabaseClient';
+import { getRedirect } from '@/utils/getRedirect';
 import GoogleIcon from '@/components/ui/google-icon';
 import FormField from '@/components/ui/form-field';
 
@@ -28,7 +29,7 @@ export default function AuthPage () {
             .maybeSingle();
           if (profileError) console.error('Profile fetch error:', profileError.message);
           if (profileData?.username) {
-            router.push('/');
+            router.push(getRedirect());
           }
         } catch (err) {
           console.error('Error checking profile on sign-in:', err);
@@ -47,7 +48,7 @@ export default function AuthPage () {
       .from('profiles').select('username').eq('id', data.user.id).maybeSingle();
     if (profileError) { console.error('Profile fetch error:', profileError.message); return; }
     if (!profileData?.username) {
-      router.push('/complete-profile');
+      router.push(`/complete-profile?redirect=${encodeURIComponent(getRedirect())}`);
       return;
     }
     // onAuthStateChange handles redirect to / when profile is complete
@@ -74,7 +75,9 @@ export default function AuthPage () {
   const handleGoogleLogin = async () => {
     await supabase.auth.signInWithOAuth({
       provider: 'google',
-      options: { redirectTo: `${window.location.origin}/complete-profile` },
+      options: {
+        redirectTo: `${window.location.origin}/complete-profile?redirect=${encodeURIComponent(getRedirect())}`,
+      },
     });
   };
 

@@ -15,6 +15,8 @@ import {
   TrashIcon,
 } from '@heroicons/react/24/outline';
 import { WatchlistButtons } from '@/components/movies/watchlist-buttons';
+import { SignInPrompt } from '@/components/ui/sign-in-prompt';
+import { useAuthUser } from '@/hooks/use-auth-user';
 import { HeartIcon as HeartSolidIcon } from '@heroicons/react/24/solid';
 
 interface Post {
@@ -135,9 +137,16 @@ export default function PostDetailPage () {
   const [newComment, setNewComment] = useState('');
   const [loading, setLoading] = useState(true);
   const [edit, setEdit] = useState(false);
-  const [currentUser, setCurrentUser] = useState<string | null>(null);
   const [liked, setLiked] = useState(false);
   const [movieDetails, setMovieDetails] = useState<MovieDetails | null>(null);
+  const [authPromptAction, setAuthPromptAction] = useState<string | null>(null);
+  const { user } = useAuthUser();
+
+  const requireAuth = (action: string) => {
+    if (user) return true;
+    setAuthPromptAction(action);
+    return false;
+  };
 
   const fetchPost = useCallback(async () => {
     if (!id) return;
@@ -161,8 +170,6 @@ export default function PostDetailPage () {
 
   useEffect(() => {
     (async () => {
-      const { data: { user } } = await supabase.auth.getUser();
-      if (user) setCurrentUser(user.id);
       if (id) await Promise.all([fetchPost(), fetchComments()]);
       setLoading(false);
     })();
@@ -176,6 +183,7 @@ export default function PostDetailPage () {
 
   const handleUpvote = async () => {
     if (!post) return;
+    if (!requireAuth('like this post')) return;
     const next = liked ? post.upvotes - 1 : post.upvotes + 1;
     setLiked(!liked);
     await supabase.from('posts').update({ upvotes: next }).eq('id', post.id);
@@ -184,8 +192,8 @@ export default function PostDetailPage () {
 
   const handleAddComment = async () => {
     if (!newComment.trim()) return;
-    const { data: { user } } = await supabase.auth.getUser();
-    if (!user) { alert('You must be logged in to comment.'); return; }
+    if (!requireAuth('join the discussion')) return;
+    if (!user) return;
     const { error } = await supabase.from('comments').insert({ post_id: id, content: newComment, user_id: user.id });
     if (!error) { setNewComment(''); await fetchComments(); }
   };
@@ -218,7 +226,7 @@ export default function PostDetailPage () {
   }
 
   const authorName = post.profiles?.username || 'Anonymous';
-  const isOwner = currentUser === post.user_id;
+  const isOwner = user?.id === post.user_id;
 
   return (
     <div className="min-h-screen bg-stone-50">
@@ -228,7 +236,7 @@ export default function PostDetailPage () {
 
         {/* Back link */}
         <Link
-          href="/"
+          href="/discover"
           className="inline-flex items-center gap-2 text-stone-500 hover:text-red-600 font-medium mb-6 transition-colors duration-200 text-sm"
         >
           <ArrowLeftIcon className="w-4 h-4" />
@@ -454,6 +462,12 @@ export default function PostDetailPage () {
           )}
         </div>
       </div>
+
+      <SignInPrompt
+        isOpen={authPromptAction !== null}
+        onClose={() => setAuthPromptAction(null)}
+        action={authPromptAction ?? undefined}
+      />
     </div>
   );
 }
