@@ -42,7 +42,6 @@ function getInitials (username: string) {
 }
 
 export default function MyMoviesPage () {
-  const [showSearch, setShowSearch] = useState(false);
   const [activeMainTab, setActiveMainTab] = useState<'movies' | 'reviews'>('reviews');
   const [activeFilter, setActiveFilter] = useState<'all' | 'watched' | 'watching' | 'to-watch'>('all');
   const [searchQuery, setSearchQuery] = useState('');
@@ -111,7 +110,7 @@ export default function MyMoviesPage () {
 
   return (
     <div className="font-dm-sans flex flex-col min-h-screen w-full bg-stone-50 text-stone-900">
-      <Header showSearchIcon={true} showSearch={() => setShowSearch(prev => !prev)} />
+      <Header showSearch={true} />
 
       <div className="flex flex-col w-full max-w-5xl mx-auto px-7 py-7">
         {/* Profile section */}
