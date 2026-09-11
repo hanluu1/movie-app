@@ -76,7 +76,7 @@ export function Header ({ onCreatePost, showSearch = true }: {
 
       {/* Logo */}
       <Link href="/discover">
-        <span className="font-serif font-bold text-xl tracking-tight text-[#172526]">
+        <span className="font-plus-jakarta font-extrabold text-xl tracking-tight text-[#172526]">
           ReelEmotions
         </span>
       </Link>

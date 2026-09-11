@@ -1,7 +1,7 @@
 'use client';
 
 import Link from 'next/link';
-import { HeartIcon, ChatBubbleLeftEllipsisIcon, UserGroupIcon, PencilSquareIcon, FilmIcon } from '@heroicons/react/24/outline';
+import { HeartIcon, ChatBubbleLeftEllipsisIcon, UserGroupIcon, FilmIcon } from '@heroicons/react/24/outline';
 import { Header } from '@/components/layout/header';
 
 const steps = [
@@ -67,13 +67,13 @@ export default function LandingPage () {
 
           {/* Left */}
           <div>
-            <p className="font-serif italic text-base mb-4 text-[#6F8C88]">
+            <p className="font-dm-sans italic text-base mb-4 text-[#6F8C88]">
               Movies. Real People. Real Feelings.
             </p>
-            <h1 className="font-serif text-[clamp(2.4rem,4.8vw,4rem)] leading-[1.15] font-bold tracking-tight mb-6 text-[#172526]">
-              <span className="font-bold text-[#172526]">Share</span><span className="font-normal italic text-[#6F8C88]"> what you</span><br /><span className="font-normal italic text-[#6F8C88]">felt. </span>
-              <span className="font-bold text-[#2A4649]">Find</span><span className="font-normal italic text-[#6F8C88]"> what to watch next.</span>
-            </h1>
+            <h2 className="font-plus-jakarta font-extrabold text-[clamp(2.4rem,5.5vw,4rem)] leading-[1.15] tracking-tight mb-6 text-[#172526]">
+              <span className="font-extrabold text-[#172526]">Share</span><span className="  text-[#6F8C88]"> what you felts. </span>
+              <span className="font-extrabold text-[#2A4649]">Find</span><span className="  text-[#6F8C88]"> what to watch next.</span>
+            </h2>
             <p className="text-lg leading-relaxed mb-8 max-w-md font-normal text-[#3F5E5A]">
               Share how a movie or show made you feel. Read real reactions from people like you, and discover what to watch next.
             </p>
@@ -125,7 +125,7 @@ export default function LandingPage () {
                   Dune: Part Two
                 </span>
               </div>
-              <p className="text-xs leading-relaxed mb-3 font-serif italic text-[#172526]">
+              <p className="text-xs leading-relaxed mb-3 font-dm-sans italic text-[#172526]">
                 &ldquo;I felt so small... and so hopeful. It&apos;s rare for a movie to make me feel both at the same time.&rdquo;
               </p>
               <div className="flex items-center gap-1.5 text-[11px] font-semibold text-[#2A4649]">
@@ -148,17 +148,12 @@ export default function LandingPage () {
           {/* Section intro */}
           <div className="max-w-xl mb-14">
             <p className="text-xs font-bold uppercase tracking-widest mb-3 text-[#2A4649]">
-        The ReelEmotion way
+                How it works
             </p>
 
-            <h2 className="font-serif text-[clamp(2rem,4vw,2.75rem)] font-bold tracking-tight text-[#172526]">
-        Your feelings are the starting point.
+            <h2 className="font-plus-jakarta font-extrabold text-[clamp(2rem,4vw,2.75rem)] tracking-tight text-[#172526]">
+                Discover movies or shows differently.
             </h2>
-
-            <p className="mt-4 text-base leading-relaxed text-[#3F5E5A]">
-        Share what stayed with you, see how others felt, and discover
-        something that might stay with you next.
-            </p>
           </div>
 
           {/* Three things */}
@@ -192,8 +187,8 @@ export default function LandingPage () {
           <div className="flex items-end justify-between mb-12">
             <div>
               <p className="text-xs font-bold uppercase tracking-widest mb-2 text-[#2A4649]">Real Reactions</p>
-              <h2 className="font-serif text-[clamp(2rem,4vw,2.75rem)] font-bold tracking-tight text-[#172526]">
-                What people are feeling
+              <h2 className="font-plus-jakarta font-extrabold text-[clamp(2rem,4vw,2.75rem)] tracking-tight text-[#172526]">
+                What people are feeling.
               </h2>
             </div>
             <Link href="/discover" className="hidden sm:block text-sm font-semibold text-[#2A4649] transition-opacity hover:opacity-70">
@@ -230,7 +225,7 @@ export default function LandingPage () {
                         <div className="text-[11px] text-[#6F8C88]">{role}</div>
                       </div>
                     </div>
-                    <p className="text-xs leading-relaxed mb-4 font-serif italic text-[#172526]">
+                    <p className="text-xs leading-relaxed mb-4 font-dm-sans italic text-[#172526]">
                       &ldquo;{quote}&rdquo;
                     </p>
                   </div>
@@ -256,7 +251,7 @@ export default function LandingPage () {
         <div className="max-w-6xl mx-auto rounded-3xl overflow-hidden relative bg-[#2A4649] min-h-[160px]">
           <div className="relative z-10 flex flex-col sm:flex-row items-center justify-between gap-6 px-10 py-10">
             <div className="flex-1">
-              <h2 className="font-serif text-[clamp(1.4rem,2.5vw,1.9rem)] font-bold leading-snug text-white mb-1">
+              <h2 className="font-plus-jakarta font-extrabold text-[clamp(1.4rem,2.5vw,1.9rem)] leading-snug text-white mb-1">
                 Join a community<br />that feels like your movie club.
               </h2>
               <p className="text-sm mt-2 text-[#6F8C88]">

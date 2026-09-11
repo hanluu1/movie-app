@@ -1,10 +1,10 @@
 import type { Metadata } from "next";
 import { SpeedInsights } from "@vercel/speed-insights/next";
-import { Geist, Geist_Mono, Anton_SC, Archivo_Black, DM_Sans } from "next/font/google";
+import { Geist, Geist_Mono, Archivo_Black, Plus_Jakarta_Sans, DM_Sans } from "next/font/google";
 import "./styles.css";
 
-const anton = Anton_SC({ weight: '400', subsets: ['latin'], variable: '--font-anton' });
 const archivoblack = Archivo_Black({ weight: '400', subsets: ['latin'], variable: '--font-archivo-black' });
+const plusJakarta = Plus_Jakarta_Sans({ weight: ['700', '800'], subsets: ['latin'], variable: '--font-plus-jakarta' });
 const dmSans = DM_Sans({ subsets: ['latin'], variable: '--font-dm-sans' });
 const geistSans = Geist({ variable: "--font-geist-sans", subsets: ["latin"] });
 const geistMono = Geist_Mono({ variable: "--font-geist-mono", subsets: ["latin"] });
@@ -30,7 +30,7 @@ export default function RootLayout ({
   return (
     <html lang="en">
       <body
-        className={`${geistSans.variable} ${geistMono.variable} ${anton.variable} ${archivoblack.variable} ${dmSans.variable} antialiased`}
+        className={`${geistSans.variable} ${geistMono.variable} ${archivoblack.variable} ${plusJakarta.variable} ${dmSans.variable} antialiased`}
 
       >
         {children}

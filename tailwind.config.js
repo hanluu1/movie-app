@@ -9,10 +9,10 @@ module.exports = {
   theme: {
     extend: {
       fontFamily: {
-        logo: ['var(--font-anton)'],
         sans: ['var(--font-geist-sans)'],
         mono: ['var(--font-geist-mono)'],
         'archivo-black': ['var(--font-archivo-black)', 'sans-serif'],
+        'plus-jakarta': ['var(--font-plus-jakarta)', 'sans-serif'],
         'dm-sans': ['var(--font-dm-sans)', 'sans-serif'],
       },
     },
