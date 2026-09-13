@@ -5,33 +5,42 @@ import { FireIcon, TvIcon } from '@heroicons/react/24/outline';
 import { getTrendingMovies, getTrendingTV, TrendingMovie, TrendingTV } from '@/utils/tmdb';
 import MediaCard from './media-card';
 
-function SectionHeader ({ Icon, title }: { Icon: React.ElementType; title: string }) {
-  return (
-    <div className="flex items-center gap-2 mb-4">
-      <Icon className="w-5 h-5 text-red-600 flex-shrink-0" />
-      <h3 className="font-archivo-black text-base tracking-tight">{title}</h3>
-    </div>
-  );
-}
-
-export default function Sidebar ({ onReview }: {
+export default function TrendingView ({
+  onReview,
+}: {
   onReview: (movie?: { id: number; title: string; name: string; overview: string; poster_path: string; release_date?: string }) => void;
 }) {
-  const [trending, setTrending] = useState<TrendingMovie[]>([]);
-  const [trendingTV, setTrendingTV] = useState<TrendingTV[]>([]);
+  const [movies, setMovies] = useState<TrendingMovie[]>([]);
+  const [shows, setShows] = useState<TrendingTV[]>([]);
+  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    getTrendingMovies().then(setTrending);
-    getTrendingTV().then(setTrendingTV);
+    Promise.all([getTrendingMovies(), getTrendingTV()]).then(([m, s]) => {
+      setMovies(m);
+      setShows(s);
+      setLoading(false);
+    });
   }, []);
 
-  return (
-    <aside className="flex flex-col gap-8">
+  if (loading) return (
+    <div className="grid grid-cols-3 gap-3">
+      {Array.from({ length: 12 }).map((_, i) => (
+        <div key={i} className="rounded-xl bg-[#EEF2ED] aspect-[2/3] animate-pulse" />
+      ))}
+    </div>
+  );
 
+  return (
+    <div className="flex flex-col gap-10">
+
+      {/* Trending Movies */}
       <section>
-        <SectionHeader Icon={FireIcon} title="Trending Movies" />
-        <div className="grid grid-cols-3 gap-2">
-          {trending.slice(0, 6).map((movie, i) => (
+        <div className="flex items-center gap-2 mb-4">
+          <FireIcon className="w-4 h-4 text-[#2A4649]" />
+          <h3 className="font-plus-jakarta font-extrabold text-base text-[#172526]">Trending Movies</h3>
+        </div>
+        <div className="grid grid-cols-3 gap-3">
+          {movies.slice(0, 12).map((movie, i) => (
             <MediaCard
               key={movie.id}
               id={movie.id}
@@ -47,10 +56,14 @@ export default function Sidebar ({ onReview }: {
         </div>
       </section>
 
+      {/* Trending TV */}
       <section>
-        <SectionHeader Icon={TvIcon} title="Trending TV Shows" />
-        <div className="grid grid-cols-3 gap-2">
-          {trendingTV.slice(0, 6).map((show, i) => (
+        <div className="flex items-center gap-2 mb-4">
+          <TvIcon className="w-4 h-4 text-[#2A4649]" />
+          <h3 className="font-plus-jakarta font-extrabold text-base text-[#172526]">Trending TV Shows</h3>
+        </div>
+        <div className="grid grid-cols-3 gap-3">
+          {shows.slice(0, 12).map((show, i) => (
             <MediaCard
               key={show.id}
               id={show.id}
@@ -66,6 +79,6 @@ export default function Sidebar ({ onReview }: {
         </div>
       </section>
 
-    </aside>
+    </div>
   );
 }

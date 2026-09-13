@@ -68,11 +68,16 @@ export const CreatePostModal = ({ isOpen, onClose, onCreated, preselectedMovie }
       const movieImage = selectedMovie?.poster_path
         ? `https://image.tmdb.org/t/p/w500${selectedMovie.poster_path}`
         : null;
+      const mediaType = selectedMovie
+        ? (selectedMovie.title ? 'movie' : 'tv')
+        : null;
       await supabase.from('posts').insert({
         title: reviewTitle,
         content: reviewContent,
         movie_title: movieName,
         movie_image: movieImage,
+        media_type: mediaType,
+        movie_id: selectedMovie?.id ?? null,
         user_id: user.id,
       });
       setStep('success');
@@ -84,84 +89,106 @@ export const CreatePostModal = ({ isOpen, onClose, onCreated, preselectedMovie }
   if (!isOpen) return null;
 
   const canContinue = step === 1 ? !!selectedMovie : reviewTitle.trim().length > 0 && reviewContent.length >= 50;
+  const displayTitle = selectedMovie?.title || selectedMovie?.name || '';
 
   return (
     <div
-      className="fixed inset-0 z-50 flex items-center justify-center p-8 bg-stone-950/60 backdrop-blur-sm"
+      className="fixed inset-0 z-50 flex items-end sm:items-center justify-center sm:p-6 bg-[#172526]/50 backdrop-blur-sm"
       onClick={(e) => e.target === e.currentTarget && onClose()}
     >
-      <div className="reel-modal bg-white rounded-3xl w-full max-w-xl max-h-[90vh] overflow-hidden flex flex-col">
+      <div className="bg-[#FFFDF8] w-full sm:max-w-lg max-h-[92dvh] sm:rounded-3xl rounded-t-3xl overflow-hidden flex flex-col border border-[#E8EEEA]">
+
         {/* Header */}
-        <div className="px-8 pt-8 pb-6 border-b border-stone-100 flex items-center justify-between flex-shrink-0">
-          <h2 className="font-archivo-black text-[1.75rem] tracking-tight font-black text-stone-900">
-            Add Your Review
-          </h2>
+        <div className="px-6 pt-6 pb-5 border-b border-[#E8EEEA] flex items-center justify-between flex-shrink-0">
+          <div>
+            <p className="text-xs font-bold uppercase tracking-widest text-[#2A4649] mb-0.5">
+              {step === 1 ? 'Step 1 of 2' : step === 2 ? 'Step 2 of 2' : ''}
+            </p>
+            <h2 className="font-plus-jakarta font-extrabold text-xl tracking-tight text-[#172526]">
+              {step === 1 && 'Pick a movie or show'}
+              {step === 2 && 'Write what it made you feel'}
+              {step === 'success' && 'Feeling shared!'}
+            </h2>
+          </div>
           <button
             onClick={onClose}
-            className="w-9 h-9 bg-stone-100 hover:bg-stone-200 rounded-full flex items-center justify-center text-stone-500 hover:text-stone-900 border-none cursor-pointer transition-all duration-300 hover:rotate-90"
+            className="w-8 h-8 rounded-full flex items-center justify-center text-[#6F8C88] hover:text-[#172526] hover:bg-[#EEF2ED] transition-all"
           >
-            <XMarkIcon className="w-[18px] h-[18px]" />
+            <XMarkIcon className="w-4 h-4" />
           </button>
         </div>
 
+        {/* Progress bar */}
+        {step !== 'success' && (
+          <div className="flex gap-1.5 px-6 pt-4 flex-shrink-0">
+            <div className={`flex-1 h-1 rounded-full transition-all ${step >= 1 ? 'bg-[#2A4649]' : 'bg-[#E8EEEA]'}`} />
+            <div className={`flex-1 h-1 rounded-full transition-all ${step === 2 ? 'bg-[#2A4649]' : 'bg-[#E8EEEA]'}`} />
+          </div>
+        )}
+
         {/* Body */}
-        <div className="px-8 py-8 overflow-y-auto flex-1">
-          {step !== 'success' && (
-            <div className="flex gap-2 mb-8">
-              <div className={`flex-1 h-1 rounded-full transition-all duration-300 ${step >= 1 ? 'bg-gradient-to-br from-red-600 to-orange-600' : 'bg-stone-200'}`} />
-              <div className={`flex-1 h-1 rounded-full transition-all duration-300 ${step === 2 ? 'bg-gradient-to-br from-red-600 to-orange-600' : 'bg-stone-200'}`} />
-            </div>
-          )}
+        <div className="px-6 py-6 overflow-y-auto flex-1">
 
           {/* Step 1 — Movie search */}
           {step === 1 && (
             <div>
-              <div className="relative mb-6">
-                <MagnifyingGlassIcon className="absolute left-4 top-1/2 -translate-y-1/2 w-[18px] h-[18px] text-stone-400 pointer-events-none" />
+              <p className="text-sm text-[#6F8C88] mb-4">
+                Search for the movie or show that stayed with you.
+              </p>
+              <div className="relative mb-5">
+                <MagnifyingGlassIcon className="absolute left-3.5 top-1/2 -translate-y-1/2 w-4 h-4 text-[#6F8C88] pointer-events-none" />
                 <input
                   type="text"
-                  placeholder="Search for a movie or show..."
+                  placeholder="Search movies or shows..."
                   value={searchQuery}
                   onChange={(e) => setSearchQuery(e.target.value)}
-                  className="w-full pl-12 pr-4 py-4 border-2 border-stone-200 focus:border-red-600 rounded-xl text-base outline-none transition-all duration-200 focus:shadow-[0_0_0_4px_rgba(220,38,38,0.1)]"
+                  className="w-full pl-10 pr-4 py-3 border border-[#E8EEEA] focus:border-[#2A4649] bg-white rounded-xl text-sm outline-none transition-all focus:shadow-[0_0_0_3px_rgba(42,70,73,0.08)]"
                 />
               </div>
 
-              <div className="flex flex-col gap-3">
+              <div className="flex flex-col gap-2">
                 {searchResults.length === 0 && searchQuery.trim() === '' && (
-                  <p className="text-center text-stone-400 text-sm py-8">Search for a movie or show to get started</p>
+                  <p className="text-center text-[#6F8C88] text-sm py-10">Start typing to find something...</p>
                 )}
                 {searchResults.map((movie) => {
                   const isSelected = selectedMovie?.id === movie.id;
                   const year = movie.release_date ? new Date(movie.release_date).getFullYear() : null;
-                  const displayTitle = movie.title || movie.name;
+                  const title = movie.title || movie.name;
                   return (
                     <button
                       key={movie.id}
                       onClick={() => setSelectedMovie(isSelected ? null : movie)}
-                      className={`flex gap-4 p-4 border-2 rounded-xl text-left cursor-pointer w-full bg-transparent transition-all duration-[250ms] hover:translate-x-1 ${
+                      className={`flex gap-3 p-3 border rounded-xl text-left w-full transition-all ${
                         isSelected
-                          ? 'border-red-600 bg-gradient-to-br from-red-100 to-orange-200'
-                          : 'border-stone-200 hover:border-red-600 hover:bg-stone-50'
+                          ? 'border-[#2A4649] bg-[#EEF2ED]'
+                          : 'border-[#E8EEEA] bg-white hover:border-[#2A4649] hover:bg-[#F9F6EF]'
                       }`}
                     >
                       {movie.poster_path ? (
                         <Image
                           src={`https://image.tmdb.org/t/p/w92${movie.poster_path}`}
-                          alt={displayTitle}
-                          width={60}
-                          height={90}
+                          alt={title}
+                          width={44}
+                          height={66}
                           className="rounded-lg object-cover flex-shrink-0"
                         />
                       ) : (
-                        <div className="w-[60px] h-[90px] rounded-lg flex items-center justify-center text-3xl flex-shrink-0 bg-gradient-to-br from-red-100 to-orange-200">
+                        <div className="w-11 h-[66px] rounded-lg flex items-center justify-center text-xl flex-shrink-0 bg-[#EEF2ED]">
                           🎬
                         </div>
                       )}
-                      <div className="flex-1 min-w-0">
-                        <div className="font-bold text-base text-stone-900 mb-1 truncate">{displayTitle}</div>
-                        {year && <div className="text-stone-500 text-sm mb-2">{year}</div>}
+                      <div className="flex-1 min-w-0 flex flex-col justify-center">
+                        <div className="font-semibold text-sm text-[#172526] truncate">{title}</div>
+                        {year && <div className="text-xs text-[#6F8C88] mt-0.5">{year}</div>}
+                        {!movie.title && <div className="text-[10px] text-[#2A4649] font-semibold mt-1">TV Show</div>}
                       </div>
+                      {isSelected && (
+                        <div className="flex-shrink-0 w-5 h-5 rounded-full bg-[#2A4649] flex items-center justify-center self-center">
+                          <svg className="w-3 h-3 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={3}>
+                            <path strokeLinecap="round" strokeLinejoin="round" d="M5 13l4 4L19 7" />
+                          </svg>
+                        </div>
+                      )}
                     </button>
                   );
                 })}
@@ -169,46 +196,71 @@ export const CreatePostModal = ({ isOpen, onClose, onCreated, preselectedMovie }
             </div>
           )}
 
-          {/* Step 2 — Review form */}
+          {/* Step 2 — Feeling form */}
           {step === 2 && (
             <div>
-              <div className="mb-8">
-                <label className="block font-bold text-base text-stone-900 mb-3" htmlFor="reviewTitle">Review title</label>
-                <input
-                  id="reviewTitle"
-                  type="text"
-                  placeholder="Sum up your review in one line..."
-                  value={reviewTitle}
-                  onChange={(e) => setReviewTitle(e.target.value)}
-                  className="w-full px-4 py-3.5 border-2 border-stone-200 focus:border-red-600 rounded-xl text-base font-semibold outline-none transition-all duration-200 focus:shadow-[0_0_0_4px_rgba(220,38,38,0.1)]"
-                />
-              </div>
-
-              <div className="mb-8">
-                <label className="block font-bold text-base text-stone-900 mb-3" htmlFor="reviewContent">Your thoughts</label>
-                <textarea
-                  id="reviewContent"
-                  placeholder="Share your thoughts about this movie..."
-                  value={reviewContent}
-                  onChange={(e) => setReviewContent(e.target.value)}
-                  className="w-full px-4 py-4 border-2 border-stone-200 focus:border-red-600 rounded-xl text-base outline-none transition-all duration-200 resize-y min-h-[150px] leading-[1.7] focus:shadow-[0_0_0_4px_rgba(220,38,38,0.1)]"
-                />
-                <div className={`text-right text-sm mt-2 ${reviewContent.length < 50 ? 'text-orange-600' : 'text-stone-500'}`}>
-                  {reviewContent.length} / 500 characters (minimum 50)
+              {/* Selected movie pill */}
+              {selectedMovie && (
+                <div className="flex items-center gap-2.5 p-3 rounded-xl bg-[#EEF2ED] border border-[#E8EEEA] mb-6">
+                  {selectedMovie.poster_path && (
+                    <Image
+                      src={`https://image.tmdb.org/t/p/w92${selectedMovie.poster_path}`}
+                      alt={displayTitle}
+                      width={32}
+                      height={48}
+                      className="rounded object-cover flex-shrink-0"
+                    />
+                  )}
+                  <div>
+                    <div className="text-xs text-[#6F8C88]">You&rsquo;re writing about</div>
+                    <div className="text-sm font-semibold text-[#172526]">{displayTitle}</div>
+                  </div>
                 </div>
-              </div>
+              )}
 
-              <div>
-                <label className="flex items-center gap-3 p-4 bg-stone-50 hover:bg-stone-100 rounded-xl cursor-pointer transition-all duration-200">
+              <div className="flex flex-col gap-5">
+                <div>
+                  <label className="block text-sm font-semibold text-[#172526] mb-2" htmlFor="reviewTitle">
+                    Give it a title
+                  </label>
+                  <input
+                    id="reviewTitle"
+                    type="text"
+                    placeholder="Sum up your feeling in one line..."
+                    value={reviewTitle}
+                    onChange={(e) => setReviewTitle(e.target.value)}
+                    className="w-full px-4 py-3 border border-[#E8EEEA] focus:border-[#2A4649] bg-white rounded-xl text-sm outline-none transition-all focus:shadow-[0_0_0_3px_rgba(42,70,73,0.08)]"
+                  />
+                </div>
+
+                <div>
+                  <label className="block text-sm font-semibold text-[#172526] mb-2" htmlFor="reviewContent">
+                    What did it make you feel?
+                  </label>
+                  <textarea
+                    id="reviewContent"
+                    placeholder="Write freely — no critic templates, no star ratings. Just how it made you feel and why..."
+                    value={reviewContent}
+                    onChange={(e) => setReviewContent(e.target.value)}
+                    className="w-full px-4 py-3 border border-[#E8EEEA] focus:border-[#2A4649] bg-white rounded-xl text-sm outline-none transition-all resize-none min-h-[140px] leading-relaxed focus:shadow-[0_0_0_3px_rgba(42,70,73,0.08)]"
+                  />
+                  <div className={`text-right text-xs mt-1.5 ${reviewContent.length < 50 ? 'text-[#6F8C88]' : 'text-[#2A4649]'}`}>
+                    {reviewContent.length < 50
+                      ? `${50 - reviewContent.length} more characters to go`
+                      : `${reviewContent.length} characters`}
+                  </div>
+                </div>
+
+                <label className="flex items-center gap-3 p-3.5 bg-[#F9F6EF] hover:bg-[#EEF2ED] rounded-xl cursor-pointer transition-colors border border-[#E8EEEA]">
                   <input
                     type="checkbox"
                     checked={containsSpoilers}
                     onChange={(e) => setContainsSpoilers(e.target.checked)}
-                    className="w-5 h-5 cursor-pointer accent-red-600 flex-shrink-0"
+                    className="w-4 h-4 cursor-pointer accent-[#2A4649] flex-shrink-0"
                   />
                   <div>
-                    <div className="text-stone-700 text-sm font-medium">Contains spoilers</div>
-                    <div className="text-stone-500 text-xs mt-0.5">Check this if your review reveals plot details</div>
+                    <div className="text-sm font-semibold text-[#172526]">Contains spoilers</div>
+                    <div className="text-xs text-[#6F8C88] mt-0.5">Check if your reaction reveals plot details</div>
                   </div>
                 </label>
               </div>
@@ -217,21 +269,21 @@ export const CreatePostModal = ({ isOpen, onClose, onCreated, preselectedMovie }
 
           {/* Success */}
           {step === 'success' && (
-            <div className="text-center py-12 px-4">
-              <div className="w-20 h-20 mx-auto mb-8 rounded-full flex items-center justify-center text-5xl bg-gradient-to-br from-red-100 to-orange-200 animate-[reelSuccessScale_0.5s_cubic-bezier(0.4,0,0.2,1)]">
+            <div className="text-center py-10">
+              <div className="w-16 h-16 mx-auto mb-6 rounded-full flex items-center justify-center text-3xl bg-[#EEF2ED]">
                 ✨
               </div>
-              <h3 className="font-archivo-black text-[2rem] tracking-tight font-black text-stone-900 mb-4">
-                Review Posted!
+              <h3 className="font-plus-jakarta font-extrabold text-xl text-[#172526] mb-2">
+                Your feeling is out there.
               </h3>
-              <p className="text-stone-600 text-lg mb-8 leading-relaxed">
-                Your review has been shared with the community. Thanks for contributing!
+              <p className="text-sm text-[#6F8C88] leading-relaxed mb-8">
+                Someone will read this and feel less alone about what they watched.
               </p>
               <button
                 onClick={() => { onCreated(); onClose(); }}
-                className="px-8 py-4 rounded-xl font-bold text-base text-white border-none cursor-pointer bg-gradient-to-br from-red-600 to-orange-600 shadow-[0_4px_12px_rgba(220,38,38,0.25)] transition-all duration-300 hover:-translate-y-0.5 hover:shadow-[0_8px_20px_rgba(220,38,38,0.35)]"
+                className="px-8 py-3 rounded-xl font-semibold text-sm text-white bg-[#2A4649] transition-all hover:-translate-y-0.5 hover:shadow-md"
               >
-                Back to Feed
+                Back to the feed
               </button>
             </div>
           )}
@@ -239,22 +291,23 @@ export const CreatePostModal = ({ isOpen, onClose, onCreated, preselectedMovie }
 
         {/* Footer */}
         {step !== 'success' && (
-          <div className="px-8 py-6 border-t border-stone-100 flex gap-4 flex-shrink-0">
+          <div className="px-6 py-5 border-t border-[#E8EEEA] flex gap-3 flex-shrink-0">
             <button
               onClick={() => step === 2 ? setStep(1) : onClose()}
-              className="flex-1 py-4 rounded-xl font-bold text-base text-stone-700 bg-white border-2 border-stone-200 hover:bg-stone-50 hover:border-stone-300 transition-all duration-300 cursor-pointer"
+              className="flex-1 py-3 rounded-xl font-semibold text-sm text-[#2A4649] bg-[#F9F6EF] border border-[#E8EEEA] hover:bg-[#EEF2ED] transition-all"
             >
               {step === 1 ? 'Cancel' : 'Back'}
             </button>
             <button
               onClick={() => step === 1 ? setStep(2) : handleSubmit()}
               disabled={!canContinue || isSubmitting}
-              className="flex-1 py-4 rounded-xl font-bold text-base text-white border-none cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed bg-gradient-to-br from-red-600 to-orange-600 shadow-[0_4px_12px_rgba(220,38,38,0.25)] transition-all duration-300 enabled:hover:-translate-y-0.5 enabled:hover:shadow-[0_8px_20px_rgba(220,38,38,0.35)]"
+              className="flex-1 py-3 rounded-xl font-semibold text-sm text-white bg-[#2A4649] transition-all hover:-translate-y-0.5 hover:shadow-md disabled:opacity-40 disabled:cursor-not-allowed disabled:translate-y-0 disabled:shadow-none"
             >
-              {step === 1 ? 'Continue' : isSubmitting ? 'Posting…' : 'Post Review'}
+              {step === 1 ? 'Continue' : isSubmitting ? 'Sharing…' : 'Share Feeling'}
             </button>
           </div>
         )}
+
       </div>
     </div>
   );
