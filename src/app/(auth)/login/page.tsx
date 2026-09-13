@@ -6,7 +6,7 @@ import { supabase } from '@/lib/supabaseClient';
 import { getRedirect } from '@/utils/getRedirect';
 import GoogleIcon from '@/components/ui/google-icon';
 import FormField from '@/components/ui/form-field';
-
+import Link from 'next/link';
 
 export default function AuthPage () {
   const [email, setEmail] = useState('');
@@ -18,7 +18,6 @@ export default function AuthPage () {
 
   useEffect(() => {
     const { data: listener } = supabase.auth.onAuthStateChange(async (event, session) => {
-      // Only auto-redirect on the login page if user is already fully signed in with a profile
       if (event === 'SIGNED_IN' && session?.user) {
         try {
           const user = session.user;
@@ -28,9 +27,7 @@ export default function AuthPage () {
             .eq('id', user.id)
             .maybeSingle();
           if (profileError) console.error('Profile fetch error:', profileError.message);
-          if (profileData?.username) {
-            router.push(getRedirect());
-          }
+          if (profileData?.username) router.push(getRedirect());
         } catch (err) {
           console.error('Error checking profile on sign-in:', err);
         }
@@ -43,7 +40,6 @@ export default function AuthPage () {
     const { data, error } = await supabase.auth.signInWithPassword({ email, password });
     if (error) { setError(error.message); return; }
     if (!data.user) { setError('User not found'); return; }
-
     const { data: profileData, error: profileError } = await supabase
       .from('profiles').select('username').eq('id', data.user.id).maybeSingle();
     if (profileError) { console.error('Profile fetch error:', profileError.message); return; }
@@ -51,7 +47,6 @@ export default function AuthPage () {
       router.push(`/complete-profile?redirect=${encodeURIComponent(getRedirect())}`);
       return;
     }
-    // onAuthStateChange handles redirect to / when profile is complete
   };
 
   const handleSignup = async () => {
@@ -84,42 +79,53 @@ export default function AuthPage () {
   const switchMode = () => { setIsLogin(prev => !prev); setError(''); };
 
   return (
-    <div
-      className="font-dm-sans min-h-screen flex items-center justify-center p-8 bg-stone-50"
-    >
-      <div
-        className="bg-white rounded-3xl w-full max-w-[480px] overflow-hidden shadow-[0_24px_48px_rgba(28,25,23,0.12)]"
-      >
+    <div className="font-dm-sans min-h-screen bg-[#FAF7F1] flex items-center justify-center p-6">
 
-        {/* Header */}
-        {isLogin ? (
-          <div
-            className="px-6 sm:px-12 pt-12 pb-8 text-center bg-gradient-to-br from-stone-900 to-stone-800"
-          >
-            <div className="font-archivo-black text-[1.75rem] tracking-tight bg-gradient-to-br from-red-600 to-orange-600 bg-clip-text text-transparent mb-4">
-              REELEMOTIONS
-            </div>
-            <h1 className="font-archivo-black text-[1.75rem] text-white mb-2 tracking-tight">Welcome Back</h1>
-            <p className="text-stone-400 text-[0.95rem]">Sign in to your account</p>
-          </div>
-        ) : (
-          <div
-            className="px-6 sm:px-12 pt-12 pb-8 text-center bg-gradient-to-br from-red-100 to-orange-200"
-          >
-            <div className="font-archivo-black text-[1.75rem] tracking-tight bg-gradient-to-br from-red-600 to-orange-600 bg-clip-text text-transparent mb-4">
-              REELEMOTIONS
-            </div>
-            <h1 className="font-archivo-black text-[1.75rem] tracking-tight mb-2 text-orange-900">
-              Become a Member
+      <div className="w-full max-w-[420px]">
+
+        {/* Logo */}
+        <div className="text-center mb-8">
+          <Link href="/">
+            <span className="font-plus-jakarta font-extrabold text-2xl tracking-tight text-[#172526]">
+              ReelEmotions
+            </span>
+          </Link>
+        </div>
+
+        {/* Card */}
+        <div className="bg-[#FFFDF8] border border-[#E8EEEA] rounded-3xl p-8 shadow-[0_8px_32px_rgba(23,37,38,0.06)]">
+
+          {/* Heading */}
+          <div className="mb-8">
+            <h1 className="font-plus-jakarta font-extrabold text-2xl tracking-tight text-[#172526] mb-1">
+              {isLogin ? 'Welcome back' : 'Join ReelEmotions'}
             </h1>
-            <p className="text-[0.95rem] text-amber-800">Join early and influence other users</p>
+            <p className="text-sm text-[#6F8C88]">
+              {isLogin
+                ? 'Sign in to share and discover reactions.'
+                : 'Share how movies make you feel.'}
+            </p>
           </div>
-        )}
 
-        {/* Body */}
-        <div className="px-6 sm:px-12 pt-10 pb-12">
+          {/* Google */}
+          <button
+            type="button"
+            onClick={handleGoogleLogin}
+            className="w-full py-3 border border-[#E8EEEA] bg-white rounded-xl font-semibold text-sm text-[#172526] transition-all hover:border-[#2A4649] hover:shadow-sm flex items-center justify-center gap-2.5 mb-6"
+          >
+            <GoogleIcon />
+            <span>Continue with Google</span>
+          </button>
 
-          <form onSubmit={handleSubmit} className="flex flex-col gap-5">
+          {/* Divider */}
+          <div className="relative flex items-center gap-3 mb-6">
+            <div className="flex-1 h-px bg-[#E8EEEA]" />
+            <span className="text-xs text-[#6F8C88] font-medium">or</span>
+            <div className="flex-1 h-px bg-[#E8EEEA]" />
+          </div>
+
+          {/* Form */}
+          <form onSubmit={handleSubmit} className="flex flex-col gap-4">
             {!isLogin && (
               <FormField
                 label="Username"
@@ -142,52 +148,48 @@ export default function AuthPage () {
             <FormField
               label="Password"
               type="password"
-              placeholder={isLogin ? 'Enter your password' : 'Create a strong password'}
+              placeholder={isLogin ? 'Enter your password' : 'At least 8 characters'}
               value={password}
               onChange={e => setPassword(e.target.value)}
               required
               hint={!isLogin ? 'At least 8 characters' : undefined}
             />
 
-            {error && <p className="text-red-600 text-sm">{error}</p>}
+            {error && (
+              <p className="text-sm text-rose-600 bg-rose-50 border border-rose-100 rounded-xl px-4 py-2.5">
+                {error}
+              </p>
+            )}
 
             <button
               type="submit"
-              className="w-full py-4 text-white font-bold rounded-xl text-[1rem] transition-all duration-300 hover:-translate-y-0.5 bg-gradient-to-br from-red-600 to-orange-600 shadow-[0_4px_12px_rgba(220,38,38,0.25)]"
+              className="w-full py-3 text-white font-semibold rounded-xl text-sm transition-all hover:-translate-y-0.5 hover:shadow-md bg-[#2A4649] mt-1"
             >
               {isLogin ? 'Sign In' : 'Create Account'}
             </button>
           </form>
 
-          {/* Divider */}
-          <div className="relative text-center my-6 text-[0.85rem] text-stone-500">
-            <div className="absolute top-1/2 left-0 w-[40%] h-px bg-stone-200" />
-            <span className="relative bg-white px-2">or continue with</span>
-            <div className="absolute top-1/2 right-0 w-[40%] h-px bg-stone-200" />
-          </div>
-
-          {/* Google */}
-          <button
-            type="button"
-            onClick={handleGoogleLogin}
-            className="w-full py-[0.875rem] border-2 border-stone-200 bg-white rounded-xl font-semibold text-[0.9rem] transition-all duration-300 hover:border-red-600 hover:bg-stone-50 flex items-center justify-center gap-2"
-          >
-            <GoogleIcon />
-            <span>Google</span>
-          </button>
-
           {/* Toggle */}
-          <p className="text-center mt-6 text-[0.9rem] text-stone-500">
+          <p className="text-center mt-6 text-sm text-[#6F8C88]">
             {isLogin ? "Don't have an account? " : 'Already have an account? '}
             <button
               type="button"
               onClick={switchMode}
-              className="text-red-600 font-semibold hover:text-orange-600 transition-colors duration-300"
+              className="text-[#2A4649] font-semibold hover:opacity-70 transition-opacity"
             >
               {isLogin ? 'Sign Up' : 'Sign In'}
             </button>
           </p>
+
         </div>
+
+        {/* Back link */}
+        <p className="text-center mt-6 text-xs text-[#6F8C88]">
+          <Link href="/discover" className="hover:text-[#2A4649] transition-colors">
+            ← Back to discover
+          </Link>
+        </p>
+
       </div>
     </div>
   );
