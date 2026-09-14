@@ -67,10 +67,10 @@ export const PostCard = ({
       {/* User + time */}
       <div className="flex items-center justify-between gap-2">
         <div className="flex items-center gap-2.5">
-          <div className="w-7 h-7 rounded-full flex items-center justify-center text-white text-xs font-bold flex-shrink-0 bg-[#2A4649]">
+          <div className="w-10 h-10 rounded-full flex items-center justify-center text-white text-xs font-bold flex-shrink-0 bg-[#2A4649]">
             {initials}
           </div>
-          <span className="text-sm font-semibold text-[#172526]">{username || 'Anonymous'}</span>
+          <span className="text-lg font-semibold text-[#172526]">{username || 'Anonymous'}</span>
         </div>
         <span className="text-xs text-[#6F8C88] flex-shrink-0">{formatRelativeTime(createdAt)}</span>
       </div>
