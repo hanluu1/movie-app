@@ -4,7 +4,7 @@ import { useRouter, usePathname } from 'next/navigation';
 import { useRef, useState, useEffect } from 'react';
 import { supabase } from '@/lib/supabaseClient';
 import { ArrowRightOnRectangleIcon, Bars3Icon, XMarkIcon, MagnifyingGlassIcon, ArrowLeftIcon } from '@heroicons/react/24/outline';
-import { MovieSearch } from '@/components/movies/search-movie';
+import { AppSearch } from '@/components/search/app-search';
 import Link from 'next/link';
 import type { User } from '@supabase/auth-js';
 
@@ -83,6 +83,15 @@ export function Header ({ onCreatePost, showSearch = true }: {
 
       <div className="flex items-center gap-4">
 
+        {/* Search - desktop only */}
+        {showSearch && (
+          <AppSearch
+            variant="floating"
+            excludeRef={menuRef}
+            className="hidden sm:block w-[180px] sm:w-[240px]"
+          />
+        )}
+
         {/* Add Review - desktop only */}
         {onCreatePost && (
           <button
@@ -124,6 +133,16 @@ export function Header ({ onCreatePost, showSearch = true }: {
         )}
 
 
+
+        {/* Search icon - mobile only */}
+        {showSearch && (
+          <button
+            onClick={() => setSearchOpen(true)}
+            className="sm:hidden p-1 text-[#2A4649] transition-colors"
+          >
+            <MagnifyingGlassIcon className="w-6 h-6" />
+          </button>
+        )}
 
         {/* Mobile menu */}
         <div className="relative sm:hidden" ref={menuRef}>
@@ -185,6 +204,27 @@ export function Header ({ onCreatePost, showSearch = true }: {
         </div>
 
       </div>
+
+      {/* Mobile search overlay */}
+      {searchOpen && (
+        <div className="fixed inset-x-0 top-0 h-dvh bg-[#FFFDF8] z-[100] flex flex-col sm:hidden">
+          <div className="flex items-center gap-3 px-4 py-3 border-b border-[#E8EEEA] flex-shrink-0">
+            <button
+              onClick={() => setSearchOpen(false)}
+              className="p-1 text-[#2A4649] transition-colors flex-shrink-0"
+            >
+              <ArrowLeftIcon className="w-5 h-5" />
+            </button>
+            <AppSearch
+              variant="inline"
+              onSelect={() => setSearchOpen(false)}
+              autoFocus
+              className="flex-1"
+              resultsClassName="mt-2"
+            />
+          </div>
+        </div>
+      )}
 
     </header>
   );
