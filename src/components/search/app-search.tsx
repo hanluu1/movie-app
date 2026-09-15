@@ -91,23 +91,25 @@ export function AppSearch ({ variant = 'floating', onSelect, excludeRef, classNa
     : 'w-full pl-9 pr-4 py-2.5 border border-[#E8EEEA] rounded-xl text-sm bg-[#F9F6EF] transition-all focus:outline-none focus:border-[#2A4649] focus:ring-2 focus:ring-[#2A4649]/10 placeholder:text-[#6F8C88]';
 
   return (
-    <div ref={containerRef} className={`relative ${className ?? ''}`}>
-      <MagnifyingGlassIcon className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-[#6F8C88] pointer-events-none" />
-      <input
-        type="text"
-        value={query}
-        onChange={e => setQuery(e.target.value)}
-        placeholder="Search posts or people..."
-        autoFocus={autoFocus}
-        className={inputClass}
-        onKeyDown={e => {
-          if (e.key === 'Escape') clear();
-          if (e.key === 'Enter' && query.trim()) {
-            router.push(`/search?q=${encodeURIComponent(query.trim())}`);
-            clear();
-          }
-        }}
-      />
+    <div ref={containerRef} className={`${className ?? ''}`}>
+      <div className="relative">
+        <MagnifyingGlassIcon className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-[#6F8C88] pointer-events-none" />
+        <input
+          type="text"
+          value={query}
+          onChange={e => setQuery(e.target.value)}
+          placeholder="Search posts or people..."
+          autoFocus={autoFocus}
+          className={inputClass}
+          onKeyDown={e => {
+            if (e.key === 'Escape') clear();
+            if (e.key === 'Enter' && query.trim()) {
+              router.push(`/search?q=${encodeURIComponent(query.trim())}`);
+              clear();
+            }
+          }}
+        />
+      </div>
 
       {open && hasResults && (
         <div className={variant === 'floating'

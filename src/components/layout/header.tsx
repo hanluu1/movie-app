@@ -5,6 +5,7 @@ import { useRef, useState, useEffect } from 'react';
 import { supabase } from '@/lib/supabaseClient';
 import { ArrowRightOnRectangleIcon, Bars3Icon, XMarkIcon, MagnifyingGlassIcon, ArrowLeftIcon } from '@heroicons/react/24/outline';
 import { AppSearch } from '@/components/search/app-search';
+import Image from 'next/image';
 import Link from 'next/link';
 import type { User } from '@supabase/auth-js';
 
@@ -15,7 +16,7 @@ export function Header ({ onCreatePost, showSearch = true }: {
   const router = useRouter();
   const pathname = usePathname();
   const [user, setUser] = useState<User | null>(null);
-  const [profile, setProfile] = useState<{username: string} | null>(null);
+  const [profile, setProfile] = useState<{ username: string; avatar_url?: string | null } | null>(null);
   const [menuOpen, setMenuOpen] = useState(false);
   const [searchOpen, setSearchOpen] = useState(false);
   const menuRef = useRef<HTMLDivElement>(null);
@@ -31,7 +32,7 @@ export function Header ({ onCreatePost, showSearch = true }: {
       if (user) {
         const { data: profileData } = await supabase
           .from('profiles')
-          .select('username')
+          .select('username, avatar_url')
           .eq('id', user.id)
           .single();
         if (profileData) {
@@ -108,10 +109,12 @@ export function Header ({ onCreatePost, showSearch = true }: {
         {user && (
           <button
             onClick={() => router.push('/my-profiles')}
-            className="hidden sm:flex w-9 h-9 rounded-full items-center justify-center text-white font-bold text-sm flex-shrink-0 transition-all hover:scale-105 bg-[#2A4649]"
+            className="hidden sm:flex w-9 h-9 rounded-full items-center justify-center text-white font-bold text-sm flex-shrink-0 transition-all hover:scale-105 bg-[#2A4649] overflow-hidden relative"
             title="My profile"
           >
-            {initials}
+            {profile?.avatar_url
+              ? <Image src={profile.avatar_url} alt={profile.username} fill className="object-cover" sizes="36px" />
+              : initials}
           </button>
         )}
 
@@ -161,8 +164,10 @@ export function Header ({ onCreatePost, showSearch = true }: {
                   onClick={() => { router.push('/my-profiles'); setMenuOpen(false); }}
                   className="w-full flex items-center gap-3 px-4 py-3 hover:bg-[#EEF2ED] transition-colors text-left"
                 >
-                  <div className="w-8 h-8 rounded-full flex items-center justify-center text-white font-bold text-xs flex-shrink-0 bg-[#2A4649]">
-                    {initials}
+                  <div className="w-8 h-8 rounded-full flex items-center justify-center text-white font-bold text-xs flex-shrink-0 bg-[#2A4649] overflow-hidden relative">
+                    {profile?.avatar_url
+                      ? <Image src={profile.avatar_url} alt={profile.username} fill className="object-cover" sizes="32px" />
+                      : initials}
                   </div>
                   <span className="text-sm font-semibold text-[#172526] truncate">{profile?.username}</span>
                 </button>
