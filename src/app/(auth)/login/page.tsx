@@ -2,7 +2,7 @@
 
 import { useRouter } from 'next/navigation';
 import { useState, useEffect } from 'react';
-import { supabase } from '@/lib/supabaseClient';
+import { supabase } from '@/lib/supabase/client';
 import { getRedirect } from '@/utils/getRedirect';
 import GoogleIcon from '@/components/ui/google-icon';
 import FormField from '@/components/ui/form-field';

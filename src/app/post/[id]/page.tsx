@@ -2,9 +2,9 @@
 
 import { useCallback, useEffect, useState } from 'react';
 import { useParams, useRouter } from 'next/navigation';
-import { supabase } from '@/lib/supabaseClient';
+import { supabase } from '@/lib/supabase/client';
 import { Header } from '@/components/layout';
-import { EditPostForm } from '@/modules/user-post';
+import { EditPostForm } from '@/features/posts';
 import Image from 'next/image';
 import Link from 'next/link';
 import {
@@ -14,117 +14,55 @@ import {
   PencilSquareIcon,
   TrashIcon,
 } from '@heroicons/react/24/outline';
-import { WatchlistButtons } from '@/components/movies/watchlist-buttons';
+import { HeartIcon as HeartSolidIcon } from '@heroicons/react/24/solid';
 import { SignInPrompt } from '@/components/ui/sign-in-prompt';
 import { useAuthUser } from '@/hooks/use-auth-user';
-import { HeartIcon as HeartSolidIcon } from '@heroicons/react/24/solid';
 
 interface Post {
   id: string;
   title: string;
   content: string;
-  image_url: string | string[];
   created_at: string;
   upvotes: number;
   movie_title?: string;
   movie_image?: string;
+  movie_id?: number | null;
+  media_type?: string | null;
   user_id: string;
-  profiles?: { username: string } | null;
+  profiles?: { username: string; avatar_url?: string | null } | null;
 }
 
 interface Comment {
   id: string;
   content: string;
   created_at: string;
-  profiles: { username: string } | null;
-}
-
-interface MovieDetails {
-  tmdbId: number;
-  genres: string[];
-  cast: string[];
-  director: string | null;
-  year: string;
-  mediaType: 'movie' | 'tv';
-}
-
-const TMDB_GENRES: Record<number, string> = {
-  28: 'Action', 12: 'Adventure', 16: 'Animation', 35: 'Comedy',
-  80: 'Crime', 99: 'Documentary', 18: 'Drama', 10751: 'Family',
-  14: 'Fantasy', 36: 'History', 27: 'Horror', 10402: 'Music',
-  9648: 'Mystery', 10749: 'Romance', 878: 'Sci-Fi', 53: 'Thriller',
-  10752: 'War', 37: 'Western', 10765: 'Sci-Fi & Fantasy',
-  10759: 'Action & Adventure',
-};
-
-async function fetchMovieDetails (title: string, posterUrl?: string): Promise<MovieDetails | null> {
-  if (!title) return null;
-  const q = encodeURIComponent(title);
-
-
-  try {
-    const [movieData, tvData] = await Promise.all([
-      fetch(`/api/tmdb?path=${encodeURIComponent(`/search/movie?query=${q}`)}`).then(r => r.json()),
-      fetch(`/api/tmdb?path=${encodeURIComponent(`/search/tv?query=${q}`)}`).then(r => r.json()),
-
-    ]);
-
-    const posterPath = posterUrl?.match(/\/p\/w\d+(\/.+)/)?.[1] ?? null;
-
-    const movieResults: any[] = movieData.results || [];
-    const tvResults: any[] = tvData.results || [];
-
-    let result: any = null;
-    let mediaType: 'movie' | 'tv' = 'movie';
-
-    if (posterPath) {
-      result = movieResults.find(r => r.poster_path === posterPath);
-      if (!result) {
-        const tvMatch = tvResults.find(r => r.poster_path === posterPath);
-        if (tvMatch) { result = tvMatch; mediaType = 'tv'; }
-      }
-    }
-
-    if (!result) {
-      result = movieResults.find(r => r.title?.toLowerCase() === title.toLowerCase()) ?? movieResults[0];
-      const tvExact = tvResults.find(r => r.name?.toLowerCase() === title.toLowerCase());
-      if (!result && tvExact) { result = tvExact; mediaType = 'tv'; }
-    }
-
-    if (!result) return null;
-
-    const genres = (result.genre_ids || []).slice(0, 3).map((id: number) => TMDB_GENRES[id]).filter(Boolean);
-    const year = (result.release_date || result.first_air_date || '').slice(0, 4);
-
-    const creditsData = await fetch(
-      `/api/tmdb?path=${encodeURIComponent(`/${mediaType}/${result.id}/credits`)}`
-    ).then(r => r.json());
-
-
-    const cast: string[] = (creditsData.cast || []).slice(0, 3).map((c: any) => c.name);
-    const director: string | null =
-      creditsData.crew?.find((c: any) => c.job === 'Director')?.name ??
-      creditsData.crew?.find((c: any) => c.job === 'Series Director')?.name ??
-      (mediaType === 'tv' ? creditsData.crew?.find((c: any) => c.job === 'Executive Producer')?.name : null) ??
-      null;
-
-    return { tmdbId: result.id, genres, cast, director, year, mediaType };
-  } catch {
-    return null;
-  }
+  profiles: { username: string; avatar_url?: string | null } | null;
 }
 
 function formatTimestamp (dateStr: string) {
   const d = new Date(dateStr);
-  return (
-    d.toLocaleDateString('en-US', { month: 'long', day: 'numeric', year: 'numeric' }) +
-    ' at ' +
-    d.toLocaleTimeString('en-US', { hour: 'numeric', minute: '2-digit' })
-  );
+  return d.toLocaleDateString('en-US', { month: 'long', day: 'numeric', year: 'numeric' }) +
+    ' at ' + d.toLocaleTimeString('en-US', { hour: 'numeric', minute: '2-digit' });
 }
 
 function getInitials (name: string) {
-  return name.slice(0, 2).toUpperCase();
+  const parts = name.trim().split(/\s+/);
+  return parts.length >= 2
+    ? (parts[0][0] + parts[parts.length - 1][0]).toUpperCase()
+    : name.slice(0, 2).toUpperCase();
+}
+
+function Avatar ({ username, avatarUrl, size = 10 }: { username: string; avatarUrl?: string | null; size?: number }) {
+  const sizeClass = `w-${size} h-${size}`;
+  return (
+    <div className={`${sizeClass} rounded-full flex-shrink-0 bg-[#2A4649] flex items-center justify-center text-white font-bold text-sm overflow-hidden relative`}>
+      {avatarUrl ? (
+        <Image src={avatarUrl} alt={username} fill className="object-cover" sizes={`${size * 4}px`} />
+      ) : (
+        getInitials(username)
+      )}
+    </div>
+  );
 }
 
 export default function PostDetailPage () {
@@ -138,8 +76,8 @@ export default function PostDetailPage () {
   const [loading, setLoading] = useState(true);
   const [edit, setEdit] = useState(false);
   const [liked, setLiked] = useState(false);
-  const [movieDetails, setMovieDetails] = useState<MovieDetails | null>(null);
   const [authPromptAction, setAuthPromptAction] = useState<string | null>(null);
+  const [currentProfile, setCurrentProfile] = useState<{ username: string; avatar_url?: string | null } | null>(null);
   const { user } = useAuthUser();
 
   const requireAuth = (action: string) => {
@@ -152,7 +90,7 @@ export default function PostDetailPage () {
     if (!id) return;
     const { data, error } = await supabase
       .from('posts')
-      .select('*, profiles(username)')
+      .select('*, profiles(username, avatar_url)')
       .eq('id', id)
       .single();
     if (!error) setPost(data as Post);
@@ -162,7 +100,7 @@ export default function PostDetailPage () {
     if (!id) return;
     const { data, error } = await supabase
       .from('comments')
-      .select('*, profiles(username)')
+      .select('*, profiles(username, avatar_url)')
       .eq('post_id', id)
       .order('created_at', { ascending: true });
     if (!error) setComments((data as Comment[]) || []);
@@ -176,16 +114,16 @@ export default function PostDetailPage () {
   }, [id, fetchPost, fetchComments]);
 
   useEffect(() => {
-    if (post?.movie_title) {
-      fetchMovieDetails(post.movie_title, post.movie_image).then(setMovieDetails);
-    }
-  }, [post?.movie_title, post?.movie_image]);
+    if (!user) return;
+    supabase.from('profiles').select('username, avatar_url').eq('id', user.id).single()
+      .then(({ data }) => { if (data) setCurrentProfile(data); });
+  }, [user]);
 
   const handleUpvote = async () => {
     if (!post) return;
     if (!requireAuth('like this post')) return;
     const next = liked ? post.upvotes - 1 : post.upvotes + 1;
-    setLiked(!liked);
+    setLiked(l => !l);
     await supabase.from('posts').update({ upvotes: next }).eq('id', post.id);
     await fetchPost();
   };
@@ -199,18 +137,17 @@ export default function PostDetailPage () {
   };
 
   const handleDeletePost = async () => {
-    if (!window.confirm('Are you sure you want to delete this post?')) return;
+    if (!window.confirm('Delete this post?')) return;
     const { error } = await supabase.from('posts').delete().eq('id', id);
-    if (!error) router.push('/');
+    if (!error) router.push('/discover');
   };
 
   if (loading) {
     return (
-      <div className="min-h-screen bg-stone-50 flex flex-col">
+      <div className="min-h-screen bg-[#FAF7F1] flex flex-col">
         <Header />
-        <div className="flex-1 flex flex-col items-center justify-center gap-4 text-center px-4">
-          <div className="w-10 h-10 rounded-full border-4 border-stone-200 border-t-red-600 animate-spin" />
-          <p className="text-stone-400 text-sm">Loading…</p>
+        <div className="flex-1 flex items-center justify-center">
+          <div className="w-8 h-8 rounded-full border-2 border-[#E8EEEA] border-t-[#2A4649] animate-spin" />
         </div>
       </div>
     );
@@ -218,9 +155,9 @@ export default function PostDetailPage () {
 
   if (!post) {
     return (
-      <div className="min-h-screen bg-stone-50">
+      <div className="min-h-screen bg-[#FAF7F1]">
         <Header />
-        <div className="flex items-center justify-center h-64 text-stone-400">Post not found.</div>
+        <div className="flex items-center justify-center h-64 text-[#6F8C88]">Post not found.</div>
       </div>
     );
   }
@@ -229,45 +166,59 @@ export default function PostDetailPage () {
   const isOwner = user?.id === post.user_id;
 
   return (
-    <div className="min-h-screen bg-stone-50">
+    <div className="font-dm-sans min-h-screen bg-[#FAF7F1] text-[#172526]">
       <Header />
 
-      <div className="max-w-[900px] mx-auto px-4 sm:px-8 py-8">
+      <div className="max-w-2xl mx-auto px-4 sm:px-6 py-8">
 
-        {/* Back link */}
+        {/* Back */}
         <Link
           href="/discover"
-          className="inline-flex items-center gap-2 text-stone-500 hover:text-red-600 font-medium mb-6 transition-colors duration-200 text-sm"
+          className="inline-flex items-center gap-1.5 text-sm font-semibold text-[#6F8C88] hover:text-[#172526] transition-colors mb-6"
         >
           <ArrowLeftIcon className="w-4 h-4" />
           Back to feed
         </Link>
 
-        {/* Post card */}
-        <div className="bg-white rounded-2xl border border-stone-200 overflow-hidden mb-8">
+        {/* Post */}
+        <div className="bg-[#FFFDF8] border border-[#E8EEEA] rounded-2xl overflow-hidden mb-6">
 
-          {/* Author header */}
-          <div className="px-6 py-5 border-b border-stone-100 flex items-center gap-4">
-            <div
-              className="w-12 h-12 rounded-full flex items-center justify-center text-white font-bold text-lg flex-shrink-0 bg-gradient-to-br from-red-600 to-orange-600"
-            >
-              {getInitials(authorName)}
+          {/* Author row */}
+          <div className="px-6 pt-6 pb-5 flex items-center justify-between gap-4">
+            <div className="flex items-center gap-3">
+              <Avatar username={authorName} avatarUrl={post.profiles?.avatar_url} size={10} />
+              <div>
+                <div className="font-semibold text-sm text-[#172526]">{authorName}</div>
+                <div className="text-xs text-[#6F8C88]">{formatTimestamp(post.created_at)}</div>
+              </div>
             </div>
-            <div className="flex-1 min-w-0">
-              <div className="font-bold text-base text-stone-900">{authorName}</div>
-              <div className="text-stone-500 text-sm">Posted on {formatTimestamp(post.created_at)}</div>
-            </div>
-            
+            {isOwner && !edit && (
+              <div className="flex gap-2">
+                <button
+                  onClick={() => setEdit(true)}
+                  className="flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-xs font-semibold text-[#6F8C88] hover:text-[#172526] hover:bg-[#EEF2ED] transition-all"
+                >
+                  <PencilSquareIcon className="w-3.5 h-3.5" />
+                  Edit
+                </button>
+                <button
+                  onClick={handleDeletePost}
+                  className="flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-xs font-semibold text-rose-400 hover:text-rose-600 hover:bg-rose-50 transition-all"
+                >
+                  <TrashIcon className="w-3.5 h-3.5" />
+                  Delete
+                </button>
+              </div>
+            )}
           </div>
 
           {/* Edit form */}
           {edit && (
-            <div className="px-6 py-6">
+            <div className="px-6 pb-6">
               <EditPostForm
                 postId={post.id}
                 title={post.title}
                 content={post.content || ''}
-                imageUrl={(Array.isArray(post.image_url) ? '' : post.image_url) || ''}
                 onCancel={() => setEdit(false)}
                 onSave={async () => { setEdit(false); await fetchPost(); }}
               />
@@ -276,191 +227,129 @@ export default function PostDetailPage () {
 
           {!edit && (
             <>
-              {/* Movie section */}
-              {post.movie_title && (
-                <div className="px-6 py-5 bg-stone-50 border-b border-stone-100 flex gap-6 items-start">
-                  {post.movie_image && (
-                    <div className="rounded-lg overflow-hidden flex-shrink-0 shadow w-[100px] h-[150px]">
-                      <Image
-                        src={post.movie_image}
-                        alt={post.movie_title}
-                        width={100}
-                        height={150}
-                        className="w-full h-full object-cover"
-                      />
-                    </div>
-                  )}
-                  <div className="flex-1 min-w-0 pt-1">
-                    <h2
-                      className="font-archivo-black text-[1.4rem] tracking-[-0.02em] text-red-600 leading-tight mb-1"
-                    >
-                      {post.movie_title}
-                    </h2>
-
-                    {movieDetails && (
-                      <>
-                        <div className="text-stone-500 text-sm mb-2">
-                          {[
-                            movieDetails.year,
-                            movieDetails.mediaType === 'tv' ? 'TV Series' : 'Film',
-                          ].filter(Boolean).join(' · ')}
-                        </div>
-
-                        {movieDetails.cast.length > 0 && (
-                          <div className="text-sm text-stone-500 mb-3">
-                            <span className="font-semibold text-stone-700">Starring </span>
-                            {movieDetails.cast.join(', ')}
-                          </div>
-                        )}
-
-                        {movieDetails.genres.length > 0 && (
-                          <div className="flex flex-wrap gap-1.5 mb-3">
-                            {movieDetails.genres.map(g => (
-                              <span
-                                key={g}
-                                className="px-2.5 py-0.5 bg-white border border-stone-200 rounded-full text-xs font-medium text-stone-600"
-                              >
-                                {g}
-                              </span>
-                            ))}
-                          </div>
-                        )}
-                      </>
-                    )}
-
-                    {movieDetails && (
-                      <WatchlistButtons
-                        movieId={movieDetails.tmdbId}
-                        title={post.movie_title!}
-                        posterPath={post.movie_image?.match(/\/p\/w\d+(\/.+)/)?.[1] ?? null}
-                        releaseDate={movieDetails.year}
-                      />
-                    )}
-
-                    {!movieDetails && (
-                      <div className="text-stone-400 text-xs mt-2 animate-pulse">Loading details…</div>
-                    )}
-                  </div>
-                </div>
-              )}
-
-              {/* Review content */}
-              <div className="px-6 py-8">
-                <h1
-                  className="font-archivo-black text-[1.75rem] tracking-[-0.02em] text-stone-900 mb-5 leading-snug"
-                >
+              {/* Reaction content */}
+              <div className="px-6 pb-6">
+                <h1 className="font-plus-jakarta font-extrabold text-2xl text-[#172526] leading-snug mb-4">
                   {post.title}
                 </h1>
                 {post.content && (
-                  <p className="text-stone-600 text-base leading-[1.8]">
+                  <p className="text-[#3F5E5A] text-base leading-relaxed">
                     {post.content}
                   </p>
                 )}
               </div>
 
+              {/* Movie pill */}
+              {post.movie_title && (
+                <div className="px-6 pb-5">
+                  {post.movie_id ? (
+                    <Link
+                      href={`/movie-more-info/${post.movie_id}${post.media_type ? `?type=${post.media_type}` : ''}`}
+                      className="inline-flex items-center gap-2.5 bg-[#EEF2ED] hover:bg-[#dde5dc] rounded-xl px-3 py-2 transition-colors"
+                    >
+                      {post.movie_image && (
+                        <div className="relative w-6 h-9 rounded flex-shrink-0 overflow-hidden">
+                          <Image src={post.movie_image} alt={post.movie_title} fill className="object-cover" sizes="24px" />
+                        </div>
+                      )}
+                      <span className="text-xs font-semibold text-[#2A4649]">{post.movie_title}</span>
+                    </Link>
+                  ) : (
+                    <div className="inline-flex items-center gap-2.5 bg-[#EEF2ED] rounded-xl px-3 py-2">
+                      {post.movie_image && (
+                        <div className="relative w-6 h-9 rounded flex-shrink-0 overflow-hidden">
+                          <Image src={post.movie_image} alt={post.movie_title} fill className="object-cover" sizes="24px" />
+                        </div>
+                      )}
+                      <span className="text-xs font-semibold text-[#2A4649]">{post.movie_title}</span>
+                    </div>
+                  )}
+                </div>
+              )}
+
               {/* Action bar */}
-              <div className="px-6 py-4 border-t border-stone-100 flex flex-wrap gap-3 items-center">
+              <div className="px-6 py-4 border-t border-[#E8EEEA] flex items-center gap-4">
                 <button
                   onClick={handleUpvote}
-                  className={`px-5 py-3 border rounded-lg font-semibold text-sm flex items-center gap-2 transition-all duration-200 ${liked ? 'bg-gradient-to-br from-red-100 to-orange-200 border-red-600 text-red-600' : 'bg-white border-stone-200 text-stone-700'}`}
+                  className={`flex items-center gap-2 px-4 py-2 rounded-xl text-sm font-semibold transition-all ${
+                    liked
+                      ? 'bg-rose-50 text-rose-500 border border-rose-200'
+                      : 'bg-[#EEF2ED] text-[#6F8C88] hover:text-rose-500 border border-transparent'
+                  }`}
                 >
-                  {liked
-                    ? <HeartSolidIcon className="w-4 h-4 text-red-600" />
-                    : <HeartIcon className="w-4 h-4" />}
-                  Like ({post.upvotes})
+                  {liked ? <HeartSolidIcon className="w-4 h-4" /> : <HeartIcon className="w-4 h-4" />}
+                  {post.upvotes} felt the same
                 </button>
-
                 <a
                   href="#comments"
-                  className="px-5 py-3 rounded-lg font-semibold text-sm flex items-center gap-2 text-white no-underline transition-all duration-200 hover:-translate-y-px bg-gradient-to-br from-red-600 to-orange-600 shadow-[0_2px_8px_rgba(220,38,38,0.2)]"
+                  className="flex items-center gap-2 px-4 py-2 rounded-xl text-sm font-semibold bg-[#EEF2ED] text-[#6F8C88] hover:text-[#2A4649] transition-colors border border-transparent"
                 >
                   <ChatBubbleLeftEllipsisIcon className="w-4 h-4" />
-                  Comment
+                  {comments.length} {comments.length === 1 ? 'reply' : 'replies'}
                 </a>
-
-                {isOwner && (
-                  <div className="ml-auto flex gap-2">
-                    <button
-                      onClick={() => setEdit(true)}
-                      className="px-5 py-3 border border-stone-200 bg-white rounded-lg font-semibold text-sm text-stone-500 hover:bg-stone-50 flex items-center gap-2 transition-all duration-200"
-                    >
-                      <PencilSquareIcon className="w-4 h-4" />
-                      Edit
-                    </button>
-                    <button
-                      onClick={handleDeletePost}
-                      className="px-5 py-3 border border-stone-200 bg-white rounded-lg font-semibold text-sm text-red-600 hover:bg-red-50 hover:border-red-300 flex items-center gap-2 transition-all duration-200"
-                    >
-                      <TrashIcon className="w-4 h-4" />
-                      Delete
-                    </button>
-                  </div>
-                )}
               </div>
             </>
           )}
         </div>
 
-        {/* Comments section */}
-        <div id="comments" className="bg-white rounded-2xl border border-stone-200 px-6 py-6">
-          <h3
-            className="font-archivo-black text-[1.25rem] tracking-[-0.02em] text-stone-900 mb-6"
-          >
-            Comments ({comments.length})
-          </h3>
+        {/* Comments */}
+        <div id="comments" className="bg-[#FFFDF8] border border-[#E8EEEA] rounded-2xl px-6 py-6">
 
-          {/* Comment input */}
-          <div className="mb-8">
-            <textarea
-              value={newComment}
-              onChange={(e) => setNewComment(e.target.value)}
-              placeholder="Share your thoughts on this review..."
-              className="w-full min-h-[80px] px-4 py-4 border-2 border-stone-200 focus:border-red-600 rounded-xl text-base resize-y outline-none transition-colors duration-200 leading-[1.6]"
-            />
-            <button
-              onClick={handleAddComment}
-              disabled={!newComment.trim()}
-              className="mt-3 px-6 py-3 rounded-lg font-bold text-sm text-white border-none cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed transition-all duration-200 hover:-translate-y-px bg-gradient-to-br from-red-600 to-orange-600 shadow-[0_2px_8px_rgba(220,38,38,0.2)]"
-            >
-              Post Comment
-            </button>
+          <p className="text-xs font-bold uppercase tracking-widest text-[#2A4649] mb-5">
+            {comments.length === 0 ? 'Replies' : `${comments.length} ${comments.length === 1 ? 'Reply' : 'Replies'}`}
+          </p>
+
+          {/* Input */}
+          <div className="flex gap-3 mb-6">
+            {user && (
+              <Avatar username={currentProfile?.username ?? user.email ?? ''} avatarUrl={currentProfile?.avatar_url} size={8} />
+            )}
+            <div className="flex-1">
+              <textarea
+                value={newComment}
+                onChange={e => setNewComment(e.target.value)}
+                placeholder="Share your reaction..."
+                rows={3}
+                className="w-full px-4 py-3 border border-[#E8EEEA] focus:border-[#2A4649] bg-white rounded-xl text-sm outline-none transition-all resize-none leading-relaxed focus:shadow-[0_0_0_3px_rgba(42,70,73,0.08)] placeholder:text-[#6F8C88]"
+              />
+              <button
+                onClick={handleAddComment}
+                disabled={!newComment.trim()}
+                className="mt-2 px-5 py-2 rounded-xl text-sm font-semibold text-white bg-[#2A4649] transition-all hover:-translate-y-0.5 hover:shadow-md disabled:opacity-40 disabled:cursor-not-allowed disabled:translate-y-0 disabled:shadow-none"
+              >
+                Reply
+              </button>
+            </div>
           </div>
 
-          {/* Comments list */}
+          {/* List */}
           {comments.length === 0 ? (
-            <div className="text-center py-12 text-stone-500">
-              <ChatBubbleLeftEllipsisIcon className="w-12 h-12 mx-auto mb-4 text-stone-300" />
-              <p>No comments yet. Be the first to share your thoughts!</p>
+            <div className="text-center py-8 text-[#6F8C88] text-sm">
+              No replies yet — be the first.
             </div>
           ) : (
-            <div className="flex flex-col">
-              {comments.map((comment, idx) => {
-                const username = comment.profiles?.username || 'Anonymous';
+            <div className="flex flex-col divide-y divide-[#E8EEEA]">
+              {comments.map(comment => {
+                const name = comment.profiles?.username || 'Anonymous';
                 return (
-                  <div
-                    key={comment.id}
-                    className={`py-5 ${idx !== comments.length - 1 ? 'border-b border-stone-100' : ''}`}
-                  >
-                    <div className="flex items-center gap-3 mb-3">
-                      <div
-                        className="w-9 h-9 rounded-full flex items-center justify-center text-white font-bold text-sm flex-shrink-0 bg-gradient-to-br from-red-600 to-orange-600"
-                      >
-                        {getInitials(username)}
-                      </div>
-                      <div className="flex items-baseline gap-2">
-                        <span className="font-semibold text-sm text-stone-900">{username}</span>
-                        <span className="text-stone-400 text-xs">
+                  <div key={comment.id} className="py-4 flex gap-3">
+                    <Avatar username={name} avatarUrl={comment.profiles?.avatar_url} size={8} />
+                    <div className="flex-1 min-w-0">
+                      <div className="flex items-baseline gap-2 mb-1">
+                        <span className="text-sm font-semibold text-[#172526]">{name}</span>
+                        <span className="text-xs text-[#6F8C88]">
                           {new Date(comment.created_at).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' })}
                         </span>
                       </div>
+                      <p className="text-sm text-[#3F5E5A] leading-relaxed">{comment.content}</p>
                     </div>
-                    <p className="text-stone-600 text-sm leading-relaxed pl-12">{comment.content}</p>
                   </div>
                 );
               })}
             </div>
           )}
         </div>
+
       </div>
 
       <SignInPrompt

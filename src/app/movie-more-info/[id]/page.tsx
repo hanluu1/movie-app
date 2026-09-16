@@ -1,7 +1,7 @@
 import Image from 'next/image';
 import Link from 'next/link';
 import { Header } from '@/components/layout';
-import { WatchlistButtons } from '@/components/movies/watchlist-buttons';
+import { ArrowLeftIcon } from '@heroicons/react/24/outline';
 import { notFound } from 'next/navigation';
 
 const API_KEY = process.env.TMDB_API_KEY;
@@ -11,8 +11,9 @@ const TMDB_HEADERS = {
   'Content-Type': 'application/json;charset=utf-8',
 };
 
-async function fetchMovieDetails (id: string) {
-  for (const mediaType of ['movie', 'tv'] as const) {
+async function fetchMovieDetails (id: string, type?: string) {
+  const typesToTry = (type === 'movie' || type === 'tv') ? [type] : (['movie', 'tv'] as const);
+  for (const mediaType of typesToTry) {
     const url = `https://api.themoviedb.org/3/${mediaType}/${id}`;
     const res = await fetch(url, { headers: TMDB_HEADERS, next: { revalidate: 3600 } });
     if (!res.ok) continue;
@@ -31,12 +32,13 @@ async function fetchMovieDetails (id: string) {
   return null;
 }
 
-export default async function MoviePage ({ params }: { params: Promise<{ id: string }> }) {
+export default async function MoviePage ({ params, searchParams }: { params: Promise<{ id: string }>; searchParams: Promise<{ type?: string }> }) {
   const { id } = await params;
+  const { type } = await searchParams;
 
   let movie;
   try {
-    movie = await fetchMovieDetails(id);
+    movie = await fetchMovieDetails(id, type);
   } catch {
     notFound();
   }
@@ -66,79 +68,76 @@ export default async function MoviePage ({ params }: { params: Promise<{ id: str
   const rating = vote_average ? Math.round(vote_average * 10) / 10 : null;
 
   return (
-    <div className="min-h-screen bg-stone-50">
+    <div className="font-dm-sans min-h-screen bg-[#FAF7F1] text-[#172526]">
       <Header />
 
-      <div className="max-w-[900px] mx-auto px-4 sm:px-8 py-8">
+      <div className="max-w-2xl mx-auto px-4 sm:px-6 py-8">
 
-        {/* Back link */}
+        {/* Back */}
         <Link
           href="/discover"
-          className="inline-flex items-center gap-2 text-stone-500 hover:text-red-600 font-medium mb-6 transition-colors duration-200 text-sm"
+          className="inline-flex items-center gap-1.5 text-sm font-semibold text-[#6F8C88] hover:text-[#172526] transition-colors mb-6"
         >
-          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-            <path d="M19 12H5M12 19l-7-7 7-7" />
-          </svg>
+          <ArrowLeftIcon className="w-4 h-4" />
           Back to feed
         </Link>
 
-        {/* Main card */}
-        <div className="bg-white rounded-2xl border border-stone-200 overflow-hidden">
-          <div className="flex flex-col sm:flex-row gap-0">
+        {/* Card */}
+        <div className="bg-[#FFFDF8] border border-[#E8EEEA] rounded-2xl overflow-hidden">
+          <div className="flex flex-col sm:flex-row">
 
             {/* Poster */}
-            <div className="sm:w-[220px] flex-shrink-0">
+            <div className="sm:w-[200px] flex-shrink-0">
               {poster_path ? (
                 <Image
                   src={`https://image.tmdb.org/t/p/w500${poster_path}`}
                   alt={displayTitle}
-                  width={220}
-                  height={330}
-                  className="w-full h-full object-cover max-h-[330px]"
+                  width={200}
+                  height={300}
+                  className="w-full h-full object-cover max-h-[300px]"
                 />
               ) : (
-                <div
-                  className="w-full h-[330px] flex items-center justify-center text-stone-400 text-sm bg-gradient-to-br from-red-100 to-orange-200"
-                >
+                <div className="w-full h-[300px] flex items-center justify-center text-[#6F8C88] text-sm bg-[#EEF2ED]">
                   No poster
                 </div>
               )}
             </div>
 
             {/* Info */}
-            <div className="flex-1 px-7 py-7">
-              <h1
-                className="font-archivo-black text-[2rem] tracking-[-0.02em] text-red-600 leading-tight mb-2"
-              >
-                {displayTitle}
-              </h1>
+            <div className="flex-1 p-6 flex flex-col gap-4">
 
-              {/* Meta row */}
-              <div className="flex flex-wrap items-center gap-3 mb-4">
-                {year && <span className="text-stone-500 text-sm">{year}</span>}
-                {year && <span className="text-stone-300 text-sm">·</span>}
-                <span className="text-stone-500 text-sm">{mediaType === 'tv' ? 'TV Series' : 'Film'}</span>
-                {number_of_seasons && (
-                  <>
-                    <span className="text-stone-300 text-sm">·</span>
-                    <span className="text-stone-500 text-sm">{number_of_seasons} season{number_of_seasons > 1 ? 's' : ''}</span>
-                  </>
-                )}
-                {rating && (
-                  <>
-                    <span className="text-stone-300 text-sm">·</span>
-                    <span className="text-amber-500 font-semibold text-sm">★ {rating}</span>
-                  </>
-                )}
+              <div>
+                <h1 className="font-plus-jakarta font-extrabold text-2xl text-[#172526] leading-snug mb-2">
+                  {displayTitle}
+                </h1>
+
+                {/* Meta */}
+                <div className="flex flex-wrap items-center gap-2 text-sm text-[#6F8C88]">
+                  {year && <span>{year}</span>}
+                  <span>·</span>
+                  <span>{mediaType === 'tv' ? 'TV Series' : 'Film'}</span>
+                  {number_of_seasons && (
+                    <>
+                      <span>·</span>
+                      <span>{number_of_seasons} season{number_of_seasons > 1 ? 's' : ''}</span>
+                    </>
+                  )}
+                  {rating && (
+                    <>
+                      <span>·</span>
+                      <span className="text-amber-500 font-semibold">★ {rating}</span>
+                    </>
+                  )}
+                </div>
               </div>
 
               {/* Genres */}
               {genres.length > 0 && (
-                <div className="flex flex-wrap gap-2 mb-5">
+                <div className="flex flex-wrap gap-1.5">
                   {genres.map((g: any) => (
                     <span
                       key={g.id}
-                      className="px-3 py-1 bg-stone-100 border border-stone-200 rounded-full text-xs font-medium text-stone-600"
+                      className="px-3 py-1 bg-[#EEF2ED] rounded-full text-xs font-semibold text-[#2A4649]"
                     >
                       {g.name}
                     </span>
@@ -148,38 +147,33 @@ export default async function MoviePage ({ params }: { params: Promise<{ id: str
 
               {/* Overview */}
               {overview && (
-                <p className="text-stone-600 text-sm leading-[1.75] mb-5">
+                <p className="text-[#3F5E5A] text-sm leading-relaxed">
                   {overview}
                 </p>
               )}
 
               {/* Cast & director */}
-              <div className="flex flex-col gap-2 pt-4 border-t border-stone-100">
+              <div className="flex flex-col gap-2 pt-4 border-t border-[#E8EEEA] text-sm">
                 {director && (
-                  <div className="text-sm text-stone-500">
-                    <span className="font-semibold text-stone-700">
+                  <div className="text-[#6F8C88]">
+                    <span className="font-semibold text-[#172526]">
                       {mediaType === 'tv' ? 'Created by ' : 'Directed by '}
                     </span>
                     {director}
                   </div>
                 )}
                 {topCast.length > 0 && (
-                  <div className="text-sm text-stone-500">
-                    <span className="font-semibold text-stone-700">Starring </span>
+                  <div className="text-[#6F8C88]">
+                    <span className="font-semibold text-[#172526]">Starring </span>
                     {topCast.join(', ')}
                   </div>
                 )}
               </div>
 
-              <WatchlistButtons
-                movieId={movie.id}
-                title={displayTitle}
-                posterPath={poster_path ?? null}
-                releaseDate={release_date || first_air_date || ''}
-              />
             </div>
           </div>
         </div>
+
       </div>
     </div>
   );
