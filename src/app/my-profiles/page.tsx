@@ -1,10 +1,10 @@
 'use client';
-import { supabase } from '@/lib/supabaseClient';
+import { supabase } from '@/lib/supabase/client';
 import { useState, useEffect, useRef } from 'react';
 import { Header } from '@/components/layout';
 import Image from 'next/image';
 import { useRouter } from 'next/navigation';
-import { CameraIcon } from '@heroicons/react/24/outline';
+import { CameraIcon, ChatBubbleLeftEllipsisIcon, HeartIcon  } from '@heroicons/react/24/outline';
 
 type Post = {
   id: string;
@@ -14,6 +14,7 @@ type Post = {
   movie_image: string | null;
   upvotes: number;
   created_at: string;
+  comment_count?: number;
 };
 
 type Profile = {
@@ -56,11 +57,14 @@ export default function MyProfilePage () {
 
       const { data: postData } = await supabase
         .from('posts')
-        .select('id, title, content, movie_title, movie_image, upvotes, created_at')
+        .select('id, title, content, movie_title, movie_image, upvotes, created_at, comments(count)')
         .eq('user_id', user.id)
         .order('created_at', { ascending: false });
       if (postData) {
-        setPosts(postData);
+        setPosts(postData.map(p => ({
+          ...p,
+          comment_count: (p.comments as unknown as { count: number }[])?.[0]?.count ?? 0,
+        })));
         setTotalReactions(postData.reduce((sum, p) => sum + (p.upvotes ?? 0), 0));
       }
     };
@@ -164,7 +168,16 @@ export default function MyProfilePage () {
                 <div className="font-plus-jakarta font-extrabold text-lg text-[#172526] mb-2 leading-snug">{post.title}</div>
                 <p className="text-sm text-[#3F5E5A] leading-relaxed line-clamp-3 flex-1">{post.content}</p>
                 <div className="flex items-center justify-between mt-4 pt-4 border-t border-[#E8EEEA]">
-                  <span className="text-xs text-[#6F8C88]">{post.upvotes} felt the same</span>
+                  <div className="flex items-center gap-3 text-xs text-[#6F8C88]">
+                    <span className="flex items-center gap-1">
+                      <HeartIcon className="w-3.5 h-3.5" />
+                      {post.upvotes}
+                    </span>
+                    <span className="flex items-center gap-1">
+                      <ChatBubbleLeftEllipsisIcon className="w-3.5 h-3.5" />
+                      {post.comment_count ?? 0}
+                    </span>
+                  </div>
                   <span className="text-sm text-[#2A4649] font-semibold">Read more →</span>
                 </div>
               </div>

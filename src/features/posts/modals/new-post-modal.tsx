@@ -1,10 +1,10 @@
 'use client';
 
 import { useState, useEffect } from 'react';
-import { supabase } from '@/lib/supabaseClient';
+import { supabase } from '@/lib/supabase/client';
 import Image from 'next/image';
 import { XMarkIcon, MagnifyingGlassIcon } from '@heroicons/react/24/outline';
-import { searchMoviesAndTv } from '@/utils/tmdb';
+import { searchMoviesAndTv } from '@/lib/tmdb/client';
 
 interface CreatePostModalProps {
   isOpen: boolean;

@@ -1,21 +1,19 @@
 'use client';
 
 import { useState } from 'react';
-import { supabase } from '@/lib/supabaseClient';
+import { supabase } from '@/lib/supabase/client';
 
 interface EditPostFormProps {
   postId: string;
   title: string;
   content: string;
-  imageUrl: string;
   onCancel: () => void;
   onSave: () => void;
 }
 
-export const EditPostForm = ({ postId, title, content, imageUrl, onCancel, onSave }: EditPostFormProps) => {
+export const EditPostForm = ({ postId, title, content, onCancel, onSave }: EditPostFormProps) => {
   const [editedTitle, setEditedTitle] = useState(title);
   const [editedContent, setEditedContent] = useState(content || '');
-  const [editedImageUrl, setEditedImageUrl] = useState(imageUrl || '');
   const [isSaving, setIsSaving] = useState(false);
 
   const handleUpdatePost = async () => {
@@ -28,14 +26,13 @@ export const EditPostForm = ({ postId, title, content, imageUrl, onCancel, onSav
       setIsSaving(false);
       return;
     }
-    
+
     const { error } = await supabase
       .from('posts')
       .update({
         title: editedTitle,
         content: editedContent,
-        image_url: editedImageUrl,
-        
+
       })
       .eq('id', postId)
       .eq('user_id', user.id);
@@ -63,13 +60,6 @@ export const EditPostForm = ({ postId, title, content, imageUrl, onCancel, onSav
         onChange={(e) => setEditedContent(e.target.value)}
         placeholder="Edit content"
         className="border rounded p-2 h-32 resize-none"
-      />
-      <input
-        type="text"
-        value={editedImageUrl}
-        onChange={(e) => setEditedImageUrl(e.target.value)}
-        placeholder="Edit Image URL"
-        className="border rounded p-2"
       />
 
       <div className="flex gap-2">

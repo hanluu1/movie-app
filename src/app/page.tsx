@@ -1,23 +1,21 @@
 'use client';
 
 import { useState, useEffect } from 'react';
-import type { User } from '@supabase/auth-js';
-import { supabase } from '@/lib/supabaseClient';
-import LandingPage from '@/modules/home/landing';
-import DiscoverPage from '@/modules/home/discover';
+import { useRouter } from 'next/navigation';
+import { supabase } from '@/lib/supabase/client';
+import LandingPage from './landing/page';
 
 export default function Home () {
-  const [user, setUser] = useState<User | null>(null);
   const [loading, setLoading] = useState(true);
+  const router = useRouter();
 
   useEffect(() => {
     supabase.auth.getUser().then(({ data: { user } }) => {
-      setUser(user);
-      setLoading(false);
+      if (user) router.replace('/discover');
+      else setLoading(false);
     });
-  }, []);
+  }, [router]);
 
-  if (loading) return <div className="min-h-screen bg-stone-50" />;
-  if (!user) return <LandingPage />;
-  return <DiscoverPage />;
+  if (loading) return <div className="min-h-screen bg-[#FAF7F1]" />;
+  return <LandingPage />;
 }

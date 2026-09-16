@@ -1,9 +1,9 @@
 'use client';
 
 import { useEffect, useState, forwardRef, useImperativeHandle } from 'react';
-import { supabase } from '@/lib/supabaseClient';
-import { PostCard } from '../posts/post-card';
-import { PostCardSkeleton } from '../posts/post-card-skeleton';
+import { supabase } from '@/lib/supabase/client';
+import { PostCard } from '../components/post-card';
+import { PostCardSkeleton } from '../components/post-card-skeleton';
 import { CommentModal } from '../modals/comment-modal';
 
 const PAGE_SIZE = 10;
@@ -15,11 +15,12 @@ interface Post {
   movie_image: string | null;
   movie_title: string | null;
   movie_id?: number | null;
+  media_type?: string | null;
   id: string;
   title: string;
   created_at: string;
   upvotes: number;
-  profiles: { username: string } | null;
+  profiles: { username: string; avatar_url: string | null } | null;
   content?: string;
   isLiked?: boolean;
   comment_count?: number;
@@ -84,7 +85,7 @@ export const AllPost = forwardRef<{ refetch: () => void }, AllPostProps>(
 
       let postsQuery = supabase
         .from('posts')
-        .select('*, profiles(username), comments(count)')
+        .select('*, profiles(username, avatar_url), comments(count)')
         .order(sort, { ascending: false })
         .range(fromOffset, fromOffset + PAGE_SIZE - 1);
 
@@ -165,7 +166,7 @@ export const AllPost = forwardRef<{ refetch: () => void }, AllPostProps>(
           } else if (payload.eventType === 'INSERT') {
             const { data } = await supabase
               .from('posts')
-              .select('*, profiles(username), comments(count)')
+              .select('*, profiles(username, avatar_url), comments(count)')
               .eq('id', payload.new.id)
               .single();
             if (data) setPosts(prev => [{ ...data, isLiked: false, comment_count: 0 }, ...prev]);
@@ -176,7 +177,7 @@ export const AllPost = forwardRef<{ refetch: () => void }, AllPostProps>(
         .subscribe();
 
       return () => { supabase.removeChannel(channel); };
-    }, []);  
+    }, []);
 
     if (loading) return (
       <div className="flex flex-col gap-4 w-full">
@@ -201,9 +202,11 @@ export const AllPost = forwardRef<{ refetch: () => void }, AllPostProps>(
             key={post.id}
             id={post.id}
             username={post.profiles?.username || 'Anonymous'}
+            avatarUrl={post.profiles?.avatar_url}
             movieTitle={post.movie_title}
             movieImage={post.movie_image}
             movieId={post.movie_id}
+            mediaType={post.media_type}
             postTitle={post.title}
             createdAt={post.created_at}
             upvotes={post.upvotes}

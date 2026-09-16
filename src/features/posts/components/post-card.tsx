@@ -11,6 +11,7 @@ interface PostCardProps {
   movieTitle: string | null;
   movieImage?: string | null;
   movieId?: number | null;
+  mediaType?: string | null;
   postTitle?: string;
   createdAt: string;
   upvotes: number;
@@ -19,6 +20,7 @@ interface PostCardProps {
   onComment?: () => void;
   isLiked?: boolean;
   username?: string;
+  avatarUrl?: string | null;
   commentCount?: number;
   canLike?: boolean;
 }
@@ -47,7 +49,7 @@ const getInitials = (username: string) => {
 const READ_MORE_THRESHOLD = 160;
 
 export const PostCard = ({
-  id, username, movieTitle, movieImage, movieId,
+  id, username, avatarUrl, movieTitle, movieImage, movieId, mediaType,
   postTitle, createdAt, postContent, upvotes,
   onLike, onComment, isLiked = false, commentCount = 0, canLike = true,
 }: PostCardProps) => {
@@ -67,8 +69,10 @@ export const PostCard = ({
       {/* User + time */}
       <div className="flex items-center justify-between gap-2">
         <div className="flex items-center gap-2.5">
-          <div className="w-10 h-10 rounded-full flex items-center justify-center text-white text-xs font-bold flex-shrink-0 bg-[#2A4649]">
-            {initials}
+          <div className="w-10 h-10 rounded-full flex items-center justify-center text-white text-xs font-bold flex-shrink-0 bg-[#2A4649] overflow-hidden relative">
+            {avatarUrl
+              ? <Image src={avatarUrl} alt={username || ''} fill className="object-cover" sizes="40px" />
+              : initials}
           </div>
           <span className="text-lg font-semibold text-[#172526]">{username || 'Anonymous'}</span>
         </div>
@@ -106,7 +110,7 @@ export const PostCard = ({
         {movieTitle && (
           movieId ? (
             <Link
-              href={`/movie-more-info/${movieId}`}
+              href={`/movie-more-info/${movieId}${mediaType ? `?type=${mediaType}` : ''}`}
               onClick={e => e.stopPropagation()}
               className="flex items-center gap-1.5 text-xs font-semibold text-[#2A4649] bg-[#EEF2ED] px-2.5 py-1 rounded-full hover:bg-[#dde5dc] transition-colors mr-auto"
             >

@@ -17,7 +17,7 @@ const steps = [
   },
   {
     Icon: FilmIcon,
-    title: 'Discover what’s next',
+    title: "Discover what's next",
     desc: 'Find movies through real emotions, reactions, and perspectives.',
   },
 ];
@@ -80,7 +80,7 @@ export default function LandingPage () {
             <div className="flex gap-3 flex-wrap items-center">
               <Link href="/discover">
                 <button className="text-white px-7 py-3.5 rounded-xl font-bold text-sm bg-[#2A4649] shadow-[0_4px_16px_rgba(42,70,73,0.25)] transition-all hover:-translate-y-0.5">
-                  Explore ReelEmotions 
+                  Explore ReelEmotions
                 </button>
               </Link>
               <button

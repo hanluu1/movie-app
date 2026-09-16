@@ -1,7 +1,7 @@
 'use client';
 
 import { useEffect, useState } from 'react';
-import { supabase } from '@/lib/supabaseClient';
+import { supabase } from '@/lib/supabase/client';
 import type { User } from '@supabase/auth-js';
 
 // getSession reads the local storage session instead of hitting the network,
