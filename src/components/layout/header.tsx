@@ -3,7 +3,7 @@
 import { useRouter, usePathname } from 'next/navigation';
 import { useRef, useState, useEffect } from 'react';
 import { supabase } from '@/lib/supabase/client';
-import { ArrowRightOnRectangleIcon, Bars3Icon, XMarkIcon, MagnifyingGlassIcon, ArrowLeftIcon } from '@heroicons/react/24/outline';
+import { ArrowRightOnRectangleIcon, Bars3Icon, XMarkIcon, MagnifyingGlassIcon, ArrowLeftIcon, PencilSquareIcon} from '@heroicons/react/24/outline';
 import { AppSearch } from '@/components/search/app-search';
 import Image from 'next/image';
 import Link from 'next/link';
@@ -75,12 +75,14 @@ export function Header ({ onCreatePost, showSearch = true }: {
   return (
     <header className="font-sans sticky top-0 w-full px-6 sm:px-8 py-4 flex justify-between items-center backdrop-blur-md border-b border-[#E8EEEA] z-50 bg-[#FFFDF8]/90">
 
-      {/* Logo */}
-      <Link href="/discover">
-        <span className="font-plus-jakarta font-extrabold text-xl tracking-tight text-[#172526]">
-          ReelEmotions
-        </span>
-      </Link>
+      <div className="flex items-center gap-6">
+        {/* Logo */}
+        <Link href="/discover">
+          <span className="font-plus-jakarta font-extrabold text-xl tracking-tight text-[#172526]">
+            ReelEmotion
+          </span>
+        </Link>
+      </div>
 
       <div className="flex items-center gap-4">
 
@@ -97,10 +99,10 @@ export function Header ({ onCreatePost, showSearch = true }: {
         {onCreatePost && (
           <button
             onClick={onCreatePost}
-            className="hidden sm:flex items-center gap-1.5 text-white px-5 py-2 rounded-xl font-semibold text-sm transition-all hover:-translate-y-0.5 hover:shadow-md whitespace-nowrap bg-[#2A4649]"
+            className="hidden sm:flex items-center gap-1.5 text-white px-5 py-2 rounded-3xl font-semibold text-sm transition-all hover:-translate-y-0.5 hover:shadow-md whitespace-nowrap bg-[#2A4649]"
           >
-            <span>Share a reaction</span>
-            <span className="text-lg leading-none">+</span>
+            <PencilSquareIcon className="w-4 h-4" />
+            <span>Post</span>
             
           </button>
         )}

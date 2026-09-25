@@ -1,36 +1,39 @@
 'use client';
 
 import Link from 'next/link';
-import { HeartIcon, ChatBubbleLeftEllipsisIcon, UserGroupIcon, FilmIcon } from '@heroicons/react/24/outline';
-import { Header } from '@/components/layout/header';
+import { HeartIcon } from '@heroicons/react/24/solid';
 
-const steps = [
-  {
-    Icon: ChatBubbleLeftEllipsisIcon,
-    title: 'Share a feeling',
-    desc: 'Something you watched stayed with you. Put it into words.',
-  },
-  {
-    Icon: UserGroupIcon,
-    title: 'Explore perspectives',
-    desc: 'See how other people experienced the same story differently.',
-  },
-  {
-    Icon: FilmIcon,
-    title: "Discover what's next",
-    desc: 'Find movies through real emotions, reactions, and perspectives.',
-  },
+const MOODS = [
+  'Moved me to tears',
+  'Mind-bending',
+  'Still thinking about it',
+  'Comforting',
+  'Unsettling',
+  'Pure joy',
+  "Couldn't look away",
+  'Broke my heart',
+  'Changed how I see things',
 ];
 
-const communityReactions = [
+const FEATURED = {
+  initials: 'EM',
+  username: 'Emma',
+  role: 'Watches everything',
+  movie: 'Arrival',
+  year: '2016',
+  quote: "I watched it alone at midnight and couldn't move for twenty minutes after it ended. Something about time and love and loss just... landed differently than I expected.",
+  relatedCount: 47,
+};
+
+const REACTIONS = [
   {
     initials: 'MA',
     username: 'Marcus',
     role: 'Action enthusiast',
     movie: 'The Batman',
-    genre: 'Thriller',
+    year: '2022',
     poster: '/batman.png',
-    quote: 'This movie made me feel like the city itself was alive. The atmosphere, the music, the tension — everything just pulled me in.',
+    quote: 'The atmosphere, the music, the tension — everything pulled me in. It made me feel like the city itself was alive and grieving.',
     relatedCount: 56,
   },
   {
@@ -38,9 +41,9 @@ const communityReactions = [
     username: 'Anna',
     role: 'Book lover',
     movie: 'Little Women',
-    genre: 'Drama',
+    year: '2019',
     poster: '/littlewomen.png',
-    quote: 'It reminded me of my own growing up — chasing my dreams, and still figuring out who I want to be. Such a warm and honest story.',
+    quote: 'It reminded me of my own growing up — chasing dreams and still figuring out who I want to be. Such a warm, honest story.',
     relatedCount: 73,
   },
   {
@@ -48,219 +51,179 @@ const communityReactions = [
     username: 'David',
     role: 'Sci-fi fan',
     movie: 'Interstellar',
-    genre: 'Sci-Fi',
+    year: '2014',
     poster: '/interstella.png',
-    quote: 'I watched it and it completely blew my mind — time, love, what it means to be human. I had to sit with it for a while.',
+    quote: 'Time, love, what it means to be human. I had to sit with it for a while. Still am.',
     relatedCount: 48,
   },
 ];
 
 export default function LandingPage () {
   return (
-    <div className="font-sans min-h-screen overflow-x-hidden bg-[#FAF7F1] text-[#172526]">
+    <div className="min-h-screen bg-[#0A0908] text-[#F2EDE4] font-sans overflow-x-hidden">
 
-      <Header showSearch={false} />
+      {/* Header */}
+      <header className="flex items-center justify-between px-8 py-5 max-w-7xl mx-auto">
+        <span className="font-plus-jakarta font-extrabold text-xl tracking-tight text-[#F2EDE4]">
+          ReelEmotion
+        </span>
+        <Link href="/login">
+          <button className="px-4 py-2 rounded-lg text-sm font-semibold bg-[#F2EDE4] text-[#0A0908] hover:bg-[#E0D8C8] transition-colors">
+            Sign up
+          </button>
+        </Link>
+      </header>
 
       {/* Hero */}
-      <section className="px-8 py-10 sm:py-14 max-w-7xl mx-auto">
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
-
-          {/* Left */}
-          <div>
-            <p className="font-dm-sans italic text-base mb-4 text-[#6F8C88]">
-              Movies. Real People. Real Feelings.
-            </p>
-            <h2 className="font-plus-jakarta font-extrabold text-[clamp(2.4rem,5.5vw,4rem)] leading-[1.15] tracking-tight mb-6 text-[#172526]">
-              <span className="font-extrabold text-[#172526]">Share</span><span className="  text-[#6F8C88]"> what you felts. </span>
-              <span className="font-extrabold text-[#2A4649]">Find</span><span className="  text-[#6F8C88]"> what to watch next.</span>
-            </h2>
-            <p className="text-lg leading-relaxed mb-8 max-w-md font-normal text-[#3F5E5A]">
-              Share how a movie or show made you feel. Read real reactions from people like you, and discover what to watch next.
-            </p>
-            <div className="flex gap-3 flex-wrap items-center">
-              <Link href="/discover">
-                <button className="text-white px-7 py-3.5 rounded-xl font-bold text-sm bg-[#2A4649] shadow-[0_4px_16px_rgba(42,70,73,0.25)] transition-all hover:-translate-y-0.5">
-                  Explore ReelEmotions
-                </button>
-              </Link>
-              <button
-                onClick={() => document.getElementById('how-it-works')?.scrollIntoView({ behavior: 'smooth' })}
-                className="px-7 py-3.5 rounded-xl font-semibold text-sm border-2 border-[#2A4649] text-[#2A4649] bg-transparent transition-all hover:opacity-80"
-              >
-                How it works
-              </button>
-            </div>
+      <section className="flex flex-col items-center justify-center text-center px-6 pt-16 pb-24 max-w-4xl mx-auto">
+        <p className="text-xs font-bold uppercase tracking-[0.2em] text-[#C8956A] mb-10">
+          Not reviews. Reactions.
+        </p>
+        <blockquote className="font-plus-jakarta font-extrabold text-[clamp(2rem,5vw,3.5rem)] leading-[1.2] tracking-tight text-[#F2EDE4] mb-8">
+          &ldquo;I watched it alone at midnight and couldn&apos;t move for twenty minutes after it ended.&rdquo;
+        </blockquote>
+        <div className="flex items-center gap-3 mb-12">
+          <span className="text-sm text-[#6A5E50]">— Arrival</span>
+          <span className="text-[#2A2520]">·</span>
+          <div className="flex items-center gap-1.5 text-sm font-semibold text-[#C8956A]">
+            <HeartIcon className="w-4 h-4" />
+            <span>47 people felt this</span>
           </div>
+        </div>
+        <div className="flex gap-3 flex-wrap justify-center">
+          <Link href="/discover">
+            <button className="px-7 py-3.5 rounded-xl font-bold text-sm bg-[#F2EDE4] text-[#0A0908] hover:bg-[#E0D8C8] transition-all">
+              Browse reactions →
+            </button>
+          </Link>
+          <button
+            onClick={() => document.getElementById('reactions')?.scrollIntoView({ behavior: 'smooth' })}
+            className="px-7 py-3.5 rounded-xl font-semibold text-sm border border-[#272320] text-[#6A5E50] hover:text-[#F2EDE4] hover:border-[#3A3530] transition-all"
+          >
+            See what people are feeling
+          </button>
+        </div>
+      </section>
 
-          {/* Right — Featured Card */}
-          <div className="relative w-full min-h-[480px] flex items-center justify-center">
+      {/* Mood ticker */}
+      <style>{`
+        @keyframes marquee {
+          0% { transform: translateX(0); }
+          100% { transform: translateX(-50%); }
+        }
+        .marquee-track { animation: marquee 28s linear infinite; }
+        .marquee-wrap:hover .marquee-track { animation-play-state: paused; }
+      `}</style>
+      <div className="border-t border-b border-[#161310] py-5 overflow-hidden marquee-wrap">
+        <div className="marquee-track flex gap-2.5 w-max">
+          {[...MOODS, ...MOODS].map((mood, i) => (
+            <span
+              key={i}
+              className="whitespace-nowrap px-4 py-2 rounded-full text-sm font-medium border border-[#272320] text-[#6A5E50]"
+            >
+              {mood}
+            </span>
+          ))}
+        </div>
+      </div>
 
-            {/* Decorative bubbles */}
-            <div className="absolute top-4 left-0 w-24 h-24 rounded-full pointer-events-none bg-[#D8E8E2] opacity-70" />
-            <div className="absolute bottom-0 right-7 w-20 h-20 rounded-tl-[120px] rounded-tr-[160px] rounded-br-[100px] rounded-bl-[180px] pointer-events-none bg-[#C8DDD8] opacity-60" />
+      {/* Reactions */}
+      <section id="reactions" className="px-8 py-16 max-w-6xl mx-auto">
 
-            {/* Main Organic Arch Container */}
-            <div className="relative w-[88%] h-[420px] shadow-2xl overflow-hidden rounded-tl-[160px] rounded-tr-[120px] rounded-br-[180px] rounded-bl-[100px]">
-              <img
-                src="https://images.unsplash.com/photo-1517604931442-7e0c8ed2963c?auto=format&fit=crop&q=80&w=1000"
-                alt="Cinematic mood still"
-                className="w-full h-full object-cover"
-              />
-              <div className="absolute inset-0 bg-black/10" />
+        {/* Featured reaction */}
+        <div className="rounded-2xl border border-[#1E1B18] bg-[#111009] p-8 sm:p-10 mb-6">
+          <div className="flex items-center gap-3 mb-7">
+            <div className="w-9 h-9 rounded-full flex items-center justify-center text-[#0A0908] text-xs font-bold flex-shrink-0 bg-[#C8956A]">
+              {FEATURED.initials}
             </div>
+            <div>
+              <div className="text-sm font-bold text-[#F2EDE4]">{FEATURED.username}</div>
+              <div className="text-xs text-[#4A4038]">{FEATURED.role}</div>
+            </div>
+            <span className="ml-auto text-xs font-medium px-3 py-1 rounded-full border border-[#272320] text-[#6A5E50]">
+              {FEATURED.movie} · {FEATURED.year}
+            </span>
+          </div>
+          <blockquote className="font-plus-jakarta font-bold text-[clamp(1.2rem,2.5vw,1.8rem)] leading-[1.5] text-[#F2EDE4] mb-8 max-w-2xl">
+            &ldquo;{FEATURED.quote}&rdquo;
+          </blockquote>
+          <div className="flex items-center gap-2 text-[#C8956A] font-bold text-base">
+            <HeartIcon className="w-5 h-5" />
+            <span>{FEATURED.relatedCount} people felt the same</span>
+          </div>
+        </div>
 
-            {/* Floating Review Card Overlay */}
-            <div className="absolute -bottom-2 left-2 max-w-[320px] p-5 rounded-2xl shadow-2xl border border-[#E8EEEA] backdrop-blur-sm z-20 bg-[#FFFDF8]/95">
-              <div className="flex items-center justify-between gap-3 mb-3">
-                <div className="flex items-center gap-2.5">
-                  <div className="w-8 h-8 rounded-full flex items-center justify-center text-white text-xs font-bold flex-shrink-0 bg-[#2A4649]">
-                    EM
+        {/* Reaction cards grid */}
+        <div className="grid grid-cols-1 sm:grid-cols-3 gap-5">
+          {REACTIONS.map(({ initials, username, role, movie, year, poster, quote, relatedCount }) => (
+            <div
+              key={username}
+              className="rounded-2xl border border-[#1E1B18] bg-[#111009] overflow-hidden hover:border-[#2A2520] transition-all group flex flex-col"
+            >
+              <div className="relative h-36 overflow-hidden flex-shrink-0">
+                <img
+                  src={poster}
+                  alt={movie}
+                  className="w-full h-full object-cover opacity-60 group-hover:opacity-80 transition-opacity duration-300"
+                />
+                <div className="absolute inset-0 bg-gradient-to-t from-[#111009] via-[#111009]/30 to-transparent" />
+                <div className="absolute bottom-3 left-4 right-4 flex items-end justify-between">
+                  <span className="text-sm font-bold text-[#F2EDE4]">{movie}</span>
+                  <span className="text-xs text-[#6A5E50]">{year}</span>
+                </div>
+              </div>
+              <div className="p-5 flex flex-col flex-1">
+                <div className="flex items-center gap-2.5 mb-4">
+                  <div className="w-7 h-7 rounded-full flex items-center justify-center text-[#0A0908] text-[10px] font-bold flex-shrink-0 bg-[#C8956A]">
+                    {initials}
                   </div>
                   <div>
-                    <div className="text-xs font-bold text-[#172526]">Emma</div>
-                    <div className="text-[10px] text-[#6F8C88]">Movie lover</div>
+                    <div className="text-xs font-bold text-[#F2EDE4]">{username}</div>
+                    <div className="text-[10px] text-[#4A4038]">{role}</div>
                   </div>
                 </div>
-                <span className="text-[11px] font-medium px-2.5 py-0.5 rounded-full border border-[#E8EEEA] bg-[#F9F6EF] text-[#2A4649]">
-                  Dune: Part Two
-                </span>
-              </div>
-              <p className="text-xs leading-relaxed mb-3 font-dm-sans italic text-[#172526]">
-                &ldquo;I felt so small... and so hopeful. It&apos;s rare for a movie to make me feel both at the same time.&rdquo;
-              </p>
-              <div className="flex items-center gap-1.5 text-[11px] font-semibold text-[#2A4649]">
-                <HeartIcon className="w-3.5 h-3.5 fill-current" />
-                <span>38 people felt the same</span>
-              </div>
-            </div>
-
-          </div>
-        </div>
-      </section>
-
-      {/* How It Works */}
-      <section
-        id="how-it-works"
-        className="px-8 py-20 border-t border-b border-[#E8EEEA] bg-[#EEF2ED]"
-      >
-        <div className="max-w-6xl mx-auto">
-
-          {/* Section intro */}
-          <div className="max-w-xl mb-14">
-            <p className="text-xs font-bold uppercase tracking-widest mb-3 text-[#2A4649]">
-                How it works
-            </p>
-
-            <h2 className="font-plus-jakarta font-extrabold text-[clamp(2rem,4vw,2.75rem)] tracking-tight text-[#172526]">
-                Discover movies or shows differently.
-            </h2>
-          </div>
-
-          {/* Three things */}
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-            {steps.map(({ Icon, title, desc }) => (
-              <div
-                key={title}
-                className="p-7 rounded-3xl bg-[#FAF7F1] border border-[#E8EEEA]"
-              >
-                <div className="w-11 h-11 rounded-xl flex items-center justify-center bg-[#E8EEEA] mb-6">
-                  <Icon className="w-5 h-5 text-[#2A4649]" />
-                </div>
-
-                <h3 className="font-bold text-lg mb-3 text-[#172526]">
-                  {title}
-                </h3>
-
-                <p className="leading-relaxed text-sm text-[#3F5E5A]">
-                  {desc}
+                <p className="text-sm leading-relaxed italic text-[#8C7E6E] font-dm-sans flex-1">
+                  &ldquo;{quote}&rdquo;
                 </p>
+                <div className="flex items-center gap-1.5 text-xs font-semibold text-[#C8956A] mt-5 pt-4 border-t border-[#1E1B18]">
+                  <HeartIcon className="w-3.5 h-3.5" />
+                  <span>{relatedCount} felt the same</span>
+                </div>
               </div>
-            ))}
-          </div>
+            </div>
+          ))}
+        </div>
 
+        <div className="text-center mt-10">
+          <Link href="/discover">
+            <button className="px-6 py-3 rounded-xl text-sm font-semibold border border-[#272320] text-[#6A5E50] hover:text-[#F2EDE4] hover:border-[#3A3530] transition-all">
+              See all reactions →
+            </button>
+          </Link>
         </div>
       </section>
 
-      {/* Real Reactions */}
-      <section className="px-8 py-20 bg-[#FAF7F1]">
-        <div className="max-w-6xl mx-auto">
-          <div className="flex items-end justify-between mb-12">
-            <div>
-              <p className="text-xs font-bold uppercase tracking-widest mb-2 text-[#2A4649]">Real Reactions</p>
-              <h2 className="font-plus-jakarta font-extrabold text-[clamp(2rem,4vw,2.75rem)] tracking-tight text-[#172526]">
-                What people are feeling.
-              </h2>
-            </div>
-            <Link href="/discover" className="hidden sm:block text-sm font-semibold text-[#2A4649] transition-opacity hover:opacity-70">
-              View more →
+      {/* Final CTA */}
+      <section className="px-8 pb-20">
+        <div className="max-w-6xl mx-auto rounded-2xl border border-[#1E1B18] bg-[#111009] px-8 py-16 text-center">
+          <p className="text-xs font-bold uppercase tracking-[0.2em] text-[#C8956A] mb-4">
+            What do you want to feel tonight?
+          </p>
+          <h2 className="font-plus-jakarta font-extrabold text-[clamp(1.8rem,3.5vw,2.8rem)] tracking-tight text-[#F2EDE4] mb-4 max-w-xl mx-auto">
+            Your feelings are someone else&apos;s discovery.
+          </h2>
+          <p className="text-sm text-[#4A4038] mb-10 max-w-sm mx-auto leading-relaxed">
+            Write about a movie that moved you. Help someone else find it.
+          </p>
+          <div className="flex gap-3 justify-center flex-wrap">
+            <Link href="/login">
+              <button className="px-7 py-3.5 rounded-xl font-bold text-sm bg-[#F2EDE4] text-[#0A0908] hover:bg-[#E0D8C8] transition-all">
+                Start writing →
+              </button>
             </Link>
-          </div>
-
-          <div className="grid grid-cols-1 sm:grid-cols-3 gap-6">
-            {communityReactions.map(({ initials, username, role, movie, genre, poster, quote, relatedCount }) => (
-              <div
-                key={username}
-                className="rounded-2xl border border-[#E8EEEA] flex flex-col justify-between overflow-hidden transition-all duration-300 hover:shadow-lg bg-[#FFFDF8]"
-              >
-                <div>
-                  <div className="relative w-full h-40 overflow-hidden">
-                    <img
-                      src={poster}
-                      alt={movie}
-                      className="w-full h-full object-cover"
-                    />
-                    <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent" />
-                    <span className="absolute top-3 left-3 text-[10px] font-semibold tracking-wider text-white bg-black/40 backdrop-blur-md px-2.5 py-0.5 rounded-full border border-white/20">
-                      {genre}
-                    </span>
-                  </div>
-
-                  <div className="p-5">
-                    <div className="flex items-center gap-3 mb-4">
-                      <div className="w-8 h-8 rounded-full flex items-center justify-center text-white font-bold text-xs flex-shrink-0 bg-[#2A4649]">
-                        {initials}
-                      </div>
-                      <div>
-                        <div className="font-bold text-sm leading-tight text-[#172526]">{username}</div>
-                        <div className="text-[11px] text-[#6F8C88]">{role}</div>
-                      </div>
-                    </div>
-                    <p className="text-xs leading-relaxed mb-4 font-dm-sans italic text-[#172526]">
-                      &ldquo;{quote}&rdquo;
-                    </p>
-                  </div>
-                </div>
-
-                <div className="px-5 pb-5 pt-3 flex items-center justify-between border-t border-slate-100/60 mt-auto">
-                  <div className="flex items-center gap-1.5 text-xs font-medium text-[#6F8C88]">
-                    <HeartIcon className="w-3.5 h-3.5 fill-current text-rose-500/80" />
-                    <span>{relatedCount} people related to this</span>
-                  </div>
-                  <span className="text-[11px] font-bold text-[#2A4649]">
-                    {movie}
-                  </span>
-                </div>
-              </div>
-            ))}
-          </div>
-        </div>
-      </section>
-
-      {/* Final CTA Banner */}
-      <section className="px-8 pb-16 bg-[#F9F6EF]">
-        <div className="max-w-6xl mx-auto rounded-3xl overflow-hidden relative bg-[#2A4649] min-h-[160px]">
-          <div className="relative z-10 flex flex-col sm:flex-row items-center justify-between gap-6 px-10 py-10">
-            <div className="flex-1">
-              <h2 className="font-plus-jakarta font-extrabold text-[clamp(1.4rem,2.5vw,1.9rem)] leading-snug text-white mb-1">
-                Join a community<br />that feels like your movie club.
-              </h2>
-              <p className="text-sm mt-2 text-[#6F8C88]">
-                Share. Read. Discover. All about what movies make people feel.
-              </p>
-            </div>
-            <Link href="/login" className="flex-shrink-0">
-              <button className="px-7 py-3 rounded-full font-semibold text-sm border-2 border-[#E8EEEA] text-[#E8EEEA] transition-all hover:bg-white/10 whitespace-nowrap">
-                Sign Up →
+            <Link href="/discover">
+              <button className="px-7 py-3.5 rounded-xl font-semibold text-sm border border-[#272320] text-[#6A5E50] hover:text-[#F2EDE4] hover:border-[#3A3530] transition-all">
+                Browse first
               </button>
             </Link>
           </div>

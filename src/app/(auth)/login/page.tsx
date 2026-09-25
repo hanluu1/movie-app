@@ -79,30 +79,33 @@ export default function AuthPage () {
   const switchMode = () => { setIsLogin(prev => !prev); setError(''); };
 
   return (
-    <div className="font-dm-sans min-h-screen bg-[#FAF7F1] flex items-center justify-center p-6">
+    <div className="font-dm-sans min-h-screen bg-[#0A0908] flex items-center justify-center p-6">
 
       <div className="w-full max-w-[420px]">
 
         {/* Logo */}
         <div className="text-center mb-8">
           <Link href="/">
-            <span className="font-plus-jakarta font-extrabold text-2xl tracking-tight text-[#172526]">
-              ReelEmotions
+            <span className="font-plus-jakarta font-extrabold text-2xl tracking-tight text-[#F2EDE4]">
+              ReelEmotion
             </span>
           </Link>
+          <p className="text-xs text-[#4A4038] mt-1">
+            {isLogin ? 'Welcome back.' : 'Find your next movie by how you want to feel.'}
+          </p>
         </div>
 
         {/* Card */}
-        <div className="bg-[#FFFDF8] border border-[#E8EEEA] rounded-3xl p-8 shadow-[0_8px_32px_rgba(23,37,38,0.06)]">
+        <div className="bg-[#111009] border border-[#1E1B18] rounded-3xl p-8">
 
           {/* Heading */}
           <div className="mb-8">
-            <h1 className="font-plus-jakarta font-extrabold text-2xl tracking-tight text-[#172526] mb-1">
-              {isLogin ? 'Welcome back' : 'Join ReelEmotions'}
+            <h1 className="font-plus-jakarta font-extrabold text-2xl tracking-tight text-[#F2EDE4] mb-1">
+              {isLogin ? 'Sign in' : 'Join ReelEmotion'}
             </h1>
-            <p className="text-sm text-[#6F8C88]">
+            <p className="text-sm text-[#4A4038]">
               {isLogin
-                ? 'Sign in to share and discover reactions.'
+                ? 'Share and discover reactions.'
                 : 'Share how movies make you feel.'}
             </p>
           </div>
@@ -111,7 +114,7 @@ export default function AuthPage () {
           <button
             type="button"
             onClick={handleGoogleLogin}
-            className="w-full py-3 border border-[#E8EEEA] bg-white rounded-xl font-semibold text-sm text-[#172526] transition-all hover:border-[#2A4649] hover:shadow-sm flex items-center justify-center gap-2.5 mb-6"
+            className="w-full py-3 border border-[#272320] bg-[#161310] rounded-xl font-semibold text-sm text-[#F2EDE4] transition-all hover:border-[#C8956A] flex items-center justify-center gap-2.5 mb-6"
           >
             <GoogleIcon />
             <span>Continue with Google</span>
@@ -119,9 +122,9 @@ export default function AuthPage () {
 
           {/* Divider */}
           <div className="relative flex items-center gap-3 mb-6">
-            <div className="flex-1 h-px bg-[#E8EEEA]" />
-            <span className="text-xs text-[#6F8C88] font-medium">or</span>
-            <div className="flex-1 h-px bg-[#E8EEEA]" />
+            <div className="flex-1 h-px bg-[#1E1B18]" />
+            <span className="text-xs text-[#4A4038] font-medium">or</span>
+            <div className="flex-1 h-px bg-[#1E1B18]" />
           </div>
 
           {/* Form */}
@@ -156,26 +159,26 @@ export default function AuthPage () {
             />
 
             {error && (
-              <p className="text-sm text-rose-600 bg-rose-50 border border-rose-100 rounded-xl px-4 py-2.5">
+              <p className="text-sm text-rose-400 bg-rose-950/40 border border-rose-900/50 rounded-xl px-4 py-2.5">
                 {error}
               </p>
             )}
 
             <button
               type="submit"
-              className="w-full py-3 text-white font-semibold rounded-xl text-sm transition-all hover:-translate-y-0.5 hover:shadow-md bg-[#2A4649] mt-1"
+              className="w-full py-3 bg-[#F2EDE4] text-[#0A0908] font-semibold rounded-xl text-sm transition-all hover:bg-[#E0D8C8] mt-1"
             >
               {isLogin ? 'Sign In' : 'Create Account'}
             </button>
           </form>
 
           {/* Toggle */}
-          <p className="text-center mt-6 text-sm text-[#6F8C88]">
+          <p className="text-center mt-6 text-sm text-[#4A4038]">
             {isLogin ? "Don't have an account? " : 'Already have an account? '}
             <button
               type="button"
               onClick={switchMode}
-              className="text-[#2A4649] font-semibold hover:opacity-70 transition-opacity"
+              className="text-[#C8956A] font-semibold hover:opacity-70 transition-opacity"
             >
               {isLogin ? 'Sign Up' : 'Sign In'}
             </button>
@@ -184,9 +187,9 @@ export default function AuthPage () {
         </div>
 
         {/* Back link */}
-        <p className="text-center mt-6 text-xs text-[#6F8C88]">
-          <Link href="/discover" className="hover:text-[#2A4649] transition-colors">
-            ← Back to discover
+        <p className="text-center mt-6 text-xs text-[#4A4038]">
+          <Link href="/" className="hover:text-[#F2EDE4] transition-colors">
+            ← Back
           </Link>
         </p>
 
