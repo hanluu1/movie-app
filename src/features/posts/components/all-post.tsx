@@ -31,10 +31,12 @@ interface AllPostProps {
   requireAuth?: (action: string) => boolean;
   filter?: Filter;
   sort?: Sort;
+  activeMood?: string | null;
+  onWriteClick?: () => void;
 }
 
 export const AllPost = forwardRef<{ refetch: () => void }, AllPostProps>(
-  ({ isAuthed = true, requireAuth, filter = 'all', sort = 'created_at' }, ref) => {
+  ({ isAuthed = true, requireAuth, filter = 'all', sort = 'created_at', activeMood = null, onWriteClick }, ref) => {
     const [posts, setPosts] = useState<Post[]>([]);
     const [loading, setLoading] = useState(true);
     const [loadingMore, setLoadingMore] = useState(false);
@@ -91,6 +93,10 @@ export const AllPost = forwardRef<{ refetch: () => void }, AllPostProps>(
 
       if (filter === 'movies') postsQuery = postsQuery.eq('media_type', 'movie');
       if (filter === 'tv') postsQuery = postsQuery.eq('media_type', 'tv');
+      if (activeMood) {
+        const term = `%${activeMood}%`;
+        postsQuery = postsQuery.or(`title.ilike.${term},content.ilike.${term}`);
+      }
 
       const [postsResult, likesResult] = await Promise.all([
         postsQuery,
@@ -135,7 +141,7 @@ export const AllPost = forwardRef<{ refetch: () => void }, AllPostProps>(
     useEffect(() => {
       setOffset(0);
       fetchPosts(0, false);
-    }, [filter, sort]); // eslint-disable-line react-hooks/exhaustive-deps
+    }, [filter, sort, activeMood]); // eslint-disable-line react-hooks/exhaustive-deps
 
     // Realtime subscription
     useEffect(() => {
@@ -188,42 +194,64 @@ export const AllPost = forwardRef<{ refetch: () => void }, AllPostProps>(
     if (posts.length === 0) return (
       <div className="text-center py-20 px-4">
         <p className="text-2xl mb-3">🎬</p>
-        <p className="font-semibold text-[#172526] text-sm mb-1">
-          {filter === 'movies' ? 'No movie reactions yet.' : filter === 'tv' ? 'No TV show reactions yet.' : 'No reactions yet.'}
-        </p>
-        <p className="text-xs text-[#6F8C88]">Be the first to share how something made you feel.</p>
+        {activeMood ? (
+          <>
+            <p className="font-semibold text-[#F2EDE4] text-sm mb-1">
+              No one has written about feeling &ldquo;{activeMood}&rdquo; yet.
+            </p>
+            <p className="text-xs text-[#4A4038] mb-5">Be the first to share a movie that made you feel this way.</p>
+            {onWriteClick && (
+              <button
+                onClick={onWriteClick}
+                className="px-6 py-2.5 rounded-xl text-sm font-semibold bg-[#C8956A] text-[#0A0908] hover:bg-[#D4A870] transition-all"
+              >
+                Write a Feeling
+              </button>
+            )}
+          </>
+        ) : (
+          <>
+            <p className="font-semibold text-[#F2EDE4] text-sm mb-1">
+              {filter === 'movies' ? 'No movie reactions yet.' : filter === 'tv' ? 'No TV show reactions yet.' : 'No reactions yet.'}
+            </p>
+            <p className="text-xs text-[#4A4038]">Be the first to share how something made you feel.</p>
+          </>
+        )}
       </div>
     );
 
     return (
       <div className="flex flex-col gap-4 w-full">
-        {posts.map((post) => (
-          <PostCard
-            key={post.id}
-            id={post.id}
-            username={post.profiles?.username || 'Anonymous'}
-            avatarUrl={post.profiles?.avatar_url}
-            movieTitle={post.movie_title}
-            movieImage={post.movie_image}
-            movieId={post.movie_id}
-            mediaType={post.media_type}
-            postTitle={post.title}
-            createdAt={post.created_at}
-            upvotes={post.upvotes}
-            postContent={post.content}
-            isLiked={post.isLiked}
-            commentCount={post.comment_count || 0}
-            canLike={isAuthed}
-            onLike={() => handleToggleLike(post.id)}
-            onComment={() => openCommentModal(post.id)}
-          />
-        ))}
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+          {posts.map((post) => (
+            <PostCard
+              key={post.id}
+              id={post.id}
+              username={post.profiles?.username || 'Anonymous'}
+              avatarUrl={post.profiles?.avatar_url}
+              movieTitle={post.movie_title}
+              movieImage={post.movie_image}
+              movieId={post.movie_id}
+              mediaType={post.media_type}
+              postTitle={post.title}
+              createdAt={post.created_at}
+              upvotes={post.upvotes}
+              postContent={post.content}
+              isLiked={post.isLiked}
+              commentCount={post.comment_count || 0}
+              canLike={isAuthed}
+              onLike={() => handleToggleLike(post.id)}
+              onComment={() => openCommentModal(post.id)}
+              variant="card"
+            />
+          ))}
+        </div>
 
         {hasMore && (
           <button
             onClick={loadMore}
             disabled={loadingMore}
-            className="w-full py-3 rounded-2xl border border-[#E8EEEA] text-sm font-semibold text-[#2A4649] bg-[#FFFDF8] hover:border-[#2A4649] transition-all disabled:opacity-50"
+            className="w-full py-3 rounded-2xl border border-[#272320] text-sm font-semibold text-[#6A5E50] bg-transparent hover:border-[#3A3530] hover:text-[#F2EDE4] transition-all disabled:opacity-50"
           >
             {loadingMore ? 'Loading…' : 'Load more'}
           </button>

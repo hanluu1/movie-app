@@ -1,33 +1,47 @@
 'use client';
 
-import { useRef, useState } from 'react';
-import Link from 'next/link';
+import { useRef, useState, useEffect } from 'react';
 import { AllPost, CreatePostModal } from '@/features/posts';
 import { Header } from '@/components/layout';
 import { SignInPrompt } from '@/components/ui/sign-in-prompt';
 import { useAuthUser } from '@/hooks/use-auth-user';
+import { FilmIcon, TvIcon, ChevronDownIcon, XMarkIcon, FireIcon } from '@heroicons/react/24/outline';
 
 type Filter = 'all' | 'movies' | 'tv';
 type Sort = 'created_at' | 'upvotes';
 
-const FILTERS: { label: string; value: Filter }[] = [
-  { label: 'All', value: 'all' },
-  { label: 'Movies', value: 'movies' },
-  { label: 'TV Shows', value: 'tv' },
-];
-
-const SORTS: { label: string; value: Sort }[] = [
-  { label: 'Recent', value: 'created_at' },
-  { label: 'Popular', value: 'upvotes' },
+const MOODS = [
+  'Moved me to tears',
+  'Mind-bending',
+  'Still thinking about it',
+  'Comforting',
+  'Unsettling',
+  'Pure joy',
+  "Couldn't look away",
+  'Broke my heart',
+  'Changed how I see things',
 ];
 
 export default function DiscoverPage () {
   const postRef = useRef<{ refetch: () => void } | null>(null);
+  const moodRef = useRef<HTMLDivElement>(null);
   const [showCreatePostModal, setShowCreatePostModal] = useState(false);
   const [authPromptAction, setAuthPromptAction] = useState<string | null>(null);
   const [activeFilter, setActiveFilter] = useState<Filter>('all');
   const [activeSort, setActiveSort] = useState<Sort>('created_at');
+  const [activeMood, setActiveMood] = useState<string | null>(null);
+  const [moodOpen, setMoodOpen] = useState(false);
   const { user } = useAuthUser();
+
+  useEffect(() => {
+    const handler = (e: MouseEvent) => {
+      if (moodRef.current && !moodRef.current.contains(e.target as Node)) {
+        setMoodOpen(false);
+      }
+    };
+    document.addEventListener('mousedown', handler);
+    return () => document.removeEventListener('mousedown', handler);
+  }, []);
 
   const requireAuth = (action: string) => {
     if (user) return true;
@@ -40,96 +54,143 @@ export default function DiscoverPage () {
     setShowCreatePostModal(true);
   };
 
+  const selectMood = (mood: string) => {
+    setActiveMood(mood);
+    setMoodOpen(false);
+  };
+
+  const typeFilters = (
+    <>
+      <button
+        onClick={() => setActiveFilter(f => f === 'movies' ? 'all' : 'movies')}
+        className={`flex items-center gap-1.5 px-4 py-2 rounded-full text-sm font-semibold transition-all border ${
+          activeFilter === 'movies'
+            ? 'bg-[#F2EDE4] text-[#0A0908] border-[#F2EDE4]'
+            : 'border-[#272320] text-[#6A5E50] hover:border-[#3A3530] hover:text-[#F2EDE4]'
+        }`}
+      >
+        <FilmIcon className="w-3.5 h-3.5 text-[#C8956A]" />
+        Movies
+      </button>
+      <button
+        onClick={() => setActiveFilter(f => f === 'tv' ? 'all' : 'tv')}
+        className={`flex items-center gap-1.5 px-4 py-2 rounded-full text-sm font-semibold transition-all border ${
+          activeFilter === 'tv'
+            ? 'bg-[#F2EDE4] text-[#0A0908] border-[#F2EDE4]'
+            : 'border-[#272320] text-[#6A5E50] hover:border-[#3A3530] hover:text-[#F2EDE4]'
+        }`}
+      >
+        <TvIcon className="w-3.5 h-3.5 text-[#C8956A]" />
+        TV
+      </button>
+    </>
+  );
+
   return (
-    <div className="font-dm-sans bg-[#FAF7F1] min-h-screen text-[#172526]">
-      <Header onCreatePost={() => openReview()} />
+    <div className="font-dm-sans bg-[#161210] min-h-screen text-[#F2EDE4]">
+      <Header
+        onCreatePost={() => openReview()}
+        variant="dark"
+        mobileFilters={typeFilters}
+      />
 
-      <div className="max-w-2xl mx-auto px-4 sm:px-6 py-6">
+      <div className="mx-auto w-full 2xl:max-w-7xl px-6 lg:px-10 pt-6 pb-16">
 
-        {/* Page heading */}
-        <div className="mb-2">
-          <p className="text-xs font-bold uppercase tracking-widest mb-2 text-[#2A4649]">Discover</p>
-          <h1 className="font-plus-jakarta font-extrabold text-[clamp(1.75rem,4vw,2.25rem)] tracking-tight text-[#172526]">
-            What people are feeling
-          </h1>
-        </div>
+        {/* Filter bar */}
+        <div className="flex items-center justify-between gap-3 mb-6">
 
+          {/* Left: mood + type toggles */}
+          <div className="flex items-center gap-2 flex-wrap">
 
-        <div>
-          {/* Filter + Sort row */}
-          <div className="flex items-center justify-between gap-4 mb-6">
-            <div className="flex gap-2">
-              {FILTERS.map(({ label, value }) => (
-                <button
-                  key={value}
-                  onClick={() => setActiveFilter(value)}
-                  className={`px-4 py-1.5 rounded-full text-sm font-semibold transition-all ${
-                    activeFilter === value
-                      ? 'bg-[#2A4649] text-white'
-                      : 'bg-[#FFFDF8] border border-[#E8EEEA] text-[#2A4649] hover:border-[#2A4649]'
-                  }`}
-                >
-                  {label}
-                </button>
-              ))}
+            {/* Mood dropdown */}
+            <div className="relative" ref={moodRef}>
+              <button
+                onClick={() => activeMood ? setActiveMood(null) : setMoodOpen(o => !o)}
+                className={`flex items-center gap-1.5 px-4 py-2 rounded-full text-sm font-semibold transition-all border ${
+                  activeMood
+                    ? 'bg-[#C8956A] text-[#0A0908] border-[#C8956A]'
+                    : 'border-[#C8956A]/40 text-[#C8956A] hover:border-[#C8956A] hover:bg-[#C8956A]/10'
+                }`}
+              >
+                {activeMood ? (
+                  <>
+                    <span className="max-w-[140px] truncate">{activeMood}</span>
+                    <XMarkIcon className="w-3.5 h-3.5 flex-shrink-0" />
+                  </>
+                ) : (
+                  <>
+                    <span>I&apos;m in the mood for...</span>
+                    <ChevronDownIcon className={`w-3.5 h-3.5 flex-shrink-0 transition-transform ${moodOpen ? 'rotate-180' : ''}`} />
+                  </>
+                )}
+              </button>
+
+              {/* Mood dropdown panel */}
+              {moodOpen && (
+                <div className="absolute top-full mt-2 left-0 z-50 w-72 bg-[#111009] border border-[#272320] rounded-2xl p-3 shadow-xl">
+                  <p className="text-[10px] font-bold uppercase tracking-widest text-[#4A4038] px-1 mb-2">
+                    Pick a feeling
+                  </p>
+                  <div className="flex flex-wrap gap-1.5">
+                    {MOODS.map((mood) => (
+                      <button
+                        key={mood}
+                        onClick={() => selectMood(mood)}
+                        className="px-3 py-1.5 rounded-full text-xs font-medium border border-[#272320] text-[#6A5E50] hover:border-[#C8956A] hover:text-[#C8956A] transition-all"
+                      >
+                        {mood}
+                      </button>
+                    ))}
+                  </div>
+                </div>
+              )}
             </div>
-            <div className="flex gap-1.5 flex-shrink-0">
-              {SORTS.map(({ label, value }) => (
-                <button
-                  key={value}
-                  onClick={() => setActiveSort(value)}
-                  className={`px-3 py-1.5 rounded-full text-xs font-semibold transition-all ${
-                    activeSort === value
-                      ? 'bg-[#EEF2ED] text-[#2A4649]'
-                      : 'text-[#6F8C88] hover:text-[#2A4649]'
-                  }`}
-                >
-                  {label}
-                </button>
-              ))}
+
+            {/* Movies + TV — desktop only (mobile handled by header center slot) */}
+            <div className="hidden sm:flex items-center gap-2">
+              {typeFilters}
             </div>
           </div>
 
-          {/* Prompt card — non-authed */}
-          {!user && (
-            <div className="mb-6 p-4 rounded-2xl border border-[#E8EEEA] bg-[#FFFDF8] flex items-center justify-between gap-4">
-              <p className="text-sm text-[#3F5E5A]">
-                  Watched something lately?{' '}
-                <span className="font-semibold text-[#172526]">Share how it made you feel.</span>
-              </p>
-              <Link href="/login" className="flex-shrink-0">
-                <button className="px-4 py-2 rounded-xl text-xs font-semibold bg-[#2A4649] text-white whitespace-nowrap transition-all hover:-translate-y-0.5">
-                    Join to share
-                </button>
-              </Link>
-            </div>
-          )}
-
-          <AllPost
-            ref={postRef}
-            isAuthed={!!user}
-            requireAuth={requireAuth}
-            filter={activeFilter}
-            sort={activeSort}
-          />
+          {/* Right: Popular toggle */}
+          <button
+            onClick={() => setActiveSort(s => s === 'upvotes' ? 'created_at' : 'upvotes')}
+            className={`flex items-center gap-1.5 px-4 py-2 rounded-full text-sm font-semibold transition-all border flex-shrink-0 ${
+              activeSort === 'upvotes'
+                ? 'bg-[#F2EDE4] text-[#0A0908] border-[#F2EDE4]'
+                : 'border-[#272320] text-[#6A5E50] hover:border-[#3A3530] hover:text-[#F2EDE4]'
+            }`}
+          >
+            <FireIcon className="w-3.5 h-3.5 text-[#C8956A]" />
+            Popular
+          </button>
         </div>
 
-
-        <CreatePostModal
-          isOpen={showCreatePostModal}
-          onClose={() => setShowCreatePostModal(false)}
-          onCreated={() => {
-            setShowCreatePostModal(false);
-            postRef.current?.refetch();
-          }}
-        />
-
-        <SignInPrompt
-          isOpen={authPromptAction !== null}
-          onClose={() => setAuthPromptAction(null)}
-          action={authPromptAction ?? undefined}
+        <AllPost
+          ref={postRef}
+          isAuthed={!!user}
+          requireAuth={requireAuth}
+          filter={activeFilter}
+          sort={activeSort}
+          activeMood={activeMood}
+          onWriteClick={openReview}
         />
       </div>
+
+      <CreatePostModal
+        isOpen={showCreatePostModal}
+        onClose={() => setShowCreatePostModal(false)}
+        onCreated={() => {
+          setShowCreatePostModal(false);
+          postRef.current?.refetch();
+        }}
+      />
+
+      <SignInPrompt
+        isOpen={authPromptAction !== null}
+        onClose={() => setAuthPromptAction(null)}
+        action={authPromptAction ?? undefined}
+      />
     </div>
   );
 }

@@ -10,8 +10,8 @@ const geistSans = Geist({ variable: "--font-geist-sans", subsets: ["latin"] });
 const geistMono = Geist_Mono({ variable: "--font-geist-mono", subsets: ["latin"] });
 
 export const metadata: Metadata = {
-  title: "ReelEmotions",
-  description: "Discover, Share, and Relive Your Movie Moments with ReelEmotions",
+  title: "ReelEmotion",
+  description: "Find your next movie by how you want to feel. Real reactions, not star ratings.",
   icons: {
     icon: [
       { url: "/favicon.ico" },

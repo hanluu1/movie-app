@@ -20,6 +20,7 @@ interface UserResult {
 
 interface Props {
   variant?: 'floating' | 'inline';
+  dark?: boolean;
   onSelect?: () => void;
   excludeRef?: React.RefObject<HTMLElement | null>;
   className?: string;
@@ -27,7 +28,7 @@ interface Props {
   autoFocus?: boolean;
 }
 
-export function AppSearch ({ variant = 'floating', onSelect, excludeRef, className, resultsClassName, autoFocus }: Props) {
+export function AppSearch ({ variant = 'floating', dark = false, onSelect, excludeRef, className, resultsClassName, autoFocus }: Props) {
   const [query, setQuery] = useState('');
   const [posts, setPosts] = useState<PostResult[]>([]);
   const [users, setUsers] = useState<UserResult[]>([]);
@@ -86,19 +87,21 @@ export function AppSearch ({ variant = 'floating', onSelect, excludeRef, classNa
 
   const hasResults = posts.length > 0 || users.length > 0;
 
-  const inputClass = variant === 'floating'
-    ? 'w-full pl-9 pr-4 py-2 border border-[#E8EEEA] rounded-xl text-sm bg-white transition-all focus:outline-none focus:border-[#2A4649] focus:ring-2 focus:ring-[#2A4649]/10 placeholder:text-[#6F8C88]'
-    : 'w-full pl-9 pr-4 py-2.5 border border-[#E8EEEA] rounded-xl text-sm bg-[#F9F6EF] transition-all focus:outline-none focus:border-[#2A4649] focus:ring-2 focus:ring-[#2A4649]/10 placeholder:text-[#6F8C88]';
+  const inputClass = dark
+    ? 'w-full pl-9 pr-4 py-2 border border-[#2A2520] rounded-full text-sm text-[#F2EDE4] bg-[#1A1714] transition-all focus:outline-none focus:border-[#C8956A]/50 placeholder:text-[#887a6e]'
+    : variant === 'floating'
+      ? 'w-full pl-9 pr-4 py-2 border border-[#E8EEEA] rounded-full text-sm text-[#172526] bg-white transition-all focus:outline-none focus:border-[#2A4649] focus:ring-2 focus:ring-[#2A4649]/10 placeholder:text-[#6F8C88]'
+      : 'w-full pl-9 pr-4 py-2.5 border border-[#E8EEEA] rounded-full text-sm text-[#172526] bg-[#F9F6EF] transition-all focus:outline-none focus:border-[#2A4649] focus:ring-2 focus:ring-[#2A4649]/10 placeholder:text-[#6F8C88]';
 
   return (
     <div ref={containerRef} className={`${className ?? ''}`}>
       <div className="relative">
-        <MagnifyingGlassIcon className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-[#6F8C88] pointer-events-none" />
+        <MagnifyingGlassIcon className={`absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 pointer-events-none ${dark ? 'text-[#887a6e]' : 'text-[#6F8C88]'}`} />
         <input
           type="text"
           value={query}
           onChange={e => setQuery(e.target.value)}
-          placeholder="Search posts or people..."
+          placeholder="Search a movie, feeling, or person..."
           autoFocus={autoFocus}
           className={inputClass}
           onKeyDown={e => {
@@ -113,22 +116,22 @@ export function AppSearch ({ variant = 'floating', onSelect, excludeRef, classNa
 
       {open && hasResults && (
         <div className={variant === 'floating'
-          ? 'absolute top-full mt-2 left-0 right-0 bg-[#FFFDF8] border border-[#E8EEEA] rounded-2xl shadow-lg overflow-hidden z-50'
-          : `mt-2 bg-[#FFFDF8] border border-[#E8EEEA] rounded-2xl shadow-lg overflow-hidden ${resultsClassName ?? ''}`
+          ? `absolute top-full mt-2 left-0 right-0 rounded-2xl shadow-lg overflow-hidden z-50 border ${dark ? 'bg-[#111009] border-[#2A2520]' : 'bg-[#FFFDF8] border-[#E8EEEA]'}`
+          : `mt-2 rounded-2xl shadow-lg overflow-hidden border ${dark ? 'bg-[#111009] border-[#2A2520]' : 'bg-[#FFFDF8] border-[#E8EEEA]'} ${resultsClassName ?? ''}`
         }>
 
           {posts.length > 0 && (
             <div>
-              <p className="px-4 pt-3 pb-1 text-[10px] font-bold uppercase tracking-widest text-[#6F8C88]">Posts</p>
+              <p className={`px-4 pt-3 pb-1 text-[10px] font-bold uppercase tracking-widest ${dark ? 'text-[#4A4038]' : 'text-[#6F8C88]'}`}>Reactions</p>
               {posts.map(post => (
                 <Link
                   key={post.id}
                   href={`/post/${post.id}`}
                   onClick={clear}
-                  className="flex flex-col px-4 py-2.5 hover:bg-[#EEF2ED] transition-colors"
+                  className={`flex flex-col px-4 py-2.5 transition-colors ${dark ? 'hover:bg-[#1A1714]' : 'hover:bg-[#EEF2ED]'}`}
                 >
-                  <span className="text-sm font-semibold text-[#172526] line-clamp-1">{post.title}</span>
-                  <span className="text-xs text-[#6F8C88] mt-0.5">
+                  <span className={`text-sm font-semibold line-clamp-1 ${dark ? 'text-[#F2EDE4]' : 'text-[#172526]'}`}>{post.title}</span>
+                  <span className={`text-xs mt-0.5 ${dark ? 'text-[#6A5E50]' : 'text-[#6F8C88]'}`}>
                     {post.username && `by ${post.username}`}
                     {post.movie_title && ` · ${post.movie_title}`}
                   </span>
@@ -138,30 +141,30 @@ export function AppSearch ({ variant = 'floating', onSelect, excludeRef, classNa
           )}
 
           {users.length > 0 && (
-            <div className={posts.length > 0 ? 'border-t border-[#E8EEEA]' : ''}>
-              <p className="px-4 pt-3 pb-1 text-[10px] font-bold uppercase tracking-widest text-[#6F8C88]">People</p>
+            <div className={posts.length > 0 ? `border-t ${dark ? 'border-[#2A2520]' : 'border-[#E8EEEA]'}` : ''}>
+              <p className={`px-4 pt-3 pb-1 text-[10px] font-bold uppercase tracking-widest ${dark ? 'text-[#4A4038]' : 'text-[#6F8C88]'}`}>People</p>
               {users.map(user => (
                 <Link
                   key={user.id}
                   href={`/profile/${user.username}`}
                   onClick={clear}
-                  className="flex items-center gap-2.5 px-4 py-2.5 hover:bg-[#EEF2ED] transition-colors"
+                  className={`flex items-center gap-2.5 px-4 py-2.5 transition-colors ${dark ? 'hover:bg-[#1A1714]' : 'hover:bg-[#EEF2ED]'}`}
                 >
                   <div className="w-6 h-6 rounded-full bg-[#2A4649] flex items-center justify-center text-white text-[10px] font-bold flex-shrink-0">
                     {user.username.slice(0, 2).toUpperCase()}
                   </div>
-                  <span className="text-sm font-semibold text-[#172526]">@{user.username}</span>
+                  <span className={`text-sm font-semibold ${dark ? 'text-[#F2EDE4]' : 'text-[#172526]'}`}>@{user.username}</span>
                 </Link>
               ))}
             </div>
           )}
 
-          <div className="px-4 py-2.5 border-t border-[#E8EEEA]">
+          <div className={`px-4 py-2.5 border-t ${dark ? 'border-[#2A2520]' : 'border-[#E8EEEA]'}`}>
             <button
               onClick={() => { router.push(`/search?q=${encodeURIComponent(query.trim())}`); clear(); }}
-              className="text-xs font-semibold text-[#2A4649] hover:opacity-70 transition-opacity"
+              className={`text-xs font-semibold hover:opacity-70 transition-opacity ${dark ? 'text-[#C8956A]' : 'text-[#2A4649]'}`}
             >
-              See all results for &ldquo;{query}&rdquo; →
+              See all reactions for &ldquo;{query}&rdquo; →
             </button>
           </div>
 
@@ -170,10 +173,10 @@ export function AppSearch ({ variant = 'floating', onSelect, excludeRef, classNa
 
       {open && !hasResults && query.trim() && (
         <div className={variant === 'floating'
-          ? 'absolute top-full mt-2 left-0 right-0 bg-[#FFFDF8] border border-[#E8EEEA] rounded-2xl shadow-lg z-50 px-4 py-4'
-          : `mt-2 bg-[#FFFDF8] border border-[#E8EEEA] rounded-2xl shadow-lg px-4 py-4 ${resultsClassName ?? ''}`
+          ? `absolute top-full mt-2 left-0 right-0 rounded-2xl shadow-lg z-50 px-4 py-4 border ${dark ? 'bg-[#111009] border-[#2A2520]' : 'bg-[#FFFDF8] border-[#E8EEEA]'}`
+          : `mt-2 rounded-2xl shadow-lg px-4 py-4 border ${dark ? 'bg-[#111009] border-[#2A2520]' : 'bg-[#FFFDF8] border-[#E8EEEA]'} ${resultsClassName ?? ''}`
         }>
-          <p className="text-sm text-[#6F8C88]">No results for &ldquo;{query}&rdquo;</p>
+          <p className={`text-sm ${dark ? 'text-[#6A5E50]' : 'text-[#6F8C88]'}`}>No reactions found for &ldquo;{query}&rdquo; — be the first to write one.</p>
         </div>
       )}
     </div>
