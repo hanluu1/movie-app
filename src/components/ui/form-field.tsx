@@ -8,12 +8,12 @@ interface FormFieldProps {
   hint?: string;
 }
 
-const inputClass = "w-full px-4 py-[0.875rem] border-2 border-stone-200 rounded-xl text-[0.95rem] transition-all duration-300 focus:outline-none focus:border-red-600 focus:ring-4 focus:ring-red-600/10 placeholder:text-stone-400 bg-white";
+const inputClass = "w-full px-4 py-3 border border-[#3A3530] rounded-xl text-sm transition-all focus:outline-none focus:border-[#C8956A]/60 placeholder:text-[#4A4038] bg-[#272320] text-[#F2EDE4]";
 
 export default function FormField ({ label, type = 'text', placeholder, value, onChange, required, hint }: FormFieldProps) {
   return (
     <div>
-      <label className="block font-semibold text-[0.9rem] mb-2 text-stone-900">{label}</label>
+      <label className="block font-semibold text-sm mb-2 text-[#C8B8A2]">{label}</label>
       <input
         type={type}
         placeholder={placeholder}
@@ -22,7 +22,7 @@ export default function FormField ({ label, type = 'text', placeholder, value, o
         required={required}
         className={inputClass}
       />
-      {hint && <p className="text-[0.8rem] text-stone-500 mt-2">{hint}</p>}
+      {hint && <p className="text-xs text-[#4A4038] mt-1.5">{hint}</p>}
     </div>
   );
 }

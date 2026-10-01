@@ -22,60 +22,61 @@ export const EditPostForm = ({ postId, title, content, onCancel, onSave }: EditP
     setIsSaving(true);
     const { data: { user } } = await supabase.auth.getUser();
     if (!user) {
-      console.error('User not authenticated');
       setIsSaving(false);
       return;
     }
 
     const { error } = await supabase
       .from('posts')
-      .update({
-        title: editedTitle,
-        content: editedContent,
-
-      })
+      .update({ title: editedTitle, content: editedContent })
       .eq('id', postId)
       .eq('user_id', user.id);
 
-    if (error) {
-      console.error('Error updating post:', error);
-    } else {
-      onSave(); // Notify parent to refresh post
-    }
-
+    if (!error) onSave();
     setIsSaving(false);
   };
 
   return (
-    <div className="flex flex-col min-w-96 gap-4 mb-6 text-black">
-      <input
-        type="text"
-        value={editedTitle}
-        onChange={(e) => setEditedTitle(e.target.value)}
-        placeholder="Edit title"
-        className="border rounded p-2"
-      />
-      <textarea
-        value={editedContent}
-        onChange={(e) => setEditedContent(e.target.value)}
-        placeholder="Edit content"
-        className="border rounded p-2 h-32 resize-none"
-      />
+    <div className="flex flex-col gap-4 pt-2">
+      <div className="flex flex-col gap-1.5">
+        <label className="text-xs font-semibold uppercase tracking-widest text-[#6A5E50]">
+          Title
+        </label>
+        <input
+          type="text"
+          value={editedTitle}
+          onChange={(e) => setEditedTitle(e.target.value)}
+          placeholder="Edit title"
+          className="w-full px-4 py-3 border border-[#3A3530] focus:border-[#C8956A]/60 bg-[#272320] rounded-xl text-sm text-[#F2EDE4] placeholder:text-[#4A4038] outline-none transition-all"
+        />
+      </div>
 
-      <div className="flex gap-2">
-        <button
-          onClick={handleUpdatePost}
-          disabled={isSaving}
-          className=" bg-[#cfcfcf] text-black px-4 py-2 rounded-lg hover:bg-gray-400 hover:text-white"
-        >
-          {isSaving ? 'Saving...' : 'Save Changes'}
-        </button>
+      <div className="flex flex-col gap-1.5">
+        <label className="text-xs font-semibold uppercase tracking-widest text-[#6A5E50]">
+          Your reaction
+        </label>
+        <textarea
+          value={editedContent}
+          onChange={(e) => setEditedContent(e.target.value)}
+          placeholder="Edit your reaction..."
+          rows={6}
+          className="w-full px-4 py-3 border border-[#3A3530] focus:border-[#C8956A]/60 bg-[#272320] rounded-xl text-sm text-[#F2EDE4] placeholder:text-[#4A4038] outline-none transition-all resize-none leading-relaxed"
+        />
+      </div>
 
+      <div className="flex gap-3 pt-1">
         <button
           onClick={onCancel}
-          className="bg-[#cfcfcf] text-black  px-4 py-2 rounded-lg hover:bg-gray-400 hover:text-white"
+          className="flex-1 py-2.5 rounded-xl text-sm font-semibold text-[#C8B8A2] bg-[#272320] border border-[#3A3530] hover:bg-[#3A3530] hover:text-[#F2EDE4] transition-all"
         >
-            Cancel
+          Cancel
+        </button>
+        <button
+          onClick={handleUpdatePost}
+          disabled={isSaving || !editedTitle.trim()}
+          className="flex-1 py-2.5 rounded-xl text-sm font-semibold text-[#0A0908] bg-[#C8956A] hover:bg-[#D4A870] transition-all hover:-translate-y-0.5 disabled:opacity-40 disabled:cursor-not-allowed disabled:translate-y-0"
+        >
+          {isSaving ? 'Saving…' : 'Save Changes'}
         </button>
       </div>
     </div>

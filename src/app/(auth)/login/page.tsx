@@ -86,17 +86,17 @@ export default function AuthPage () {
         {/* Logo */}
         <div className="text-center mb-8">
           <Link href="/">
-            <span className="font-plus-jakarta font-extrabold text-2xl tracking-tight text-[#F2EDE4]">
+            <span className="font-plus-jakarta font-extrabold text-4xl tracking-tight text-[#F2EDE4]">
               ReelEmotion
             </span>
           </Link>
-          <p className="text-xs text-[#4A4038] mt-1">
+          <p className="text-sm text-[#C8B8A2] mt-2">
             {isLogin ? 'Welcome back.' : 'Find your next movie by how you want to feel.'}
           </p>
         </div>
 
         {/* Card */}
-        <div className="bg-[#111009] border border-[#1E1B18] rounded-3xl p-8">
+        <div className="bg-[#1A1714] border border-[#3A3530] rounded-3xl p-8">
 
           {/* Heading */}
           <div className="mb-8">
@@ -114,7 +114,7 @@ export default function AuthPage () {
           <button
             type="button"
             onClick={handleGoogleLogin}
-            className="w-full py-3 border border-[#272320] bg-[#161310] rounded-xl font-semibold text-sm text-[#F2EDE4] transition-all hover:border-[#C8956A] flex items-center justify-center gap-2.5 mb-6"
+            className="w-full py-3 border border-[#3A3530] bg-[#272320] rounded-xl font-semibold text-sm text-[#F2EDE4] transition-all hover:border-[#C8956A] flex items-center justify-center gap-2.5 mb-6"
           >
             <GoogleIcon />
             <span>Continue with Google</span>
@@ -122,9 +122,9 @@ export default function AuthPage () {
 
           {/* Divider */}
           <div className="relative flex items-center gap-3 mb-6">
-            <div className="flex-1 h-px bg-[#1E1B18]" />
-            <span className="text-xs text-[#4A4038] font-medium">or</span>
-            <div className="flex-1 h-px bg-[#1E1B18]" />
+            <div className="flex-1 h-px bg-[#3A3530]" />
+            <span className="text-xs text-[#6A5E50] font-medium">or</span>
+            <div className="flex-1 h-px bg-[#3A3530]" />
           </div>
 
           {/* Form */}

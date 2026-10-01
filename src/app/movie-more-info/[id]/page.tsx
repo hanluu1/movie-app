@@ -68,22 +68,22 @@ export default async function MoviePage ({ params, searchParams }: { params: Pro
   const rating = vote_average ? Math.round(vote_average * 10) / 10 : null;
 
   return (
-    <div className="font-dm-sans min-h-screen bg-[#FAF7F1] text-[#172526]">
-      <Header />
+    <div className="font-dm-sans min-h-screen bg-[#161210] text-[#F2EDE4]">
+      <Header variant="dark" />
 
-      <div className="max-w-2xl mx-auto px-4 sm:px-6 py-8">
+      <div className="mx-auto w-full max-w-4xl xl:max-w-5xl 2xl:max-w-6xl px-6 lg:px-10 py-8">
 
         {/* Back */}
         <Link
           href="/discover"
-          className="inline-flex items-center gap-1.5 text-sm font-semibold text-[#6F8C88] hover:text-[#172526] transition-colors mb-6"
+          className="inline-flex items-center gap-1.5 text-sm font-semibold text-[#6A5E50] hover:text-[#F2EDE4] transition-colors mb-6"
         >
           <ArrowLeftIcon className="w-4 h-4" />
           Back to feed
         </Link>
 
         {/* Card */}
-        <div className="bg-[#FFFDF8] border border-[#E8EEEA] rounded-2xl overflow-hidden">
+        <div className="bg-[#1E1B18] border border-[#3A3530] rounded-2xl overflow-hidden">
           <div className="flex flex-col sm:flex-row">
 
             {/* Poster */}
@@ -97,7 +97,7 @@ export default async function MoviePage ({ params, searchParams }: { params: Pro
                   className="w-full h-full object-cover max-h-[300px]"
                 />
               ) : (
-                <div className="w-full h-[300px] flex items-center justify-center text-[#6F8C88] text-sm bg-[#EEF2ED]">
+                <div className="w-full h-[300px] flex items-center justify-center text-[#4A4038] text-sm bg-[#272320]">
                   No poster
                 </div>
               )}
@@ -107,12 +107,12 @@ export default async function MoviePage ({ params, searchParams }: { params: Pro
             <div className="flex-1 p-6 flex flex-col gap-4">
 
               <div>
-                <h1 className="font-plus-jakarta font-extrabold text-2xl text-[#172526] leading-snug mb-2">
+                <h1 className="font-plus-jakarta font-extrabold text-2xl text-[#F2EDE4] leading-snug mb-2">
                   {displayTitle}
                 </h1>
 
                 {/* Meta */}
-                <div className="flex flex-wrap items-center gap-2 text-sm text-[#6F8C88]">
+                <div className="flex flex-wrap items-center gap-2 text-sm text-[#6A5E50]">
                   {year && <span>{year}</span>}
                   <span>·</span>
                   <span>{mediaType === 'tv' ? 'TV Series' : 'Film'}</span>
@@ -125,7 +125,7 @@ export default async function MoviePage ({ params, searchParams }: { params: Pro
                   {rating && (
                     <>
                       <span>·</span>
-                      <span className="text-amber-500 font-semibold">★ {rating}</span>
+                      <span className="text-amber-400 font-semibold">★ {rating}</span>
                     </>
                   )}
                 </div>
@@ -137,7 +137,7 @@ export default async function MoviePage ({ params, searchParams }: { params: Pro
                   {genres.map((g: any) => (
                     <span
                       key={g.id}
-                      className="px-3 py-1 bg-[#EEF2ED] rounded-full text-xs font-semibold text-[#2A4649]"
+                      className="px-3 py-1 bg-[#272320] border border-[#3A3530] rounded-full text-xs font-semibold text-[#C8B8A2]"
                     >
                       {g.name}
                     </span>
@@ -147,24 +147,24 @@ export default async function MoviePage ({ params, searchParams }: { params: Pro
 
               {/* Overview */}
               {overview && (
-                <p className="text-[#3F5E5A] text-sm leading-relaxed">
+                <p className="text-[#C8B8A2] text-sm leading-relaxed">
                   {overview}
                 </p>
               )}
 
               {/* Cast & director */}
-              <div className="flex flex-col gap-2 pt-4 border-t border-[#E8EEEA] text-sm">
+              <div className="flex flex-col gap-2 pt-4 border-t border-[#3A3530] text-sm">
                 {director && (
-                  <div className="text-[#6F8C88]">
-                    <span className="font-semibold text-[#172526]">
+                  <div className="text-[#6A5E50]">
+                    <span className="font-semibold text-[#F2EDE4]">
                       {mediaType === 'tv' ? 'Created by ' : 'Directed by '}
                     </span>
                     {director}
                   </div>
                 )}
                 {topCast.length > 0 && (
-                  <div className="text-[#6F8C88]">
-                    <span className="font-semibold text-[#172526]">Starring </span>
+                  <div className="text-[#6A5E50]">
+                    <span className="font-semibold text-[#F2EDE4]">Starring </span>
                     {topCast.join(', ')}
                   </div>
                 )}

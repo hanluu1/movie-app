@@ -61,22 +61,19 @@ export const CommentModal = ({ postId, isOpen, onClose }: CommentModalProps) => 
   return (
     <>
       <div
-        className="fixed inset-0 z-50 flex items-center justify-center p-6 bg-stone-950/60 backdrop-blur-sm"
+        className="fixed inset-0 z-50 flex items-end sm:items-center justify-center sm:p-6 bg-black/70 backdrop-blur-sm"
         onClick={(e) => e.target === e.currentTarget && onClose()}
       >
-        <div
-          className="comment-modal bg-white rounded-2xl w-full max-w-xl max-h-[85vh] flex flex-col overflow-hidden"
-        >
+        <div className="bg-[#0D0B09] w-full sm:max-w-xl max-h-[85vh] sm:rounded-3xl rounded-t-3xl flex flex-col overflow-hidden border border-[#1A1410]">
+
           {/* Header */}
-          <div className="px-6 pt-6 pb-5 border-b border-stone-100 flex items-center justify-between flex-shrink-0">
-            <h2
-              className="text-stone-900 font-archivo-black text-xl tracking-tight"
-            >
-              Comments ({comments.length})
+          <div className="px-6 pt-6 pb-5 border-b border-[#1A1410] flex items-center justify-between flex-shrink-0">
+            <h2 className="font-plus-jakarta font-extrabold text-xl tracking-tight text-[#F2EDE4]">
+              Replies ({comments.length})
             </h2>
             <button
               onClick={onClose}
-              className="w-8 h-8 bg-stone-100 hover:bg-stone-200 rounded-full flex items-center justify-center text-stone-500 hover:text-stone-900 border-none cursor-pointer transition-all duration-[250ms] hover:rotate-90"
+              className="w-8 h-8 rounded-full flex items-center justify-center text-[#6A5E50] hover:text-[#F2EDE4] hover:bg-[#1E1B18] transition-all"
             >
               <XMarkIcon className="w-4 h-4" />
             </button>
@@ -85,9 +82,9 @@ export const CommentModal = ({ postId, isOpen, onClose }: CommentModalProps) => 
           {/* Scrollable comment list */}
           <div className="flex-1 overflow-y-auto px-6 py-4">
             {comments.length === 0 ? (
-              <div className="text-center py-10 text-stone-400">
-                <ChatBubbleLeftEllipsisIcon className="w-10 h-10 mx-auto mb-3 text-stone-300" />
-                <p className="text-sm">No comments yet. Be the first!</p>
+              <div className="text-center py-10 text-[#4A4038]">
+                <ChatBubbleLeftEllipsisIcon className="w-10 h-10 mx-auto mb-3 text-[#272320]" />
+                <p className="text-sm">No replies yet. Be the first!</p>
               </div>
             ) : (
               <div className="flex flex-col">
@@ -96,22 +93,20 @@ export const CommentModal = ({ postId, isOpen, onClose }: CommentModalProps) => 
                   return (
                     <div
                       key={comment.id}
-                      className={`py-4 ${idx !== comments.length - 1 ? 'border-b border-stone-100' : ''}`}
+                      className={`py-4 ${idx !== comments.length - 1 ? 'border-b border-[#1A1410]' : ''}`}
                     >
                       <div className="flex items-center gap-3 mb-2">
-                        <div
-                          className="w-8 h-8 rounded-full flex items-center justify-center text-white font-bold text-xs flex-shrink-0 bg-gradient-to-br from-red-600 to-orange-600"
-                        >
+                        <div className="w-8 h-8 rounded-full flex items-center justify-center text-white font-bold text-xs flex-shrink-0 bg-[#272320]">
                           {getInitials(username)}
                         </div>
                         <div className="flex items-baseline gap-2">
-                          <span className="font-semibold text-sm text-stone-900">{username}</span>
-                          <span className="text-stone-400 text-xs">
+                          <span className="font-semibold text-sm text-[#F2EDE4]">{username}</span>
+                          <span className="text-[#4A4038] text-xs">
                             {new Date(comment.created_at).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' })}
                           </span>
                         </div>
                       </div>
-                      <p className="text-stone-600 text-sm leading-relaxed pl-11">{comment.content}</p>
+                      <p className="text-[#C8B8A2] text-sm leading-relaxed pl-11">{comment.content}</p>
                     </div>
                   );
                 })}
@@ -119,27 +114,28 @@ export const CommentModal = ({ postId, isOpen, onClose }: CommentModalProps) => 
             )}
           </div>
 
-          {/* Comment input — pinned to bottom */}
-          <div className="px-6 py-5 border-t border-stone-100 flex-shrink-0">
+          {/* Comment input */}
+          <div className="px-6 py-5 border-t border-[#1A1410] flex-shrink-0">
             <textarea
               value={newComment}
               onChange={(e) => setNewComment(e.target.value)}
               onKeyDown={(e) => { if (e.key === 'Enter' && (e.metaKey || e.ctrlKey)) handleAddComment(); }}
               placeholder="Share your thoughts..."
               rows={2}
-              className="w-full px-4 py-3 border-2 border-stone-200 focus:border-red-600 rounded-xl text-sm resize-none outline-none transition-colors duration-200 leading-relaxed"
+              className="w-full px-4 py-3 border border-[#2A2520] focus:border-[#C8956A]/60 bg-[#1A1714] rounded-xl text-sm text-[#F2EDE4] placeholder:text-[#4A4038] outline-none transition-all resize-none leading-relaxed"
             />
             <div className="flex justify-between items-center mt-2">
-              <span className="text-xs text-stone-400">⌘ + Enter to post</span>
+              <span className="text-xs text-[#4A4038]">⌘ + Enter to post</span>
               <button
                 onClick={handleAddComment}
                 disabled={!newComment.trim() || isSubmitting}
-                className="px-5 py-2.5 rounded-lg font-bold text-sm text-white border-none cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed transition-all duration-200 hover:-translate-y-px bg-gradient-to-br from-red-600 to-orange-600 shadow-[0_2px_8px_rgba(220,38,38,0.2)]"
+                className="px-5 py-2.5 rounded-xl font-semibold text-sm text-[#0A0908] bg-[#C8956A] hover:bg-[#D4A870] transition-all hover:-translate-y-0.5 disabled:opacity-40 disabled:cursor-not-allowed disabled:translate-y-0"
               >
-                {isSubmitting ? 'Posting…' : 'Post Comment'}
+                {isSubmitting ? 'Posting…' : 'Post Reply'}
               </button>
             </div>
           </div>
+
         </div>
       </div>
     </>

@@ -55,7 +55,7 @@ function getInitials (name: string) {
 function Avatar ({ username, avatarUrl, size = 10 }: { username: string; avatarUrl?: string | null; size?: number }) {
   const sizeClass = `w-${size} h-${size}`;
   return (
-    <div className={`${sizeClass} rounded-full flex-shrink-0 bg-[#2A4649] flex items-center justify-center text-white font-bold text-sm overflow-hidden relative`}>
+    <div className={`${sizeClass} rounded-full flex-shrink-0 bg-[#272320] flex items-center justify-center text-[#F2EDE4] font-bold text-sm overflow-hidden relative`}>
       {avatarUrl ? (
         <Image src={avatarUrl} alt={username} fill className="object-cover" sizes={`${size * 4}px`} />
       ) : (
@@ -77,6 +77,8 @@ export default function PostDetailPage () {
   const [edit, setEdit] = useState(false);
   const [liked, setLiked] = useState(false);
   const [authPromptAction, setAuthPromptAction] = useState<string | null>(null);
+  const [showDeleteModal, setShowDeleteModal] = useState(false);
+  const [isDeleting, setIsDeleting] = useState(false);
   const [currentProfile, setCurrentProfile] = useState<{ username: string; avatar_url?: string | null } | null>(null);
   const { user } = useAuthUser();
 
@@ -137,17 +139,18 @@ export default function PostDetailPage () {
   };
 
   const handleDeletePost = async () => {
-    if (!window.confirm('Delete this post?')) return;
+    setIsDeleting(true);
     const { error } = await supabase.from('posts').delete().eq('id', id);
     if (!error) router.push('/discover');
+    setIsDeleting(false);
   };
 
   if (loading) {
     return (
-      <div className="min-h-screen bg-[#FAF7F1] flex flex-col">
-        <Header />
+      <div className="min-h-screen bg-[#161210] flex flex-col">
+        <Header variant="dark" />
         <div className="flex-1 flex items-center justify-center">
-          <div className="w-8 h-8 rounded-full border-2 border-[#E8EEEA] border-t-[#2A4649] animate-spin" />
+          <div className="w-8 h-8 rounded-full border-2 border-[#272320] border-t-[#C8956A] animate-spin" />
         </div>
       </div>
     );
@@ -155,9 +158,9 @@ export default function PostDetailPage () {
 
   if (!post) {
     return (
-      <div className="min-h-screen bg-[#FAF7F1]">
-        <Header />
-        <div className="flex items-center justify-center h-64 text-[#6F8C88]">Post not found.</div>
+      <div className="min-h-screen bg-[#161210]">
+        <Header variant="dark" />
+        <div className="flex items-center justify-center h-64 text-[#6A5E50]">Post not found.</div>
       </div>
     );
   }
@@ -166,44 +169,44 @@ export default function PostDetailPage () {
   const isOwner = user?.id === post.user_id;
 
   return (
-    <div className="font-dm-sans min-h-screen bg-[#FAF7F1] text-[#172526]">
-      <Header />
+    <div className="font-dm-sans min-h-screen bg-[#161210] text-[#F2EDE4]">
+      <Header variant="dark" />
 
-      <div className="max-w-2xl mx-auto px-4 sm:px-6 py-8">
+      <div className="mx-auto w-full max-w-4xl xl:max-w-5xl 2xl:max-w-6xl px-6 lg:px-10 py-8">
 
         {/* Back */}
         <Link
           href="/discover"
-          className="inline-flex items-center gap-1.5 text-sm font-semibold text-[#6F8C88] hover:text-[#172526] transition-colors mb-6"
+          className="inline-flex items-center gap-1.5 text-sm font-semibold text-[#6A5E50] hover:text-[#F2EDE4] transition-colors mb-6"
         >
           <ArrowLeftIcon className="w-4 h-4" />
           Back to feed
         </Link>
 
         {/* Post */}
-        <div className="bg-[#FFFDF8] border border-[#E8EEEA] rounded-2xl overflow-hidden mb-6">
+        <div className="bg-[#1E1B18] border border-[#3A3530] rounded-2xl overflow-hidden mb-6">
 
           {/* Author row */}
           <div className="px-6 pt-6 pb-5 flex items-center justify-between gap-4">
             <div className="flex items-center gap-3">
               <Avatar username={authorName} avatarUrl={post.profiles?.avatar_url} size={10} />
               <div>
-                <div className="font-semibold text-sm text-[#172526]">{authorName}</div>
-                <div className="text-xs text-[#6F8C88]">{formatTimestamp(post.created_at)}</div>
+                <div className="font-semibold text-sm text-[#F2EDE4]">{authorName}</div>
+                <div className="text-xs text-[#6A5E50]">{formatTimestamp(post.created_at)}</div>
               </div>
             </div>
             {isOwner && !edit && (
               <div className="flex gap-2">
                 <button
                   onClick={() => setEdit(true)}
-                  className="flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-xs font-semibold text-[#6F8C88] hover:text-[#172526] hover:bg-[#EEF2ED] transition-all"
+                  className="flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-xs font-semibold text-[#6A5E50] hover:text-[#F2EDE4] hover:bg-[#272320] transition-all"
                 >
                   <PencilSquareIcon className="w-3.5 h-3.5" />
                   Edit
                 </button>
                 <button
-                  onClick={handleDeletePost}
-                  className="flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-xs font-semibold text-rose-400 hover:text-rose-600 hover:bg-rose-50 transition-all"
+                  onClick={() => setShowDeleteModal(true)}
+                  className="flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-xs font-semibold text-rose-400 hover:text-rose-300 hover:bg-rose-500/10 transition-all"
                 >
                   <TrashIcon className="w-3.5 h-3.5" />
                   Delete
@@ -229,11 +232,11 @@ export default function PostDetailPage () {
             <>
               {/* Reaction content */}
               <div className="px-6 pb-6">
-                <h1 className="font-plus-jakarta font-extrabold text-2xl text-[#172526] leading-snug mb-4">
+                <h1 className="font-plus-jakarta font-extrabold text-2xl text-[#F2EDE4] leading-snug mb-4">
                   {post.title}
                 </h1>
                 {post.content && (
-                  <p className="text-[#3F5E5A] text-base leading-relaxed">
+                  <p className="text-[#C8B8A2] text-base leading-relaxed">
                     {post.content}
                   </p>
                 )}
@@ -245,36 +248,36 @@ export default function PostDetailPage () {
                   {post.movie_id ? (
                     <Link
                       href={`/movie-more-info/${post.movie_id}${post.media_type ? `?type=${post.media_type}` : ''}`}
-                      className="inline-flex items-center gap-2.5 bg-[#EEF2ED] hover:bg-[#dde5dc] rounded-xl px-3 py-2 transition-colors"
+                      className="inline-flex items-center gap-2.5 bg-[#272320] hover:bg-[#3A3530] border border-[#3A3530] rounded-xl px-3 py-2 transition-colors"
                     >
                       {post.movie_image && (
                         <div className="relative w-6 h-9 rounded flex-shrink-0 overflow-hidden">
                           <Image src={post.movie_image} alt={post.movie_title} fill className="object-cover" sizes="24px" />
                         </div>
                       )}
-                      <span className="text-xs font-semibold text-[#2A4649]">{post.movie_title}</span>
+                      <span className="text-xs font-semibold text-[#C8B8A2]">{post.movie_title}</span>
                     </Link>
                   ) : (
-                    <div className="inline-flex items-center gap-2.5 bg-[#EEF2ED] rounded-xl px-3 py-2">
+                    <div className="inline-flex items-center gap-2.5 bg-[#272320] border border-[#3A3530] rounded-xl px-3 py-2">
                       {post.movie_image && (
                         <div className="relative w-6 h-9 rounded flex-shrink-0 overflow-hidden">
                           <Image src={post.movie_image} alt={post.movie_title} fill className="object-cover" sizes="24px" />
                         </div>
                       )}
-                      <span className="text-xs font-semibold text-[#2A4649]">{post.movie_title}</span>
+                      <span className="text-xs font-semibold text-[#C8B8A2]">{post.movie_title}</span>
                     </div>
                   )}
                 </div>
               )}
 
               {/* Action bar */}
-              <div className="px-6 py-4 border-t border-[#E8EEEA] flex items-center gap-4">
+              <div className="px-6 py-4 border-t border-[#3A3530] flex items-center gap-4">
                 <button
                   onClick={handleUpvote}
                   className={`flex items-center gap-2 px-4 py-2 rounded-xl text-sm font-semibold transition-all ${
                     liked
-                      ? 'bg-rose-50 text-rose-500 border border-rose-200'
-                      : 'bg-[#EEF2ED] text-[#6F8C88] hover:text-rose-500 border border-transparent'
+                      ? 'bg-rose-500/10 text-rose-400 border border-rose-500/30'
+                      : 'bg-[#272320] text-[#6A5E50] hover:text-rose-400 border border-[#3A3530]'
                   }`}
                 >
                   {liked ? <HeartSolidIcon className="w-4 h-4" /> : <HeartIcon className="w-4 h-4" />}
@@ -282,7 +285,7 @@ export default function PostDetailPage () {
                 </button>
                 <a
                   href="#comments"
-                  className="flex items-center gap-2 px-4 py-2 rounded-xl text-sm font-semibold bg-[#EEF2ED] text-[#6F8C88] hover:text-[#2A4649] transition-colors border border-transparent"
+                  className="flex items-center gap-2 px-4 py-2 rounded-xl text-sm font-semibold bg-[#272320] border border-[#3A3530] text-[#6A5E50] hover:text-[#F2EDE4] transition-colors"
                 >
                   <ChatBubbleLeftEllipsisIcon className="w-4 h-4" />
                   {comments.length} {comments.length === 1 ? 'reply' : 'replies'}
@@ -293,9 +296,9 @@ export default function PostDetailPage () {
         </div>
 
         {/* Comments */}
-        <div id="comments" className="bg-[#FFFDF8] border border-[#E8EEEA] rounded-2xl px-6 py-6">
+        <div id="comments" className="bg-[#1E1B18] border border-[#3A3530] rounded-2xl px-6 py-6">
 
-          <p className="text-xs font-bold uppercase tracking-widest text-[#2A4649] mb-5">
+          <p className="text-xs font-bold uppercase tracking-widest text-[#C8956A] mb-5">
             {comments.length === 0 ? 'Replies' : `${comments.length} ${comments.length === 1 ? 'Reply' : 'Replies'}`}
           </p>
 
@@ -310,12 +313,12 @@ export default function PostDetailPage () {
                 onChange={e => setNewComment(e.target.value)}
                 placeholder="Share your reaction..."
                 rows={3}
-                className="w-full px-4 py-3 border border-[#E8EEEA] focus:border-[#2A4649] bg-white rounded-xl text-sm outline-none transition-all resize-none leading-relaxed focus:shadow-[0_0_0_3px_rgba(42,70,73,0.08)] placeholder:text-[#6F8C88]"
+                className="w-full px-4 py-3 border border-[#3A3530] focus:border-[#C8956A]/60 bg-[#272320] rounded-xl text-sm text-[#F2EDE4] placeholder:text-[#4A4038] outline-none transition-all resize-none leading-relaxed"
               />
               <button
                 onClick={handleAddComment}
                 disabled={!newComment.trim()}
-                className="mt-2 px-5 py-2 rounded-xl text-sm font-semibold text-white bg-[#2A4649] transition-all hover:-translate-y-0.5 hover:shadow-md disabled:opacity-40 disabled:cursor-not-allowed disabled:translate-y-0 disabled:shadow-none"
+                className="mt-2 px-5 py-2 rounded-xl text-sm font-semibold text-[#0A0908] bg-[#C8956A] hover:bg-[#D4A870] transition-all hover:-translate-y-0.5 hover:shadow-md disabled:opacity-40 disabled:cursor-not-allowed disabled:translate-y-0 disabled:shadow-none"
               >
                 Reply
               </button>
@@ -324,11 +327,11 @@ export default function PostDetailPage () {
 
           {/* List */}
           {comments.length === 0 ? (
-            <div className="text-center py-8 text-[#6F8C88] text-sm">
+            <div className="text-center py-8 text-[#4A4038] text-sm">
               No replies yet — be the first.
             </div>
           ) : (
-            <div className="flex flex-col divide-y divide-[#E8EEEA]">
+            <div className="flex flex-col divide-y divide-[#3A3530]">
               {comments.map(comment => {
                 const name = comment.profiles?.username || 'Anonymous';
                 return (
@@ -336,12 +339,12 @@ export default function PostDetailPage () {
                     <Avatar username={name} avatarUrl={comment.profiles?.avatar_url} size={8} />
                     <div className="flex-1 min-w-0">
                       <div className="flex items-baseline gap-2 mb-1">
-                        <span className="text-sm font-semibold text-[#172526]">{name}</span>
-                        <span className="text-xs text-[#6F8C88]">
+                        <span className="text-sm font-semibold text-[#F2EDE4]">{name}</span>
+                        <span className="text-xs text-[#6A5E50]">
                           {new Date(comment.created_at).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' })}
                         </span>
                       </div>
-                      <p className="text-sm text-[#3F5E5A] leading-relaxed">{comment.content}</p>
+                      <p className="text-sm text-[#C8B8A2] leading-relaxed">{comment.content}</p>
                     </div>
                   </div>
                 );
@@ -357,6 +360,39 @@ export default function PostDetailPage () {
         onClose={() => setAuthPromptAction(null)}
         action={authPromptAction ?? undefined}
       />
+
+      {/* Delete confirmation modal */}
+      {showDeleteModal && (
+        <div
+          className="fixed inset-0 z-50 flex items-center justify-center p-6 bg-black/70 backdrop-blur-sm"
+          onClick={(e) => e.target === e.currentTarget && setShowDeleteModal(false)}
+        >
+          <div className="bg-[#1E1B18] border border-[#3A3530] rounded-2xl w-full max-w-sm p-6 flex flex-col gap-5">
+            <div>
+              <p className="text-xs font-bold uppercase tracking-widest text-rose-400 mb-1">Heads up</p>
+              <h2 className="font-plus-jakarta font-extrabold text-xl text-[#F2EDE4]">Delete this post?</h2>
+              <p className="text-sm text-[#6A5E50] mt-2 leading-relaxed">
+                This will permanently remove your reaction. There&rsquo;s no way to get it back.
+              </p>
+            </div>
+            <div className="flex gap-3">
+              <button
+                onClick={() => setShowDeleteModal(false)}
+                className="flex-1 py-2.5 rounded-xl text-sm font-semibold text-[#C8B8A2] bg-[#272320] border border-[#3A3530] hover:bg-[#3A3530] hover:text-[#F2EDE4] transition-all"
+              >
+                Keep it
+              </button>
+              <button
+                onClick={handleDeletePost}
+                disabled={isDeleting}
+                className="flex-1 py-2.5 rounded-xl text-sm font-semibold text-white bg-rose-500 hover:bg-rose-400 transition-all hover:-translate-y-0.5 disabled:opacity-50 disabled:cursor-not-allowed disabled:translate-y-0"
+              >
+                {isDeleting ? 'Deleting…' : 'Yes, delete'}
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 }
