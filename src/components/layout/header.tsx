@@ -12,11 +12,10 @@ import Image from 'next/image';
 import Link from 'next/link';
 import type { User } from '@supabase/auth-js';
 
-export function Header ({ onCreatePost, showSearch = true, variant = 'light', mobileFilters }: {
+export function Header ({ onCreatePost, showSearch = true, variant = 'light' }: {
   onCreatePost?: () => void;
   showSearch?: boolean;
   variant?: 'light' | 'dark';
-  mobileFilters?: React.ReactNode;
 }) {
   const router = useRouter();
   const pathname = usePathname();
@@ -78,7 +77,7 @@ export function Header ({ onCreatePost, showSearch = true, variant = 'light', mo
   const isDark = variant === 'dark';
 
   return (
-    <header className={`font-sans sticky top-0 w-full px-6 sm:px-8 py-3.5 flex justify-between items-center backdrop-blur-md border-b z-50 ${
+    <header className={`font-sans sticky top-0 w-full px-6 sm:px-10 py-3.5 flex justify-between items-center backdrop-blur-md border-b z-50 ${
       isDark
         ? 'bg-[#0A0908]/98 border-[#3A2510]'
         : 'bg-[#FFFDF8]/90 border-[#E8EEEA]'
@@ -91,12 +90,6 @@ export function Header ({ onCreatePost, showSearch = true, variant = 'light', mo
         </span>
       </Link>
 
-      {/* Mobile center slot */}
-      {mobileFilters && (
-        <div className="sm:hidden flex items-center gap-2 absolute left-1/2 -translate-x-1/2">
-          {mobileFilters}
-        </div>
-      )}
 
       {/* Right side */}
       <div className="flex items-center gap-2">
