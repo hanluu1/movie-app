@@ -6,21 +6,10 @@ import { Header } from '@/components/layout';
 import { SignInPrompt } from '@/components/ui/sign-in-prompt';
 import { useAuthUser } from '@/hooks/use-auth-user';
 import { FilmIcon, TvIcon, ChevronDownIcon, XMarkIcon, FireIcon } from '@heroicons/react/24/outline';
+import { MOODS } from '@/lib/moods';
 
 type Filter = 'all' | 'movies' | 'tv';
 type Sort = 'created_at' | 'upvotes';
-
-const MOODS = [
-  'Moved me to tears',
-  'Mind-bending',
-  'Still thinking about it',
-  'Comforting',
-  'Unsettling',
-  'Pure joy',
-  "Couldn't look away",
-  'Broke my heart',
-  'Changed how I see things',
-];
 
 export default function DiscoverPage () {
   const postRef = useRef<{ refetch: () => void } | null>(null);

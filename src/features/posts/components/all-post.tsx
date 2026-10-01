@@ -94,8 +94,7 @@ export const AllPost = forwardRef<{ refetch: () => void }, AllPostProps>(
       if (filter === 'movies') postsQuery = postsQuery.eq('media_type', 'movie');
       if (filter === 'tv') postsQuery = postsQuery.eq('media_type', 'tv');
       if (activeMood) {
-        const term = `%${activeMood}%`;
-        postsQuery = postsQuery.or(`title.ilike.${term},content.ilike.${term}`);
+        postsQuery = postsQuery.eq('mood', activeMood);
       }
 
       const [postsResult, likesResult] = await Promise.all([
