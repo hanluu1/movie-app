@@ -2,11 +2,11 @@ import { Header } from '@/components/layout';
 
 export default function Loading () {
   return (
-    <div className="font-dm-sans min-h-screen bg-[#FAF7F1] flex flex-col">
-      <Header />
+    <div className="font-dm-sans min-h-screen bg-[#161210] flex flex-col">
+      <Header variant="dark" />
       <div className="flex-1 flex flex-col items-center justify-center gap-3">
-        <div className="w-8 h-8 rounded-full border-2 border-[#E8EEEA] border-t-[#2A4649] animate-spin" />
-        <p className="text-[#6F8C88] text-sm">Loading…</p>
+        <div className="w-8 h-8 rounded-full border-2 border-[#2A2520] border-t-[#C8956A] animate-spin" />
+        <p className="text-[#6A5E50] text-sm">Loading…</p>
       </div>
     </div>
   );

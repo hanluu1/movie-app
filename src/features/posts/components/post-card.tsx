@@ -8,7 +8,7 @@ import { HeartIcon as HeartSolidIcon } from '@heroicons/react/24/solid';
 
 interface PostCardProps {
   id: string;
-  movieTitle: string | null;
+  movieTitle?: string | null;
   movieImage?: string | null;
   movieId?: number | null;
   mediaType?: string | null;
