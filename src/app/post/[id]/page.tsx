@@ -29,6 +29,7 @@ interface Post {
   movie_id?: number | null;
   media_type?: string | null;
   user_id: string;
+  mood?: string[] | null;
   profiles?: { username: string; avatar_url?: string | null } | null;
 }
 
@@ -222,6 +223,7 @@ export default function PostDetailPage () {
                 postId={post.id}
                 title={post.title}
                 content={post.content || ''}
+                mood={post.mood ?? []}
                 onCancel={() => setEdit(false)}
                 onSave={async () => { setEdit(false); await fetchPost(); }}
               />

@@ -3,6 +3,7 @@ import Link from 'next/link';
 import { Header } from '@/components/layout';
 import { ArrowLeftIcon } from '@heroicons/react/24/outline';
 import { notFound } from 'next/navigation';
+import { MovieCommunityPosts } from '@/features/posts/components/movie-community-posts';
 
 const API_KEY = process.env.TMDB_API_KEY;
 
@@ -173,6 +174,13 @@ export default async function MoviePage ({ params, searchParams }: { params: Pro
             </div>
           </div>
         </div>
+
+        <MovieCommunityPosts
+          movieId={Number(id)}
+          movieTitle={displayTitle}
+          posterPath={poster_path ?? null}
+          mediaType={mediaType}
+        />
 
       </div>
     </div>

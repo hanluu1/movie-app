@@ -255,7 +255,7 @@ export default function MyProfilePage () {
               </p>
             </div>
           ) : (
-            <div className="mt-7 grid grid-cols-1 lg:grid-cols-2 xl:grid-cols-3 gap-5">
+            <div className="mt-7 flex flex-col gap-3">
               {posts.map((post) => (
                 <PostCard
                   key={post.id}

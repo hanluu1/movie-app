@@ -2,18 +2,21 @@
 
 import { useState } from 'react';
 import { supabase } from '@/lib/supabase/client';
+import { MOODS } from '@/lib/moods';
 
 interface EditPostFormProps {
   postId: string;
   title: string;
   content: string;
+  mood?: string[];
   onCancel: () => void;
   onSave: () => void;
 }
 
-export const EditPostForm = ({ postId, title, content, onCancel, onSave }: EditPostFormProps) => {
+export const EditPostForm = ({ postId, title, content, mood = [], onCancel, onSave }: EditPostFormProps) => {
   const [editedTitle, setEditedTitle] = useState(title);
   const [editedContent, setEditedContent] = useState(content || '');
+  const [editedMoods, setEditedMoods] = useState<string[]>(mood);
   const [isSaving, setIsSaving] = useState(false);
 
   const handleUpdatePost = async () => {
@@ -28,7 +31,7 @@ export const EditPostForm = ({ postId, title, content, onCancel, onSave }: EditP
 
     const { error } = await supabase
       .from('posts')
-      .update({ title: editedTitle, content: editedContent })
+      .update({ title: editedTitle, content: editedContent, mood: editedMoods })
       .eq('id', postId)
       .eq('user_id', user.id);
 
@@ -62,6 +65,30 @@ export const EditPostForm = ({ postId, title, content, onCancel, onSave }: EditP
           rows={6}
           className="w-full px-4 py-3 border border-[#3A3530] focus:border-[#C8956A]/60 bg-[#272320] rounded-xl text-sm text-[#F2EDE4] placeholder:text-[#4A4038] outline-none transition-all resize-none leading-relaxed"
         />
+      </div>
+
+      <div className="flex flex-col gap-1.5">
+        <label className="text-xs font-semibold uppercase tracking-widest text-[#6A5E50]">
+          How did it make you feel?
+        </label>
+        <div className="flex flex-wrap gap-2">
+          {MOODS.map((mood) => (
+            <button
+              key={mood}
+              type="button"
+              onClick={() => setEditedMoods(prev =>
+                prev.includes(mood) ? prev.filter(m => m !== mood) : [...prev, mood]
+              )}
+              className={`px-3 py-1.5 rounded-full text-xs font-medium border transition-all ${
+                editedMoods.includes(mood)
+                  ? 'bg-[#C8956A] text-[#0A0908] border-[#C8956A]'
+                  : 'border-[#3A3530] text-[#6A5E50] hover:border-[#C8956A]/50 hover:text-[#C8956A]'
+              }`}
+            >
+              {mood}
+            </button>
+          ))}
+        </div>
       </div>
 
       <div className="flex gap-3 pt-1">
