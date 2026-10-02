@@ -32,7 +32,7 @@ export const CreatePostModal = ({ isOpen, onClose, onCreated, preselectedMovie }
   const [reviewTitle, setReviewTitle] = useState('');
   const [reviewContent, setReviewContent] = useState('');
   const [containsSpoilers, setContainsSpoilers] = useState(false);
-  const [selectedMood, setSelectedMood] = useState<string | null>(null);
+  const [selectedMoods, setSelectedMoods] = useState<string[]>([]);
   const [isSubmitting, setIsSubmitting] = useState(false);
 
   useEffect(() => {
@@ -44,7 +44,7 @@ export const CreatePostModal = ({ isOpen, onClose, onCreated, preselectedMovie }
       setReviewTitle('');
       setReviewContent('');
       setContainsSpoilers(false);
-      setSelectedMood(null);
+      setSelectedMoods([]);
     } else if (preselectedMovie) {
       setSelectedMovie(preselectedMovie);
       setStep(2);
@@ -81,7 +81,7 @@ export const CreatePostModal = ({ isOpen, onClose, onCreated, preselectedMovie }
         movie_image: movieImage,
         media_type: mediaType,
         movie_id: selectedMovie?.id ?? null,
-        mood: selectedMood,
+        mood: selectedMoods,
         user_id: user.id,
       });
       setStep('success');
@@ -263,9 +263,11 @@ export const CreatePostModal = ({ isOpen, onClose, onCreated, preselectedMovie }
                       <button
                         key={mood}
                         type="button"
-                        onClick={() => setSelectedMood(selectedMood === mood ? null : mood)}
+                        onClick={() => setSelectedMoods(prev =>
+                          prev.includes(mood) ? prev.filter(m => m !== mood) : [...prev, mood]
+                        )}
                         className={`px-3 py-1.5 rounded-full text-xs font-medium border transition-all ${
-                          selectedMood === mood
+                          selectedMoods.includes(mood)
                             ? 'bg-[#C8956A] text-[#0A0908] border-[#C8956A]'
                             : 'border-[#2A2520] text-[#6A5E50] hover:border-[#C8956A]/50 hover:text-[#C8956A]'
                         }`}

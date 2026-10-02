@@ -94,7 +94,7 @@ export const AllPost = forwardRef<{ refetch: () => void }, AllPostProps>(
       if (filter === 'movies') postsQuery = postsQuery.eq('media_type', 'movie');
       if (filter === 'tv') postsQuery = postsQuery.eq('media_type', 'tv');
       if (activeMood) {
-        postsQuery = postsQuery.eq('mood', activeMood);
+        postsQuery = postsQuery.contains('mood', [activeMood]);
       }
 
       const [postsResult, likesResult] = await Promise.all([
@@ -221,7 +221,7 @@ export const AllPost = forwardRef<{ refetch: () => void }, AllPostProps>(
 
     return (
       <div className="flex flex-col gap-4 w-full">
-        <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+        <div className="flex flex-col gap-3">
           {posts.map((post) => (
             <PostCard
               key={post.id}

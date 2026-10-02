@@ -5,7 +5,7 @@ import { useRef, useState, useEffect } from 'react';
 import { supabase } from '@/lib/supabase/client';
 import {
   Bars3Icon, XMarkIcon, MagnifyingGlassIcon, ArrowLeftIcon,
-  PencilSquareIcon, UserCircleIcon, ArrowRightStartOnRectangleIcon,
+  UserCircleIcon, ArrowRightStartOnRectangleIcon,
 } from '@heroicons/react/24/outline';
 import { AppSearch } from '@/components/search/app-search';
 import Image from 'next/image';
@@ -106,20 +106,6 @@ export function Header ({ onCreatePost, showSearch = true, variant = 'light' }: 
 
         {user ? (
           <>
-            {/* Write button — desktop */}
-            {onCreatePost && (
-              <button
-                onClick={onCreatePost}
-                className={`hidden sm:flex items-center gap-1.5 px-3 py-2 rounded-full font-semibold text-sm transition-all ${
-                  isDark
-                    ? 'text-[#C8956A] hover:text-[#F2EDE4] hover:bg-[#1E1B18] bg-[#1A1714]'
-                    : 'text-[#2A4649] hover:bg-[#EEF2ED]'
-                }`}
-              >
-                <PencilSquareIcon className="w-4 h-4" />
-                <span>Write</span>
-              </button>
-            )}
 
             {/* Avatar + dropdown — desktop */}
             <div className="relative hidden sm:block" ref={profileMenuRef}>
@@ -230,18 +216,6 @@ export function Header ({ onCreatePost, showSearch = true, variant = 'light' }: 
                       @{profile?.username}
                     </span>
                   </button>
-
-                  {onCreatePost && (
-                    <button
-                      onClick={() => { onCreatePost(); setMenuOpen(false); }}
-                      className={`w-full flex items-center gap-3 px-4 py-3 transition-colors text-left text-sm font-semibold ${
-                        isDark ? 'hover:bg-[#1E1B18] text-[#C8956A]' : 'hover:bg-[#EEF2ED] text-[#2A4649]'
-                      }`}
-                    >
-                      <PencilSquareIcon className="w-4 h-4 flex-shrink-0" />
-                      Write a Feeling
-                    </button>
-                  )}
 
                   <div className={`border-t ${isDark ? 'border-[#1A1410]/80' : 'border-[#E8EEEA]'}`} />
 

@@ -5,7 +5,7 @@ import { AllPost, CreatePostModal } from '@/features/posts';
 import { Header } from '@/components/layout';
 import { SignInPrompt } from '@/components/ui/sign-in-prompt';
 import { useAuthUser } from '@/hooks/use-auth-user';
-import { FilmIcon, TvIcon, ChevronDownIcon, XMarkIcon, FireIcon } from '@heroicons/react/24/outline';
+import { FilmIcon, TvIcon, ChevronDownIcon, XMarkIcon, FireIcon, PencilSquareIcon } from '@heroicons/react/24/outline';
 import { MOODS } from '@/lib/moods';
 
 type Filter = 'all' | 'movies' | 'tv';
@@ -80,22 +80,35 @@ export default function DiscoverPage () {
       <Header
         onCreatePost={() => openReview()}
         variant="dark"
-        mobileFilters={typeFilters}
       />
 
       <div className="mx-auto w-full 2xl:max-w-7xl px-6 lg:px-10 pt-6 pb-16">
 
-        {/* Filter bar */}
-        <div className="flex items-center justify-between gap-3 mb-6">
+        {/* Write prompt bar */}
+        <button
+          onClick={openReview}
+          className="w-full flex items-center gap-3 px-4 py-3.5 mb-5 rounded-2xl bg-[#1E1B18] border-l-4 border-l-transparent hover:border-l-[#C8956A] border border-[#2A2520] hover:border-[#2A2520] transition-all text-left group"
+        >
+          <span className="flex-1 text-sm text-[#6A5E50] group-hover:text-[#F2EDE4] transition-colors">
+            What did a movie make you feel lately?
+          </span>
+          <div className="flex items-center gap-1.5 text-[#C8956A] group-hover:text-[#E8A870] transition-colors flex-shrink-0">
+            <PencilSquareIcon className="w-4 h-4" />
+            <span className="text-xs font-semibold">Write</span>
+          </div>
+        </button>
 
-          {/* Left: mood + type toggles */}
-          <div className="flex items-center gap-2 flex-wrap">
+        {/* Filter bar */}
+        <div className="flex flex-col sm:flex-row sm:items-center gap-2 mb-6">
+
+          {/* Row 1 (mobile) / Left (desktop): mood + type filters */}
+          <div className="flex items-center gap-2 flex-1">
 
             {/* Mood dropdown */}
             <div className="relative" ref={moodRef}>
               <button
                 onClick={() => activeMood ? setActiveMood(null) : setMoodOpen(o => !o)}
-                className={`flex items-center gap-1.5 px-4 py-2 rounded-full text-sm font-semibold transition-all border ${
+                className={`flex items-center gap-1.5 px-4 py-2 rounded-full text-sm font-semibold transition-all border whitespace-nowrap ${
                   activeMood
                     ? 'bg-[#C8956A] text-[#0A0908] border-[#C8956A]'
                     : 'border-[#C8956A]/40 text-[#C8956A] hover:border-[#C8956A] hover:bg-[#C8956A]/10'
@@ -135,16 +148,33 @@ export default function DiscoverPage () {
               )}
             </div>
 
-            {/* Movies + TV — desktop only (mobile handled by header center slot) */}
             <div className="hidden sm:flex items-center gap-2">
               {typeFilters}
             </div>
+
+    
           </div>
 
-          {/* Right: Popular toggle */}
+          {/* Row 2 (mobile) / Right (desktop): type + popular */}
+          <div className="flex sm:hidden items-center gap-2">
+            {typeFilters}
+            <button
+              onClick={() => setActiveSort(s => s === 'upvotes' ? 'created_at' : 'upvotes')}
+              className={`flex items-center gap-1.5 px-4 py-2 rounded-full text-sm font-semibold transition-all border ${
+                activeSort === 'upvotes'
+                  ? 'bg-[#F2EDE4] text-[#0A0908] border-[#F2EDE4]'
+                  : 'border-[#272320] text-[#6A5E50] hover:border-[#3A3530] hover:text-[#F2EDE4]'
+              }`}
+            >
+              <FireIcon className="w-3.5 h-3.5 text-[#C8956A]" />
+              Popular
+            </button>
+          </div>
+
+          {/* Popular — desktop only (already in row 2 on mobile) */}
           <button
             onClick={() => setActiveSort(s => s === 'upvotes' ? 'created_at' : 'upvotes')}
-            className={`flex items-center gap-1.5 px-4 py-2 rounded-full text-sm font-semibold transition-all border flex-shrink-0 ${
+            className={`hidden sm:flex items-center gap-1.5 px-4 py-2 rounded-full text-sm font-semibold transition-all border flex-shrink-0 ${
               activeSort === 'upvotes'
                 ? 'bg-[#F2EDE4] text-[#0A0908] border-[#F2EDE4]'
                 : 'border-[#272320] text-[#6A5E50] hover:border-[#3A3530] hover:text-[#F2EDE4]'
@@ -153,6 +183,7 @@ export default function DiscoverPage () {
             <FireIcon className="w-3.5 h-3.5 text-[#C8956A]" />
             Popular
           </button>
+
         </div>
 
         <AllPost

@@ -27,7 +27,7 @@ interface PostCardProps {
   hideAvatar?: boolean;
 }
 
-function formatRelativeTime(dateStr: string) {
+function formatRelativeTime (dateStr: string) {
   const diff = Date.now() - new Date(dateStr).getTime();
   const mins = Math.floor(diff / 60000);
   const hours = Math.floor(mins / 60);
@@ -52,7 +52,7 @@ export const PostCard = ({
   id, username, avatarUrl, movieTitle, movieImage, movieId, mediaType,
   postTitle, createdAt, postContent, upvotes,
   onLike, onComment, isLiked = false, commentCount = 0, canLike = true,
-  variant = 'card', hideAvatar = false,
+  hideAvatar = false,
 }: PostCardProps) => {
   const [liked, setLiked] = useState(isLiked);
   const router = useRouter();
@@ -60,144 +60,140 @@ export const PostCard = ({
   useEffect(() => { setLiked(isLiked); }, [isLiked]);
 
   const initials = username ? getInitials(username) : '??';
-
-  const avatarEl = (
-    <div className="w-6 h-6 rounded-full flex items-center justify-center text-white text-[9px] font-bold flex-shrink-0 bg-[#2A4649] overflow-hidden relative">
-      {avatarUrl
-        ? <Image src={avatarUrl} alt={username || ''} fill className="object-cover" sizes="24px" />
-        : initials}
-    </div>
-  );
-
-  const handleLike = (e: React.MouseEvent) => {
-    e.stopPropagation();
-    if (canLike) setLiked(prev => !prev);
-    onLike?.();
-  };
-
-  const handleComment = (e: React.MouseEvent) => {
-    e.stopPropagation();
-    onComment?.();
-  };
-
-  const movieInfoHref = movieId
-    ? `/movie-more-info/${movieId}${mediaType ? `?type=${mediaType}` : ''}`
-    : null;
-
-  const overlayContent = (isFeatured = false) => (
-    <div className="absolute inset-0 flex flex-col justify-end p-5 gap-2">
-
-      {/* Movie name pill — above the title, clickable if we have an ID */}
-      {movieTitle && (
-        <div className="w-fit">
-          {movieInfoHref ? (
-            <Link
-              href={movieInfoHref}
-              onClick={e => e.stopPropagation()}
-              className="text-xs font-semibold text-[#F2EDE4] bg-black/50 px-3 py-1 rounded-full backdrop-blur-sm hover:bg-[#C8956A] hover:text-[#0A0908] transition-all"
-            >
-              {movieTitle}
-            </Link>
-          ) : (
-            <span className="text-xs font-semibold text-[#F2EDE4] bg-black/50 px-3 py-1 rounded-full backdrop-blur-sm">
-              {movieTitle}
-            </span>
-          )}
-        </div>
-      )}
-
-      {/* Reaction title — hero */}
-      {postTitle && (
-        <p className={`font-plus-jakarta font-bold text-[#F2EDE4] leading-snug ${
-          isFeatured ? 'text-3xl line-clamp-2' : 'text-2xl line-clamp-2'
-        }`}>
-          {postTitle}
-        </p>
-      )}
-
-      {/* Content excerpt */}
-      {postContent && (
-        <p className="text-sm text-[#A89880] line-clamp-2 leading-relaxed">
-          {postContent}
-        </p>
-      )}
-
-      {/* Footer */}
-      <div className="flex items-center justify-between pt-1 gap-2">
-        <div className="flex items-center gap-2 min-w-0">
-          {!hideAvatar && (
-            <>
-              {avatarEl}
-              <span className="text-xs text-[#8C7E6E] font-medium truncate">{username || 'Anonymous'}</span>
-              <span className="text-[#3A3530] flex-shrink-0">·</span>
-            </>
-          )}
-          <span className="text-xs text-[#6A5E50] flex-shrink-0">{formatRelativeTime(createdAt)}</span>
-        </div>
-
-        <div className="flex items-center gap-3 flex-shrink-0">
-          <button
-            onClick={handleLike}
-            className={`flex items-center gap-1.5 text-xs font-semibold transition-colors ${
-              liked ? 'text-rose-400' : 'text-[#6A5E50] hover:text-rose-400'
-            }`}
-          >
-            {liked ? <HeartSolidIcon className="w-4 h-4" /> : <HeartIcon className="w-4 h-4" />}
-            <span>{upvotes}</span>
-          </button>
-          <button
-            onClick={handleComment}
-            className="flex items-center gap-1.5 text-xs font-semibold text-[#6A5E50] hover:text-[#F2EDE4] transition-colors"
-          >
-            <ChatBubbleLeftEllipsisIcon className="w-4 h-4" />
-            <span>{commentCount}</span>
-          </button>
-        </div>
-      </div>
-    </div>
-  );
-
-  if (variant === 'featured') {
-    return (
-      <div
-        className="relative h-80 rounded-2xl overflow-hidden cursor-pointer group"
-        onClick={() => router.push(`/post/${id}`)}
-      >
-        {movieImage ? (
-          <Image
-            src={movieImage}
-            alt={movieTitle || ''}
-            fill
-            className="object-cover opacity-55 group-hover:opacity-65 transition-opacity duration-300"
-            sizes="(min-width: 1280px) 1024px, 100vw"
-          />
-        ) : (
-          <div className="absolute inset-0 bg-[#111009]" />
-        )}
-        <div className="absolute inset-0 bg-gradient-to-t from-[#0A0908] via-[#0A0908]/60 to-transparent" />
-        {overlayContent(true)}
-      </div>
-    );
-  }
+  const isLong = (postContent?.length ?? 0) > 300;
 
   return (
     <div
-      className="relative h-72 rounded-2xl overflow-hidden cursor-pointer group"
+      className="bg-[#1E1B18] border border-[#4A4540] rounded-2xl overflow-hidden flex cursor-pointer hover:border-[#6A5E50] transition-colors min-h-[160px] sm:min-h-[220px]"
       onClick={() => router.push(`/post/${id}`)}
     >
-      {movieImage ? (
-        <Image
-          src={movieImage}
-          alt={movieTitle || ''}
-          fill
-          className="object-cover opacity-55 group-hover:opacity-70 transition-opacity duration-300"
-          sizes="(min-width: 640px) 50vw, 100vw"
-        />
-      ) : (
-        <div className="absolute inset-0 bg-[#111009]" />
+
+      {/* Left: poster + pill — desktop only */}
+      {movieImage && (
+        <div className="hidden sm:flex flex-col w-1/5 flex-shrink-0">
+
+          {/* Poster */}
+          <div
+            className="flex-1 relative bg-[#272320]"
+            onClick={e => { if (movieId) { e.stopPropagation(); router.push(`/movie-more-info/${movieId}${mediaType ? `?type=${mediaType}` : ''}`); } }}
+          >
+            <Image src={movieImage} alt={movieTitle || ''} fill className="object-cover" sizes="20vw" />
+          </div>
+
+          {/* Pill — sits directly under poster */}
+          {movieTitle && (
+            <div className="px-2 py-2 border-t border-[#2A2520] flex justify-center">
+              {movieId ? (
+                <Link
+                  href={`/movie-more-info/${movieId}${mediaType ? `?type=${mediaType}` : ''}`}
+                  onClick={e => e.stopPropagation()}
+                  className="text-sm font-semibold text-[#C8956A] bg-[#C8956A]/10 border border-[#C8956A]/20 px-2.5 py-1 rounded-full hover:bg-[#C8956A]/20 transition-colors truncate max-w-full"
+                >
+                  {movieTitle}
+                </Link>
+              ) : (
+                <span className="text-sm font-semibold text-[#C8956A]/50 bg-[#C8956A]/10 border border-[#C8956A]/20 px-2.5 py-1 rounded-full truncate max-w-full">
+                  {movieTitle}
+                </span>
+              )}
+            </div>
+          )}
+
+        </div>
       )}
-      <div className="absolute inset-0 bg-gradient-to-t from-[#0A0908] via-[#0A0908]/60 to-transparent" />
-      {overlayContent(false)}
+
+      {/* Right: content + like/comment */}
+      <div className="flex-1 min-w-0 p-5 flex flex-col gap-3">
+
+        {/* User + time */}
+        {!hideAvatar && (
+          <div className="flex items-center justify-between gap-2">
+            <div className="flex items-center gap-2.5 min-w-0">
+              <div className="w-8 h-8 rounded-full flex items-center justify-center text-[#0A0908] text-xs font-bold flex-shrink-0 bg-[#C8956A] overflow-hidden relative">
+                {avatarUrl
+                  ? <Image src={avatarUrl} alt={username || ''} fill className="object-cover" sizes="40px" />
+                  : initials}
+              </div>
+              <span className="text-sm font-semibold text-[#F2EDE4] truncate">{username}</span>
+            </div>
+            <span className="text-xs text-[#6A5E50] flex-shrink-0">{formatRelativeTime(createdAt)}</span>
+          </div>
+        )}
+
+        {/* Reaction title */}
+        {postTitle && (
+          <div className="font-plus-jakarta font-extrabold text-[#F2EDE4] text-xl leading-snug">
+            {postTitle}
+          </div>
+        )}
+
+        {/* Reaction content */}
+        {postContent && (
+          <p className="text-base text-[#F2EDE4] leading-relaxed line-clamp-3">
+            {postContent}
+          </p>
+        )}
+
+        {isLong && (
+          <Link
+            href={`/post/${id}`}
+            onClick={e => e.stopPropagation()}
+            className="text-xs font-semibold text-[#C8956A] hover:opacity-70 transition-opacity -mt-1"
+          >
+          Read more →
+          </Link>
+        )}
+
+        {/* Movie pill — mobile only (desktop pill is under the poster) */}
+        {movieTitle && (
+          <div className="sm:hidden">
+            {movieId ? (
+              <Link
+                href={`/movie-more-info/${movieId}${mediaType ? `?type=${mediaType}` : ''}`}
+                onClick={e => e.stopPropagation()}
+                className="inline-flex items-center gap-1.5 text-xs font-semibold text-[#C8956A] bg-[#C8956A]/10 border border-[#C8956A]/20 px-2.5 py-1 rounded-full hover:bg-[#C8956A]/20 transition-colors"
+              >
+                {movieImage && (
+                  <div className="w-3 h-5 rounded flex-shrink-0 overflow-hidden relative">
+                    <Image src={movieImage} alt={movieTitle} fill className="object-cover" sizes="12px" />
+                  </div>
+                )}
+                <span className="truncate max-w-[140px]">{movieTitle}</span>
+              </Link>
+            ) : (
+              <span className="inline-flex items-center text-xs font-semibold text-[#C8956A]/50 bg-[#C8956A]/10 border border-[#C8956A]/20 px-2.5 py-1 rounded-full">
+                <span className="truncate max-w-[140px]">{movieTitle}</span>
+              </span>
+            )}
+          </div>
+        )}
+
+        {/* Like + Comment — pinned to bottom */}
+        <div className="flex items-center gap-3 mt-auto pt-2 border-t border-[#2A2520] justify-end">
+          <button
+            onClick={(e) => {
+              e.stopPropagation();
+              if (canLike) setLiked(prev => !prev);
+              onLike?.();
+            }}
+            className={`flex items-center gap-1 text-xs font-semibold transition-colors ${liked ? 'text-rose-400' : 'text-[#4A4038] hover:text-rose-400'}`}
+          >
+            {liked ? <HeartSolidIcon className="w-3.5 h-3.5" /> : <HeartIcon className="w-3.5 h-3.5" />}
+            <span>{upvotes}</span>
+          </button>
+          <span className="text-[#2A2520] text-xs">·</span>
+          <button
+            onClick={(e) => { e.stopPropagation(); onComment?.(); }}
+            className="flex items-center gap-1 text-xs font-semibold text-[#4A4038] hover:text-[#C8B8A2] transition-colors"
+          >
+            <ChatBubbleLeftEllipsisIcon className="w-3.5 h-3.5" />
+            <span>{commentCount}</span>
+          </button>
+        </div>
+
+      </div>
+
+
     </div>
   );
 };
