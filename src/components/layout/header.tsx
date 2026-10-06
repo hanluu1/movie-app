@@ -4,8 +4,9 @@ import { useRouter, usePathname } from 'next/navigation';
 import { useRef, useState, useEffect } from 'react';
 import { supabase } from '@/lib/supabase/client';
 import {
-  Bars3Icon, XMarkIcon, MagnifyingGlassIcon, ArrowLeftIcon,
+  Bars3Icon, XMarkIcon, MagnifyingGlassIcon,
   UserCircleIcon, ArrowRightStartOnRectangleIcon,
+  FilmIcon, GlobeAltIcon,
 } from '@heroicons/react/24/outline';
 import { AppSearch } from '@/components/search/app-search';
 import Image from 'next/image';
@@ -77,31 +78,57 @@ export function Header ({ onCreatePost, showSearch = true, variant = 'light' }: 
   const isDark = variant === 'dark';
 
   return (
-    <header className={`font-sans sticky top-0 w-full px-6 sm:px-10 py-3.5 flex justify-between items-center backdrop-blur-md border-b z-50 ${
+    <header className={`font-sans sticky top-0 w-full px-4 sm:px-10 py-3.5 flex justify-between items-center backdrop-blur-md border-b z-50 ${
       isDark
         ? 'bg-[#0A0908]/98 border-[#3A2510]'
         : 'bg-[#FFFDF8]/90 border-[#E8EEEA]'
     }`}>
 
-      {/* Logo */}
-      <Link href="/discover">
-        <span className={`font-plus-jakarta font-extrabold text-xl tracking-tight ${isDark ? 'text-[#F2EDE4]' : 'text-[#172526]'}`}>
-          ReelEmotion
+      {/* Logo + nav */}
+      <div className="flex items-center gap-3 sm:gap-6">
+        
+        <span className={`font-plus-jakarta font-extrabold text-xl tracking-tight ${isDark ? 'text-[#EEEAE2]' : 'text-[#172526]'}`}>
+            ReelEmotion
         </span>
-      </Link>
+       
 
+        <nav className="hidden sm:flex items-center gap-1">
+          <Link
+            href="/discover"
+            className={`flex items-center gap-1.5 px-3 py-1.5 rounded-full text-sm font-semibold transition-all ${
+              pathname === '/discover'
+                ? isDark ? 'text-[#EEEAE2] bg-[#272320]' : 'text-[#172526] bg-[#EEF2ED]'
+                : isDark ? 'text-[#8C7E6E] hover:text-[#EEEAE2]' : 'text-[#6F8C88] hover:text-[#172526]'
+            }`}
+          >
+            <FilmIcon className="w-4 h-4" />
+            Discover
+          </Link>
+          <Link
+            href="/feed"
+            className={`flex items-center gap-1.5 px-3 py-1.5 rounded-full text-sm font-semibold transition-all ${
+              pathname === '/feed'
+                ? isDark ? 'text-[#EEEAE2] bg-[#272320]' : 'text-[#172526] bg-[#EEF2ED]'
+                : isDark ? 'text-[#8C7E6E] hover:text-[#EEEAE2]' : 'text-[#6F8C88] hover:text-[#172526]'
+            }`}
+          >
+            <GlobeAltIcon className="w-4 h-4" />
+            Feed
+          </Link>
+        </nav>
+      </div>
 
       {/* Right side */}
       <div className="flex items-center gap-2">
 
-        {/* Search — desktop */}
+        {/* Search icon — all screen sizes */}
         {showSearch && (
-          <AppSearch
-            variant="floating"
-            excludeRef={menuRef}
-            dark={isDark}
-            className="hidden sm:block w-[200px] md:w-[280px] mr-1"
-          />
+          <button
+            onClick={() => setSearchOpen(true)}
+            className={`p-2 rounded-full transition-colors ${isDark ? 'text-[#8C7E6E] hover:text-[#EEEAE2] hover:bg-[#1A1714]' : 'text-[#6F8C88] hover:text-[#172526] hover:bg-[#EEF2ED]'}`}
+          >
+            <MagnifyingGlassIcon className="w-5 h-5" />
+          </button>
         )}
 
         {user ? (
@@ -124,14 +151,14 @@ export function Header ({ onCreatePost, showSearch = true, variant = 'light' }: 
                   isDark ? 'bg-[#0D0B09] border-[#1A1410]/80' : 'bg-[#FFFDF8] border-[#E8EEEA]'
                 }`}>
                   <div className={`px-4 py-3 border-b ${isDark ? 'border-[#1A1410]/80' : 'border-[#E8EEEA]'}`}>
-                    <p className={`text-xs font-bold truncate ${isDark ? 'text-[#F2EDE4]' : 'text-[#172526]'}`}>
+                    <p className={`text-xs font-bold truncate ${isDark ? 'text-[#EEEAE2]' : 'text-[#172526]'}`}>
                       @{profile?.username}
                     </p>
                   </div>
                   <button
                     onClick={() => { router.push('/my-profiles'); setProfileMenuOpen(false); }}
                     className={`w-full flex items-center gap-2.5 px-4 py-2.5 text-sm font-medium transition-colors ${
-                      isDark ? 'text-[#C8B8A2] hover:bg-[#1E1B18] hover:text-[#F2EDE4]' : 'text-[#172526] hover:bg-[#EEF2ED]'
+                      isDark ? 'text-[#C8B8A2] hover:bg-[#1E1B18] hover:text-[#EEEAE2]' : 'text-[#172526] hover:bg-[#EEF2ED]'
                     }`}
                   >
                     <UserCircleIcon className="w-4 h-4 flex-shrink-0" />
@@ -141,7 +168,7 @@ export function Header ({ onCreatePost, showSearch = true, variant = 'light' }: 
                   <button
                     onClick={handleSignOut}
                     className={`w-full flex items-center gap-2.5 px-4 py-2.5 text-sm font-medium transition-colors ${
-                      isDark ? 'text-[#6A5E50] hover:bg-[#1E1B18] hover:text-[#F2EDE4]' : 'text-[#6F8C88] hover:bg-[#EEF2ED] hover:text-[#172526]'
+                      isDark ? 'text-[#8C7E6E] hover:bg-[#1E1B18] hover:text-[#EEEAE2]' : 'text-[#6F8C88] hover:bg-[#EEF2ED] hover:text-[#172526]'
                     }`}
                   >
                     <ArrowRightStartOnRectangleIcon className="w-4 h-4 flex-shrink-0" />
@@ -157,7 +184,7 @@ export function Header ({ onCreatePost, showSearch = true, variant = 'light' }: 
             <Link href={loginHref} className="hidden sm:block">
               <button className={`px-4 py-2 rounded-xl font-semibold text-sm transition-all ${
                 isDark
-                  ? 'text-[#8C7E6E] hover:text-[#F2EDE4]'
+                  ? 'text-[#EEEAE2] hover:text-[#EEEAE2]'
                   : 'text-[#2A4649] hover:text-[#172526]'
               }`}>
                 Sign In
@@ -176,21 +203,11 @@ export function Header ({ onCreatePost, showSearch = true, variant = 'light' }: 
           </>
         )}
 
-        {/* Search icon — mobile */}
-        {showSearch && (
-          <button
-            onClick={() => setSearchOpen(true)}
-            className={`sm:hidden p-1 transition-colors ${isDark ? 'text-[#6A5E50] hover:text-[#F2EDE4]' : 'text-[#2A4649]'}`}
-          >
-            <MagnifyingGlassIcon className="w-6 h-6" />
-          </button>
-        )}
-
         {/* Mobile hamburger menu */}
         <div className="relative sm:hidden" ref={menuRef}>
           <button
             onClick={() => setMenuOpen(o => !o)}
-            className={`p-1 transition-colors ${isDark ? 'text-[#6A5E50] hover:text-[#F2EDE4]' : 'text-[#2A4649]'}`}
+            className={`p-1 transition-colors ${isDark ? 'text-[#8C7E6E] hover:text-[#EEEAE2]' : 'text-[#2A4649]'}`}
           >
             {menuOpen ? <XMarkIcon className="w-6 h-6" /> : <Bars3Icon className="w-6 h-6" />}
           </button>
@@ -199,6 +216,7 @@ export function Header ({ onCreatePost, showSearch = true, variant = 'light' }: 
             <div className={`absolute right-0 top-full mt-2 w-64 rounded-2xl shadow-xl overflow-hidden z-50 border ${
               isDark ? 'bg-[#0D0B09] border-[#1A1410]/80' : 'bg-[#FFFDF8] border-[#E8EEEA]'
             }`}>
+
               {user ? (
                 <>
                   <button
@@ -212,7 +230,7 @@ export function Header ({ onCreatePost, showSearch = true, variant = 'light' }: 
                         ? <Image src={profile.avatar_url} alt={profile.username} fill className="object-cover" sizes="32px" />
                         : initials}
                     </div>
-                    <span className={`text-sm font-semibold truncate ${isDark ? 'text-[#F2EDE4]' : 'text-[#172526]'}`}>
+                    <span className={`text-sm font-semibold truncate ${isDark ? 'text-[#EEEAE2]' : 'text-[#172526]'}`}>
                       @{profile?.username}
                     </span>
                   </button>
@@ -222,7 +240,7 @@ export function Header ({ onCreatePost, showSearch = true, variant = 'light' }: 
                   <button
                     onClick={handleSignOut}
                     className={`w-full flex items-center gap-3 px-4 py-3 transition-colors text-left text-sm font-medium ${
-                      isDark ? 'hover:bg-[#1E1B18] text-[#6A5E50] hover:text-[#F2EDE4]' : 'hover:bg-[#EEF2ED] text-[#6F8C88]'
+                      isDark ? 'hover:bg-[#1E1B18] text-[#8C7E6E] hover:text-[#EEEAE2]' : 'hover:bg-[#EEF2ED] text-[#6F8C88]'
                     }`}
                   >
                     <ArrowRightStartOnRectangleIcon className="w-4 h-4" />
@@ -234,7 +252,7 @@ export function Header ({ onCreatePost, showSearch = true, variant = 'light' }: 
                   <button
                     onClick={() => { router.push(loginHref); setMenuOpen(false); }}
                     className={`w-full px-4 py-3 transition-colors text-left text-sm font-semibold ${
-                      isDark ? 'hover:bg-[#1E1B18] text-[#F2EDE4]' : 'hover:bg-[#EEF2ED] text-[#172526]'
+                      isDark ? 'hover:bg-[#1E1B18] text-[#EEEAE2]' : 'hover:bg-[#EEF2ED] text-[#172526]'
                     }`}
                   >
                     Sign In
@@ -255,26 +273,8 @@ export function Header ({ onCreatePost, showSearch = true, variant = 'light' }: 
 
       </div>
 
-      {/* Mobile search overlay */}
-      {searchOpen && (
-        <div className={`fixed inset-x-0 top-0 h-dvh z-[100] flex flex-col sm:hidden ${isDark ? 'bg-[#0F0D0B]' : 'bg-[#FFFDF8]'}`}>
-          <div className={`flex items-center gap-3 px-4 py-3 border-b flex-shrink-0 ${isDark ? 'border-[#1A1410]/80' : 'border-[#E8EEEA]'}`}>
-            <button
-              onClick={() => setSearchOpen(false)}
-              className={`p-1 transition-colors flex-shrink-0 ${isDark ? 'text-[#6A5E50]' : 'text-[#2A4649]'}`}
-            >
-              <ArrowLeftIcon className="w-5 h-5" />
-            </button>
-            <AppSearch
-              variant="inline"
-              onSelect={() => setSearchOpen(false)}
-              autoFocus
-              className="flex-1"
-              resultsClassName="mt-2"
-            />
-          </div>
-        </div>
-      )}
+      {/* Search modal */}
+      <AppSearch open={searchOpen} onClose={() => setSearchOpen(false)} dark={isDark} />
 
     </header>
   );
