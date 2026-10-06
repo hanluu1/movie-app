@@ -42,7 +42,7 @@ export const EditPostForm = ({ postId, title, content, mood = [], onCancel, onSa
   return (
     <div className="flex flex-col gap-4 pt-2">
       <div className="flex flex-col gap-1.5">
-        <label className="text-xs font-semibold uppercase tracking-widest text-[#6A5E50]">
+        <label className="text-xs font-semibold uppercase tracking-widest text-[#8C7E6E]">
           Title
         </label>
         <input
@@ -50,12 +50,12 @@ export const EditPostForm = ({ postId, title, content, mood = [], onCancel, onSa
           value={editedTitle}
           onChange={(e) => setEditedTitle(e.target.value)}
           placeholder="Edit title"
-          className="w-full px-4 py-3 border border-[#3A3530] focus:border-[#C8956A]/60 bg-[#272320] rounded-xl text-sm text-[#F2EDE4] placeholder:text-[#4A4038] outline-none transition-all"
+          className="w-full px-4 py-3 border border-[#3A3530] focus:border-[#C8956A]/60 bg-[#272320] rounded-xl text-sm text-[#EEEAE2] placeholder:text-[#4A4038] outline-none transition-all"
         />
       </div>
 
       <div className="flex flex-col gap-1.5">
-        <label className="text-xs font-semibold uppercase tracking-widest text-[#6A5E50]">
+        <label className="text-xs font-semibold uppercase tracking-widest text-[#8C7E6E]">
           Your reaction
         </label>
         <textarea
@@ -63,12 +63,12 @@ export const EditPostForm = ({ postId, title, content, mood = [], onCancel, onSa
           onChange={(e) => setEditedContent(e.target.value)}
           placeholder="Edit your reaction..."
           rows={6}
-          className="w-full px-4 py-3 border border-[#3A3530] focus:border-[#C8956A]/60 bg-[#272320] rounded-xl text-sm text-[#F2EDE4] placeholder:text-[#4A4038] outline-none transition-all resize-none leading-relaxed"
+          className="w-full px-4 py-3 border border-[#3A3530] focus:border-[#C8956A]/60 bg-[#272320] rounded-xl text-sm text-[#EEEAE2] placeholder:text-[#4A4038] outline-none transition-all resize-none leading-relaxed"
         />
       </div>
 
       <div className="flex flex-col gap-1.5">
-        <label className="text-xs font-semibold uppercase tracking-widest text-[#6A5E50]">
+        <label className="text-xs font-semibold uppercase tracking-widest text-[#8C7E6E]">
           How did it make you feel?
         </label>
         <div className="flex flex-wrap gap-2">
@@ -82,7 +82,7 @@ export const EditPostForm = ({ postId, title, content, mood = [], onCancel, onSa
               className={`px-3 py-1.5 rounded-full text-xs font-medium border transition-all ${
                 editedMoods.includes(mood)
                   ? 'bg-[#C8956A] text-[#0A0908] border-[#C8956A]'
-                  : 'border-[#3A3530] text-[#6A5E50] hover:border-[#C8956A]/50 hover:text-[#C8956A]'
+                  : 'border-[#3A3530] text-[#8C7E6E] hover:border-[#C8956A]/50 hover:text-[#C8956A]'
               }`}
             >
               {mood}
@@ -94,7 +94,7 @@ export const EditPostForm = ({ postId, title, content, mood = [], onCancel, onSa
       <div className="flex gap-3 pt-1">
         <button
           onClick={onCancel}
-          className="flex-1 py-2.5 rounded-xl text-sm font-semibold text-[#C8B8A2] bg-[#272320] border border-[#3A3530] hover:bg-[#3A3530] hover:text-[#F2EDE4] transition-all"
+          className="flex-1 py-2.5 rounded-xl text-sm font-semibold text-[#C8B8A2] bg-[#272320] border border-[#3A3530] hover:bg-[#3A3530] hover:text-[#EEEAE2] transition-all"
         >
           Cancel
         </button>

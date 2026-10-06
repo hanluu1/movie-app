@@ -64,13 +64,13 @@ export const PostCard = ({
 
   return (
     <div
-      className="bg-[#1E1B18] border border-[#4A4540] rounded-2xl overflow-hidden flex cursor-pointer hover:border-[#6A5E50] transition-colors min-h-[160px] sm:min-h-[220px]"
+      className="bg-[#1E1B18] border border-[#4A4540] rounded-2xl overflow-hidden flex cursor-pointer hover:border-[#8C7E6E] transition-colors min-h-[160px] sm:min-h-[220px]"
       onClick={() => router.push(`/post/${id}`)}
     >
 
       {/* Left: poster + pill — desktop only */}
       {movieImage && (
-        <div className="hidden sm:flex flex-col w-1/5 flex-shrink-0">
+        <div className="hidden sm:flex flex-col w-1/6 flex-shrink-0">
 
           {/* Poster */}
           <div
@@ -114,22 +114,22 @@ export const PostCard = ({
                   ? <Image src={avatarUrl} alt={username || ''} fill className="object-cover" sizes="40px" />
                   : initials}
               </div>
-              <span className="text-sm font-semibold text-[#F2EDE4] truncate">{username}</span>
+              <span className="text-sm font-semibold text-[#EEEAE2] truncate">{username}</span>
             </div>
-            <span className="text-xs text-[#6A5E50] flex-shrink-0">{formatRelativeTime(createdAt)}</span>
+            <span className="text-xs text-[#8C7E6E] flex-shrink-0">{formatRelativeTime(createdAt)}</span>
           </div>
         )}
 
         {/* Reaction title */}
         {postTitle && (
-          <div className="font-plus-jakarta font-extrabold text-[#F2EDE4] text-xl leading-snug">
+          <div className="font-plus-jakarta font-extrabold text-[#EEEAE2] text-xl leading-snug">
             {postTitle}
           </div>
         )}
 
         {/* Reaction content */}
         {postContent && (
-          <p className="text-base text-[#F2EDE4] leading-relaxed line-clamp-3">
+          <p className="text-base text-[#EEEAE2] leading-relaxed line-clamp-3">
             {postContent}
           </p>
         )}
@@ -176,7 +176,7 @@ export const PostCard = ({
               if (canLike) setLiked(prev => !prev);
               onLike?.();
             }}
-            className={`flex items-center gap-1 text-xs font-semibold transition-colors ${liked ? 'text-rose-400' : 'text-[#4A4038] hover:text-rose-400'}`}
+            className={`flex items-center gap-1 text-xs font-semibold transition-colors ${liked ? 'text-rose-400' : 'text-[#8C7E6E] hover:text-rose-400'}`}
           >
             {liked ? <HeartSolidIcon className="w-3.5 h-3.5" /> : <HeartIcon className="w-3.5 h-3.5" />}
             <span>{upvotes}</span>
@@ -184,7 +184,7 @@ export const PostCard = ({
           <span className="text-[#2A2520] text-xs">·</span>
           <button
             onClick={(e) => { e.stopPropagation(); onComment?.(); }}
-            className="flex items-center gap-1 text-xs font-semibold text-[#4A4038] hover:text-[#C8B8A2] transition-colors"
+            className="flex items-center gap-1 text-xs font-semibold text-[#8C7E6E] hover:text-[#C8B8A2] transition-colors"
           >
             <ChatBubbleLeftEllipsisIcon className="w-3.5 h-3.5" />
             <span>{commentCount}</span>

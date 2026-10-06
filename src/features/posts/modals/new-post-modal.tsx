@@ -3,7 +3,7 @@
 import { useState, useEffect } from 'react';
 import { supabase } from '@/lib/supabase/client';
 import Image from 'next/image';
-import { XMarkIcon, MagnifyingGlassIcon } from '@heroicons/react/24/outline';
+import { XMarkIcon, MagnifyingGlassIcon, FilmIcon } from '@heroicons/react/24/outline';
 import { searchMoviesAndTv } from '@/lib/tmdb/client';
 import { MOODS } from '@/lib/moods';
 
@@ -108,7 +108,7 @@ export const CreatePostModal = ({ isOpen, onClose, onCreated, preselectedMovie }
             <p className="text-xs font-bold uppercase tracking-widest text-[#C8956A] mb-0.5">
               {step === 1 ? 'Step 1 of 2' : step === 2 ? 'Step 2 of 2' : ''}
             </p>
-            <h2 className="font-plus-jakarta font-extrabold text-xl tracking-tight text-[#F2EDE4]">
+            <h2 className="font-plus-jakarta font-extrabold text-xl tracking-tight text-[#EEEAE2]">
               {step === 1 && 'Pick a movie or show'}
               {step === 2 && 'Write what it made you feel'}
               {step === 'success' && 'Feeling shared!'}
@@ -116,7 +116,7 @@ export const CreatePostModal = ({ isOpen, onClose, onCreated, preselectedMovie }
           </div>
           <button
             onClick={onClose}
-            className="w-8 h-8 rounded-full flex items-center justify-center text-[#6A5E50] hover:text-[#F2EDE4] hover:bg-[#1E1B18] transition-all"
+            className="w-8 h-8 rounded-full flex items-center justify-center text-[#8C7E6E] hover:text-[#EEEAE2] hover:bg-[#1E1B18] transition-all"
           >
             <XMarkIcon className="w-4 h-4" />
           </button>
@@ -136,23 +136,23 @@ export const CreatePostModal = ({ isOpen, onClose, onCreated, preselectedMovie }
           {/* Step 1 — Movie search */}
           {step === 1 && (
             <div>
-              <p className="text-sm text-[#6A5E50] mb-4">
+              <p className="text-sm text-[#8C7E6E] mb-4">
                 Search for the movie or show that stayed with you.
               </p>
               <div className="relative mb-5">
-                <MagnifyingGlassIcon className="absolute left-3.5 top-1/2 -translate-y-1/2 w-4 h-4 text-[#6A5E50] pointer-events-none" />
+                <MagnifyingGlassIcon className="absolute left-3.5 top-1/2 -translate-y-1/2 w-4 h-4 text-[#8C7E6E] pointer-events-none" />
                 <input
                   type="text"
                   placeholder="Search movies or shows..."
                   value={searchQuery}
                   onChange={(e) => setSearchQuery(e.target.value)}
-                  className="w-full pl-10 pr-4 py-3 border border-[#2A2520] focus:border-[#C8956A]/60 bg-[#1A1714] rounded-xl text-sm text-[#F2EDE4] placeholder:text-[#4A4038] outline-none transition-all"
+                  className="w-full pl-10 pr-4 py-3 border border-[#2A2520] focus:border-[#C8956A]/60 bg-[#1A1714] rounded-xl text-sm text-[#e7e2d7] placeholder:text-[#8C7E6E] outline-none transition-all"
                 />
               </div>
 
               <div className="flex flex-col gap-2">
                 {searchResults.length === 0 && searchQuery.trim() === '' && (
-                  <p className="text-center text-[#4A4038] text-sm py-10">Start typing to find something...</p>
+                  <p className="text-center text-[#8C7E6E] text-sm py-10">Start typing to find something...</p>
                 )}
                 {searchResults.map((movie) => {
                   const isSelected = selectedMovie?.id === movie.id;
@@ -177,13 +177,13 @@ export const CreatePostModal = ({ isOpen, onClose, onCreated, preselectedMovie }
                           className="rounded-lg object-cover flex-shrink-0"
                         />
                       ) : (
-                        <div className="w-11 h-[66px] rounded-lg flex items-center justify-center text-xl flex-shrink-0 bg-[#1E1B18]">
-                          🎬
+                        <div className="w-11 h-[66px] rounded-lg flex items-center justify-center flex-shrink-0 bg-[#1E1B18]">
+                          <FilmIcon className="w-5 h-5 text-[#3A3530]" />
                         </div>
                       )}
                       <div className="flex-1 min-w-0 flex flex-col justify-center">
-                        <div className="font-semibold text-sm text-[#F2EDE4] truncate">{title}</div>
-                        {year && <div className="text-xs text-[#6A5E50] mt-0.5">{year}</div>}
+                        <div className="font-semibold text-sm text-[#EEEAE2] truncate">{title}</div>
+                        {year && <div className="text-xs text-[#8C7E6E] mt-0.5">{year}</div>}
                         {!movie.title && <div className="text-[10px] text-[#C8956A] font-semibold mt-1">TV Show</div>}
                       </div>
                       {isSelected && (
@@ -215,8 +215,8 @@ export const CreatePostModal = ({ isOpen, onClose, onCreated, preselectedMovie }
                     />
                   )}
                   <div>
-                    <div className="text-xs text-[#6A5E50]">You&rsquo;re writing about</div>
-                    <div className="text-sm font-semibold text-[#F2EDE4]">{displayTitle}</div>
+                    <div className="text-xs text-[#8C7E6E]">You&rsquo;re writing about</div>
+                    <div className="text-sm font-semibold text-[#EEEAE2]">{displayTitle}</div>
                   </div>
                 </div>
               )}
@@ -232,7 +232,7 @@ export const CreatePostModal = ({ isOpen, onClose, onCreated, preselectedMovie }
                     placeholder="Sum up your feeling in one line..."
                     value={reviewTitle}
                     onChange={(e) => setReviewTitle(e.target.value)}
-                    className="w-full px-4 py-3 border border-[#2A2520] focus:border-[#C8956A]/60 bg-[#1A1714] rounded-xl text-sm text-[#F2EDE4] placeholder:text-[#4A4038] outline-none transition-all"
+                    className="w-full px-4 py-3 border border-[#2A2520] focus:border-[#C8956A]/60 bg-[#1A1714] rounded-xl text-sm text-[#EEEAE2] placeholder:text-[#4A4038] outline-none transition-all"
                   />
                 </div>
 
@@ -245,7 +245,7 @@ export const CreatePostModal = ({ isOpen, onClose, onCreated, preselectedMovie }
                     placeholder="Write freely — no critic templates, no star ratings. Just how it made you feel and why..."
                     value={reviewContent}
                     onChange={(e) => setReviewContent(e.target.value)}
-                    className="w-full px-4 py-3 border border-[#2A2520] focus:border-[#C8956A]/60 bg-[#1A1714] rounded-xl text-sm text-[#F2EDE4] placeholder:text-[#4A4038] outline-none transition-all resize-none min-h-[140px] leading-relaxed"
+                    className="w-full px-4 py-3 border border-[#2A2520] focus:border-[#C8956A]/60 bg-[#1A1714] rounded-xl text-sm text-[#EEEAE2] placeholder:text-[#4A4038] outline-none transition-all resize-none min-h-[140px] leading-relaxed"
                   />
                   <div className={`text-right text-xs mt-1.5 ${reviewContent.length < 50 ? 'text-[#4A4038]' : 'text-[#C8956A]'}`}>
                     {reviewContent.length < 50
@@ -269,7 +269,7 @@ export const CreatePostModal = ({ isOpen, onClose, onCreated, preselectedMovie }
                         className={`px-3 py-1.5 rounded-full text-xs font-medium border transition-all ${
                           selectedMoods.includes(mood)
                             ? 'bg-[#C8956A] text-[#0A0908] border-[#C8956A]'
-                            : 'border-[#2A2520] text-[#6A5E50] hover:border-[#C8956A]/50 hover:text-[#C8956A]'
+                            : 'border-[#2A2520] text-[#8C7E6E] hover:border-[#C8956A]/50 hover:text-[#C8956A]'
                         }`}
                       >
                         {mood}
@@ -286,8 +286,8 @@ export const CreatePostModal = ({ isOpen, onClose, onCreated, preselectedMovie }
                     className="w-4 h-4 cursor-pointer accent-[#C8956A] flex-shrink-0"
                   />
                   <div>
-                    <div className="text-sm font-semibold text-[#F2EDE4]">Contains spoilers</div>
-                    <div className="text-xs text-[#6A5E50] mt-0.5">Check if your reaction reveals plot details</div>
+                    <div className="text-sm font-semibold text-[#EEEAE2]">Contains spoilers</div>
+                    <div className="text-xs text-[#8C7E6E] mt-0.5">Check if your reaction reveals plot details</div>
                   </div>
                 </label>
               </div>
@@ -300,10 +300,10 @@ export const CreatePostModal = ({ isOpen, onClose, onCreated, preselectedMovie }
               <div className="w-16 h-16 mx-auto mb-6 rounded-full flex items-center justify-center text-3xl bg-[#1A1714]">
                 ✨
               </div>
-              <h3 className="font-plus-jakarta font-extrabold text-xl text-[#F2EDE4] mb-2">
+              <h3 className="font-plus-jakarta font-extrabold text-xl text-[#EEEAE2] mb-2">
                 Your feeling is out there.
               </h3>
-              <p className="text-sm text-[#6A5E50] leading-relaxed mb-8">
+              <p className="text-sm text-[#8C7E6E] leading-relaxed mb-8">
                 Someone will read this and feel less alone about what they watched.
               </p>
               <button

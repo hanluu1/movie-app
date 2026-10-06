@@ -1,6 +1,7 @@
 'use client';
 
 import { useEffect, useState, forwardRef, useImperativeHandle } from 'react';
+import { FilmIcon } from '@heroicons/react/24/outline';
 import { supabase } from '@/lib/supabase/client';
 import { PostCard } from '../components/post-card';
 import { PostCardSkeleton } from '../components/post-card-skeleton';
@@ -192,10 +193,10 @@ export const AllPost = forwardRef<{ refetch: () => void }, AllPostProps>(
 
     if (posts.length === 0) return (
       <div className="text-center py-20 px-4">
-        <p className="text-2xl mb-3">🎬</p>
+        <FilmIcon className="w-10 h-10 text-[#3A3530] mb-3" />
         {activeMood ? (
           <>
-            <p className="font-semibold text-[#F2EDE4] text-sm mb-1">
+            <p className="font-semibold text-[#EEEAE2] text-sm mb-1">
               No one has written about feeling &ldquo;{activeMood}&rdquo; yet.
             </p>
             <p className="text-xs text-[#4A4038] mb-5">Be the first to share a movie that made you feel this way.</p>
@@ -210,7 +211,7 @@ export const AllPost = forwardRef<{ refetch: () => void }, AllPostProps>(
           </>
         ) : (
           <>
-            <p className="font-semibold text-[#F2EDE4] text-sm mb-1">
+            <p className="font-semibold text-[#EEEAE2] text-sm mb-1">
               {filter === 'movies' ? 'No movie reactions yet.' : filter === 'tv' ? 'No TV show reactions yet.' : 'No reactions yet.'}
             </p>
             <p className="text-xs text-[#4A4038]">Be the first to share how something made you feel.</p>
@@ -250,7 +251,7 @@ export const AllPost = forwardRef<{ refetch: () => void }, AllPostProps>(
           <button
             onClick={loadMore}
             disabled={loadingMore}
-            className="w-full py-3 rounded-2xl border border-[#272320] text-sm font-semibold text-[#6A5E50] bg-transparent hover:border-[#3A3530] hover:text-[#F2EDE4] transition-all disabled:opacity-50"
+            className="w-full py-3 rounded-2xl border border-[#272320] text-sm font-semibold text-[#8C7E6E] bg-transparent hover:border-[#3A3530] hover:text-[#EEEAE2] transition-all disabled:opacity-50"
           >
             {loadingMore ? 'Loading…' : 'Load more'}
           </button>

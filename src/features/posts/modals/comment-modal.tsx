@@ -68,12 +68,12 @@ export const CommentModal = ({ postId, isOpen, onClose }: CommentModalProps) => 
 
           {/* Header */}
           <div className="px-6 pt-6 pb-5 border-b border-[#1A1410] flex items-center justify-between flex-shrink-0">
-            <h2 className="font-plus-jakarta font-extrabold text-xl tracking-tight text-[#F2EDE4]">
+            <h2 className="font-plus-jakarta font-extrabold text-xl tracking-tight text-[#EEEAE2]">
               Replies ({comments.length})
             </h2>
             <button
               onClick={onClose}
-              className="w-8 h-8 rounded-full flex items-center justify-center text-[#6A5E50] hover:text-[#F2EDE4] hover:bg-[#1E1B18] transition-all"
+              className="w-8 h-8 rounded-full flex items-center justify-center text-[#8C7E6E] hover:text-[#EEEAE2] hover:bg-[#1E1B18] transition-all"
             >
               <XMarkIcon className="w-4 h-4" />
             </button>
@@ -100,7 +100,7 @@ export const CommentModal = ({ postId, isOpen, onClose }: CommentModalProps) => 
                           {getInitials(username)}
                         </div>
                         <div className="flex items-baseline gap-2">
-                          <span className="font-semibold text-sm text-[#F2EDE4]">{username}</span>
+                          <span className="font-semibold text-sm text-[#EEEAE2]">{username}</span>
                           <span className="text-[#4A4038] text-xs">
                             {new Date(comment.created_at).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' })}
                           </span>
@@ -122,7 +122,7 @@ export const CommentModal = ({ postId, isOpen, onClose }: CommentModalProps) => 
               onKeyDown={(e) => { if (e.key === 'Enter' && (e.metaKey || e.ctrlKey)) handleAddComment(); }}
               placeholder="Share your thoughts..."
               rows={2}
-              className="w-full px-4 py-3 border border-[#2A2520] focus:border-[#C8956A]/60 bg-[#1A1714] rounded-xl text-sm text-[#F2EDE4] placeholder:text-[#4A4038] outline-none transition-all resize-none leading-relaxed"
+              className="w-full px-4 py-3 border border-[#2A2520] focus:border-[#C8956A]/60 bg-[#1A1714] rounded-xl text-sm text-[#EEEAE2] placeholder:text-[#4A4038] outline-none transition-all resize-none leading-relaxed"
             />
             <div className="flex justify-between items-center mt-2">
               <span className="text-xs text-[#4A4038]">⌘ + Enter to post</span>

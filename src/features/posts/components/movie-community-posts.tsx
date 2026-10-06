@@ -1,12 +1,13 @@
 'use client';
 
 import { useEffect, useState } from 'react';
+import { usePathname, useRouter } from 'next/navigation';
 import { supabase } from '@/lib/supabase/client';
 import { PostCard } from './post-card';
 import { PostCardSkeleton } from './post-card-skeleton';
 import { CreatePostModal } from '../modals/new-post-modal';
 import { useAuthUser } from '@/hooks/use-auth-user';
-import { PencilSquareIcon } from '@heroicons/react/24/outline';
+import { PencilSquareIcon, ChatBubbleLeftEllipsisIcon  } from '@heroicons/react/24/outline';
 
 interface Post {
   id: string;
@@ -35,6 +36,16 @@ export function MovieCommunityPosts ({ movieId, movieTitle, posterPath, mediaTyp
   const [loading, setLoading] = useState(true);
   const [showModal, setShowModal] = useState(false);
   const { user } = useAuthUser();
+  const router = useRouter();
+  const pathname = usePathname();
+
+  const handleWriteClick = () => {
+    if (user) {
+      setShowModal(true);
+    } else {
+      router.push(`/login?redirect=${encodeURIComponent(pathname)}`);
+    }
+  };
 
   const preselectedMovie = {
     id: movieId,
@@ -98,19 +109,17 @@ export function MovieCommunityPosts ({ movieId, movieTitle, posterPath, mediaTyp
       <div className="flex items-center justify-between mb-5">
         <div>
           <p className="text-xs font-bold uppercase tracking-widest text-[#C8956A] mb-1">Community</p>
-          <h2 className="font-plus-jakarta font-extrabold text-xl text-[#F2EDE4]">
+          <h2 className="font-plus-jakarta font-extrabold text-xl text-[#EEEAE2]">
             What people felt
           </h2>
         </div>
-        {user && (
-          <button
-            onClick={() => setShowModal(true)}
-            className="flex items-center gap-1.5 px-4 py-2 rounded-full text-sm font-semibold bg-[#1E1B18] border border-[#3A3530] text-[#C8956A] hover:bg-[#272320] hover:border-[#C8956A]/50 transition-all"
-          >
-            <PencilSquareIcon className="w-4 h-4" />
-            Write your reaction
-          </button>
-        )}
+        <button
+          onClick={handleWriteClick}
+          className="flex items-center gap-1.5 px-4 py-2 rounded-full text-sm font-semibold bg-[#1E1B18] border border-[#3A3530] text-[#C8956A] hover:bg-[#272320] hover:border-[#C8956A]/50 transition-all"
+        >
+          <PencilSquareIcon className="w-4 h-4" />
+          Write your reaction
+        </button>
       </div>
 
       {loading ? (
@@ -119,17 +128,10 @@ export function MovieCommunityPosts ({ movieId, movieTitle, posterPath, mediaTyp
         </div>
       ) : posts.length === 0 ? (
         <div className="bg-[#1E1B18] border border-[#3A3530] rounded-2xl px-6 py-14 text-center">
-          <p className="text-2xl mb-3">🎬</p>
-          <p className="font-semibold text-[#F2EDE4] text-sm mb-1">No reactions yet</p>
+          <ChatBubbleLeftEllipsisIcon className="w-10 h-10 text-[#3A3530] mb-3 mx-auto" />
+          <p className="font-semibold text-[#EEEAE2] text-sm mb-1">No reactions yet</p>
           <p className="text-xs text-[#4A4038] mb-5">Be the first to share how this made you feel.</p>
-          {user ? (
-            <button
-              onClick={() => setShowModal(true)}
-              className="px-6 py-2.5 rounded-xl text-sm font-semibold bg-[#C8956A] text-[#0A0908] hover:bg-[#D4A870] transition-all"
-            >
-              Write a Feeling
-            </button>
-          ) : null}
+      
         </div>
       ) : (
         <div className="flex flex-col gap-3">
