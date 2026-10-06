@@ -60,15 +60,15 @@ const REACTIONS = [
 
 export default function LandingPage () {
   return (
-    <div className="min-h-screen bg-[#0A0908] text-[#F2EDE4] font-sans overflow-x-hidden">
+    <div className="min-h-screen bg-[#0A0908] text-[#EEEAE2] font-sans overflow-x-hidden">
 
       {/* Header */}
       <header className="flex items-center justify-between px-8 py-5 max-w-7xl mx-auto">
-        <span className="font-plus-jakarta font-extrabold text-xl tracking-tight text-[#F2EDE4]">
+        <span className="font-plus-jakarta font-extrabold text-xl tracking-tight text-[#EEEAE2]">
           ReelEmotion
         </span>
         <Link href="/login">
-          <button className="px-4 py-2 rounded-lg text-sm font-semibold bg-[#F2EDE4] text-[#0A0908] hover:bg-[#E0D8C8] transition-colors">
+          <button className="px-4 py-2 rounded-lg text-sm font-semibold bg-[#EEEAE2] text-[#0A0908] hover:bg-[#E0D8C8] transition-colors">
             Sign up
           </button>
         </Link>
@@ -79,11 +79,11 @@ export default function LandingPage () {
         <p className="text-xs font-bold uppercase tracking-[0.2em] text-[#C8956A] mb-10">
           Not reviews. Reactions.
         </p>
-        <blockquote className="font-plus-jakarta font-extrabold text-[clamp(2rem,5vw,3.5rem)] leading-[1.2] tracking-tight text-[#F2EDE4] mb-8">
+        <blockquote className="font-plus-jakarta font-extrabold text-[clamp(2rem,5vw,3.5rem)] leading-[1.2] tracking-tight text-[#EEEAE2] mb-8">
           &ldquo;I watched it alone at midnight and couldn&apos;t move for twenty minutes after it ended.&rdquo;
         </blockquote>
         <div className="flex items-center gap-3 mb-12">
-          <span className="text-sm text-[#6A5E50]">— Arrival</span>
+          <span className="text-sm text-[#8C7E6E]">— Arrival</span>
           <span className="text-[#2A2520]">·</span>
           <div className="flex items-center gap-1.5 text-sm font-semibold text-[#C8956A]">
             <HeartIcon className="w-4 h-4" />
@@ -91,14 +91,14 @@ export default function LandingPage () {
           </div>
         </div>
         <div className="flex gap-3 flex-wrap justify-center">
-          <Link href="/discover">
-            <button className="px-7 py-3.5 rounded-xl font-bold text-sm bg-[#F2EDE4] text-[#0A0908] hover:bg-[#E0D8C8] transition-all">
+          <Link href="/feed">
+            <button className="px-7 py-3.5 rounded-xl font-bold text-sm bg-[#C8956A] text-[#0A0908] hover:bg-[#D4A870] transition-all">
               Browse reactions →
             </button>
           </Link>
           <button
             onClick={() => document.getElementById('reactions')?.scrollIntoView({ behavior: 'smooth' })}
-            className="px-7 py-3.5 rounded-xl font-semibold text-sm border border-[#272320] text-[#6A5E50] hover:text-[#F2EDE4] hover:border-[#3A3530] transition-all"
+            className="px-7 py-3.5 rounded-xl font-semibold text-sm border border-[#3A3530] text-[#C8B8A2] hover:text-[#EEEAE2] hover:border-[#C8956A]/50 transition-all"
           >
             See what people are feeling
           </button>
@@ -119,7 +119,7 @@ export default function LandingPage () {
           {[...MOODS, ...MOODS].map((mood, i) => (
             <span
               key={i}
-              className="whitespace-nowrap px-4 py-2 rounded-full text-sm font-medium border border-[#272320] text-[#6A5E50]"
+              className="whitespace-nowrap px-4 py-2 rounded-full text-sm font-medium border border-[#272320] text-[#8C7E6E]"
             >
               {mood}
             </span>
@@ -137,14 +137,14 @@ export default function LandingPage () {
               {FEATURED.initials}
             </div>
             <div>
-              <div className="text-sm font-bold text-[#F2EDE4]">{FEATURED.username}</div>
+              <div className="text-sm font-bold text-[#EEEAE2]">{FEATURED.username}</div>
               <div className="text-xs text-[#4A4038]">{FEATURED.role}</div>
             </div>
-            <span className="ml-auto text-xs font-medium px-3 py-1 rounded-full border border-[#272320] text-[#6A5E50]">
+            <span className="ml-auto text-xs font-medium px-3 py-1 rounded-full border border-[#272320] text-[#8C7E6E]">
               {FEATURED.movie} · {FEATURED.year}
             </span>
           </div>
-          <blockquote className="font-plus-jakarta font-bold text-[clamp(1.2rem,2.5vw,1.8rem)] leading-[1.5] text-[#F2EDE4] mb-8 max-w-2xl">
+          <blockquote className="font-plus-jakarta font-bold text-[clamp(1.2rem,2.5vw,1.8rem)] leading-[1.5] text-[#EEEAE2] mb-8 max-w-2xl">
             &ldquo;{FEATURED.quote}&rdquo;
           </blockquote>
           <div className="flex items-center gap-2 text-[#C8956A] font-bold text-base">
@@ -168,8 +168,8 @@ export default function LandingPage () {
                 />
                 <div className="absolute inset-0 bg-gradient-to-t from-[#111009] via-[#111009]/30 to-transparent" />
                 <div className="absolute bottom-3 left-4 right-4 flex items-end justify-between">
-                  <span className="text-sm font-bold text-[#F2EDE4]">{movie}</span>
-                  <span className="text-xs text-[#6A5E50]">{year}</span>
+                  <span className="text-sm font-bold text-[#EEEAE2]">{movie}</span>
+                  <span className="text-xs text-[#8C7E6E]">{year}</span>
                 </div>
               </div>
               <div className="p-5 flex flex-col flex-1">
@@ -178,11 +178,11 @@ export default function LandingPage () {
                     {initials}
                   </div>
                   <div>
-                    <div className="text-xs font-bold text-[#F2EDE4]">{username}</div>
+                    <div className="text-xs font-bold text-[#EEEAE2]">{username}</div>
                     <div className="text-[10px] text-[#4A4038]">{role}</div>
                   </div>
                 </div>
-                <p className="text-sm leading-relaxed italic text-[#8C7E6E] font-dm-sans flex-1">
+                <p className="text-sm leading-relaxed italic text-[#EEEAE2] font-dm-sans flex-1">
                   &ldquo;{quote}&rdquo;
                 </p>
                 <div className="flex items-center gap-1.5 text-xs font-semibold text-[#C8956A] mt-5 pt-4 border-t border-[#1E1B18]">
@@ -195,8 +195,8 @@ export default function LandingPage () {
         </div>
 
         <div className="text-center mt-10">
-          <Link href="/discover">
-            <button className="px-6 py-3 rounded-xl text-sm font-semibold border border-[#272320] text-[#6A5E50] hover:text-[#F2EDE4] hover:border-[#3A3530] transition-all">
+          <Link href="/feed">
+            <button className="px-6 py-3 rounded-xl text-sm font-semibold border border-[#3A3530] text-[#C8B8A2] hover:text-[#EEEAE2] hover:border-[#C8956A]/50 transition-all">
               See all reactions →
             </button>
           </Link>
@@ -209,7 +209,7 @@ export default function LandingPage () {
           <p className="text-xs font-bold uppercase tracking-[0.2em] text-[#C8956A] mb-4">
             What do you want to feel tonight?
           </p>
-          <h2 className="font-plus-jakarta font-extrabold text-[clamp(1.8rem,3.5vw,2.8rem)] tracking-tight text-[#F2EDE4] mb-4 max-w-xl mx-auto">
+          <h2 className="font-plus-jakarta font-extrabold text-[clamp(1.8rem,3.5vw,2.8rem)] tracking-tight text-[#EEEAE2] mb-4 max-w-xl mx-auto">
             Your feelings are someone else&apos;s discovery.
           </h2>
           <p className="text-sm text-[#4A4038] mb-10 max-w-sm mx-auto leading-relaxed">
@@ -217,12 +217,12 @@ export default function LandingPage () {
           </p>
           <div className="flex gap-3 justify-center flex-wrap">
             <Link href="/login">
-              <button className="px-7 py-3.5 rounded-xl font-bold text-sm bg-[#F2EDE4] text-[#0A0908] hover:bg-[#E0D8C8] transition-all">
+              <button className="px-7 py-3.5 rounded-xl font-bold text-sm bg-[#EEEAE2] text-[#0A0908] hover:bg-[#E0D8C8] transition-all">
                 Start writing →
               </button>
             </Link>
             <Link href="/discover">
-              <button className="px-7 py-3.5 rounded-xl font-semibold text-sm border border-[#272320] text-[#6A5E50] hover:text-[#F2EDE4] hover:border-[#3A3530] transition-all">
+              <button className="px-7 py-3.5 rounded-xl font-semibold text-sm border border-[#3A3530] text-[#C8B8A2] hover:text-[#EEEAE2] hover:border-[#C8956A]/50 transition-all">
                 Browse first
               </button>
             </Link>

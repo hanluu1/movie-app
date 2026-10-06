@@ -4,6 +4,7 @@ import { Header } from '@/components/layout';
 import { ArrowLeftIcon } from '@heroicons/react/24/outline';
 import { notFound } from 'next/navigation';
 import { MovieCommunityPosts } from '@/features/posts/components/movie-community-posts';
+import { BackButton } from '@/components/ui/back-button';
 
 const API_KEY = process.env.TMDB_API_KEY;
 
@@ -69,19 +70,13 @@ export default async function MoviePage ({ params, searchParams }: { params: Pro
   const rating = vote_average ? Math.round(vote_average * 10) / 10 : null;
 
   return (
-    <div className="font-dm-sans min-h-screen bg-[#161210] text-[#F2EDE4]">
+    <div className="font-dm-sans min-h-screen bg-[#161210] text-[#EEEAE2]">
       <Header variant="dark" />
 
       <div className="mx-auto w-full max-w-4xl xl:max-w-5xl 2xl:max-w-6xl px-6 lg:px-10 py-8">
 
         {/* Back */}
-        <Link
-          href="/discover"
-          className="inline-flex items-center gap-1.5 text-sm font-semibold text-[#6A5E50] hover:text-[#F2EDE4] transition-colors mb-6"
-        >
-          <ArrowLeftIcon className="w-4 h-4" />
-          Back to feed
-        </Link>
+        <BackButton />
 
         {/* Card */}
         <div className="bg-[#1E1B18] border border-[#3A3530] rounded-2xl overflow-hidden">
@@ -108,12 +103,12 @@ export default async function MoviePage ({ params, searchParams }: { params: Pro
             <div className="flex-1 p-6 flex flex-col gap-4">
 
               <div>
-                <h1 className="font-plus-jakarta font-extrabold text-2xl text-[#F2EDE4] leading-snug mb-2">
+                <h1 className="font-plus-jakarta font-extrabold text-2xl text-[#EEEAE2] leading-snug mb-2">
                   {displayTitle}
                 </h1>
 
                 {/* Meta */}
-                <div className="flex flex-wrap items-center gap-2 text-sm text-[#6A5E50]">
+                <div className="flex flex-wrap items-center gap-2 text-sm text-[#8C7E6E]">
                   {year && <span>{year}</span>}
                   <span>·</span>
                   <span>{mediaType === 'tv' ? 'TV Series' : 'Film'}</span>
@@ -156,16 +151,16 @@ export default async function MoviePage ({ params, searchParams }: { params: Pro
               {/* Cast & director */}
               <div className="flex flex-col gap-2 pt-4 border-t border-[#3A3530] text-sm">
                 {director && (
-                  <div className="text-[#6A5E50]">
-                    <span className="font-semibold text-[#F2EDE4]">
+                  <div className="text-[#8C7E6E]">
+                    <span className="font-semibold text-[#EEEAE2]">
                       {mediaType === 'tv' ? 'Created by ' : 'Directed by '}
                     </span>
                     {director}
                   </div>
                 )}
                 {topCast.length > 0 && (
-                  <div className="text-[#6A5E50]">
-                    <span className="font-semibold text-[#F2EDE4]">Starring </span>
+                  <div className="text-[#8C7E6E]">
+                    <span className="font-semibold text-[#EEEAE2]">Starring </span>
                     {topCast.join(', ')}
                   </div>
                 )}

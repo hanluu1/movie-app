@@ -11,7 +11,7 @@ export default function Home () {
 
   useEffect(() => {
     supabase.auth.getUser().then(({ data: { user } }) => {
-      if (user) router.replace('/discover');
+      if (user) router.replace('/feed');
       else setLoading(false);
     });
   }, [router]);

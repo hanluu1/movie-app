@@ -137,7 +137,7 @@ export default function MyProfilePage () {
     : null;
 
   return (
-    <div className="font-dm-sans flex min-h-screen w-full flex-col bg-[#161210] text-[#F2EDE4]">
+    <div className="font-dm-sans flex min-h-screen w-full flex-col bg-[#161210] text-[#EEEAE2]">
       <Header variant="dark" showSearch={true} />
 
       <main className="mx-auto w-full max-w-4xl xl:max-w-5xl 2xl:max-w-6xl flex flex-col px-6 lg:px-10 py-12">
@@ -153,7 +153,7 @@ export default function MyProfilePage () {
                 onClick={() => fileInputRef.current?.click()}
                 disabled={uploading}
                 aria-label="Change profile photo"
-                className="relative flex h-28 w-28 items-center justify-center overflow-hidden rounded-full bg-[#272320] text-3xl font-bold text-[#F2EDE4] shadow-sm transition hover:shadow-md md:h-32 md:w-32"
+                className="relative flex h-28 w-28 items-center justify-center overflow-hidden rounded-full bg-[#272320] text-3xl font-bold text-[#EEEAE2] shadow-sm transition hover:shadow-md md:h-32 md:w-32"
               >
                 {profile?.avatar_url ? (
                   <Image
@@ -190,11 +190,11 @@ export default function MyProfilePage () {
 
             {/* Profile Info */}
             <div className="min-w-0 pt-1">
-              <h1 className="font-plus-jakarta text-3xl font-extrabold tracking-tight text-[#F2EDE4]">
+              <h1 className="font-plus-jakarta text-3xl font-extrabold tracking-tight text-[#EEEAE2]">
                 {profile?.username ?? '—'}
               </h1>
 
-              <p className="mt-2 text-base text-[#6A5E50]">
+              <p className="mt-2 text-base text-[#8C7E6E]">
                 @{profile?.username ?? '—'}
                 {memberYear ? ` · Member since ${memberYear}` : ''}
               </p>
@@ -205,7 +205,7 @@ export default function MyProfilePage () {
                   <p className="font-plus-jakarta text-2xl font-extrabold text-[#C8956A]">
                     {posts.length}
                   </p>
-                  <p className="mt-1 text-sm text-[#6A5E50]">
+                  <p className="mt-1 text-sm text-[#8C7E6E]">
                     {posts.length === 1 ? 'post' : 'posts'}
                   </p>
                 </div>
@@ -216,7 +216,7 @@ export default function MyProfilePage () {
                   <p className="font-plus-jakarta text-2xl font-extrabold text-[#C8956A]">
                     {totalReactions}
                   </p>
-                  <p className="mt-1 text-sm text-[#6A5E50]">
+                  <p className="mt-1 text-sm text-[#8C7E6E]">
                     reactions received
                   </p>
                 </div>
@@ -227,7 +227,7 @@ export default function MyProfilePage () {
           {/* Profile Action */}
           <button
             onClick={() => fileInputRef.current?.click()}
-            className="flex w-fit items-center gap-2 rounded-full bg-[#1A1714] border border-[#272320] px-5 py-3 text-sm font-semibold text-[#C8B8A2] transition-colors hover:bg-[#272320] hover:text-[#F2EDE4]"
+            className="flex w-fit items-center gap-2 rounded-full bg-[#1A1714] border border-[#272320] px-5 py-3 text-sm font-semibold text-[#C8B8A2] transition-colors hover:bg-[#272320] hover:text-[#EEEAE2]"
           >
             <PencilSquareIcon className="h-4 w-4" />
             Change photo
@@ -239,17 +239,17 @@ export default function MyProfilePage () {
 
         {/* Recent Reactions */}
         <section className="mt-8">
-          <h2 className="font-plus-jakarta text-2xl font-extrabold text-[#F2EDE4]">
+          <h2 className="font-plus-jakarta text-2xl font-extrabold text-[#EEEAE2]">
             Recent reactions
           </h2>
 
           {posts.length === 0 ? (
             <div className="mt-8 rounded-2xl border border-[#272320] bg-[#111009] px-6 py-16 text-center">
-              <p className="font-plus-jakarta text-lg font-bold text-[#F2EDE4]">
+              <p className="font-plus-jakarta text-lg font-bold text-[#EEEAE2]">
                 No reactions yet
               </p>
 
-              <p className="mx-auto mt-2 max-w-sm text-sm leading-relaxed text-[#6A5E50]">
+              <p className="mx-auto mt-2 max-w-sm text-sm leading-relaxed text-[#8C7E6E]">
                 When something you watch stays with you, this is where your
                 feelings will live.
               </p>

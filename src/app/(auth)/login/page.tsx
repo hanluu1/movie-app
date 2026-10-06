@@ -27,7 +27,7 @@ export default function AuthPage () {
             .eq('id', user.id)
             .maybeSingle();
           if (profileError) console.error('Profile fetch error:', profileError.message);
-          if (profileData?.username) router.push(getRedirect());
+          if (profileData?.username) router.replace(getRedirect());
         } catch (err) {
           console.error('Error checking profile on sign-in:', err);
         }
@@ -44,7 +44,7 @@ export default function AuthPage () {
       .from('profiles').select('username').eq('id', data.user.id).maybeSingle();
     if (profileError) { console.error('Profile fetch error:', profileError.message); return; }
     if (!profileData?.username) {
-      router.push(`/complete-profile?redirect=${encodeURIComponent(getRedirect())}`);
+      router.replace(`/complete-profile?redirect=${encodeURIComponent(getRedirect())}`);
       return;
     }
   };
@@ -86,7 +86,7 @@ export default function AuthPage () {
         {/* Logo */}
         <div className="text-center mb-8">
           <Link href="/">
-            <span className="font-plus-jakarta font-extrabold text-4xl tracking-tight text-[#F2EDE4]">
+            <span className="font-plus-jakarta font-extrabold text-4xl tracking-tight text-[#EEEAE2]">
               ReelEmotion
             </span>
           </Link>
@@ -100,7 +100,7 @@ export default function AuthPage () {
 
           {/* Heading */}
           <div className="mb-8">
-            <h1 className="font-plus-jakarta font-extrabold text-2xl tracking-tight text-[#F2EDE4] mb-1">
+            <h1 className="font-plus-jakarta font-extrabold text-2xl tracking-tight text-[#EEEAE2] mb-1">
               {isLogin ? 'Sign in' : 'Join ReelEmotion'}
             </h1>
             <p className="text-sm text-[#4A4038]">
@@ -114,7 +114,7 @@ export default function AuthPage () {
           <button
             type="button"
             onClick={handleGoogleLogin}
-            className="w-full py-3 border border-[#3A3530] bg-[#272320] rounded-xl font-semibold text-sm text-[#F2EDE4] transition-all hover:border-[#C8956A] flex items-center justify-center gap-2.5 mb-6"
+            className="w-full py-3 border border-[#3A3530] bg-[#272320] rounded-xl font-semibold text-sm text-[#EEEAE2] transition-all hover:border-[#C8956A] flex items-center justify-center gap-2.5 mb-6"
           >
             <GoogleIcon />
             <span>Continue with Google</span>
@@ -123,7 +123,7 @@ export default function AuthPage () {
           {/* Divider */}
           <div className="relative flex items-center gap-3 mb-6">
             <div className="flex-1 h-px bg-[#3A3530]" />
-            <span className="text-xs text-[#6A5E50] font-medium">or</span>
+            <span className="text-xs text-[#8C7E6E] font-medium">or</span>
             <div className="flex-1 h-px bg-[#3A3530]" />
           </div>
 
@@ -166,7 +166,7 @@ export default function AuthPage () {
 
             <button
               type="submit"
-              className="w-full py-3 bg-[#F2EDE4] text-[#0A0908] font-semibold rounded-xl text-sm transition-all hover:bg-[#E0D8C8] mt-1"
+              className="w-full py-3 bg-[#EEEAE2] text-[#0A0908] font-semibold rounded-xl text-sm transition-all hover:bg-[#E0D8C8] mt-1"
             >
               {isLogin ? 'Sign In' : 'Create Account'}
             </button>
@@ -188,7 +188,7 @@ export default function AuthPage () {
 
         {/* Back link */}
         <p className="text-center mt-6 text-xs text-[#4A4038]">
-          <Link href="/" className="hover:text-[#F2EDE4] transition-colors">
+          <Link href="/" className="hover:text-[#EEEAE2] transition-colors">
             ← Back
           </Link>
         </p>

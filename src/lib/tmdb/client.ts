@@ -24,10 +24,55 @@ export interface TrendingMovie {
   genre_ids: number[];
 }
 
+function interleaveById<T extends { id: number }> (...arrays: T[][]): T[] {
+  const seen = new Set<number>();
+  const result: T[] = [];
+  const maxLen = Math.max(...arrays.map(a => a.length));
+  for (let i = 0; i < maxLen; i++) {
+    for (const arr of arrays) {
+      const item = arr[i];
+      if (item && !seen.has(item.id)) {
+        seen.add(item.id);
+        result.push(item);
+      }
+    }
+  }
+  return result;
+}
+
 export async function getTrendingMovies (): Promise<TrendingMovie[]> {
   try {
-    const data = await tmdbFetch('/trending/movie/week');
-    return (data.results || []).slice(0, 8);
+    const [en, ko, ja, zh] = await Promise.all([
+      tmdbFetch('/trending/movie/week?language=en-US'),
+      tmdbFetch('/discover/movie?sort_by=popularity.desc&with_original_language=ko'),
+      tmdbFetch('/discover/movie?sort_by=popularity.desc&with_original_language=ja'),
+      tmdbFetch('/discover/movie?sort_by=popularity.desc&with_original_language=zh'),
+    ]);
+    return interleaveById(
+      (en.results || []).slice(0, 8),
+      (ko.results || []).slice(0, 8),
+      (ja.results || []).slice(0, 8),
+      (zh.results || []).slice(0, 8),
+    );
+  } catch {
+    return [];
+  }
+}
+
+export async function getMoviesByGenre (genreId: number): Promise<TrendingMovie[]> {
+  try {
+    const [en, ko, ja, zh] = await Promise.all([
+      tmdbFetch(`/discover/movie?with_genres=${genreId}&sort_by=popularity.desc&with_original_language=en`),
+      tmdbFetch(`/discover/movie?with_genres=${genreId}&sort_by=popularity.desc&with_original_language=ko`),
+      tmdbFetch(`/discover/movie?with_genres=${genreId}&sort_by=popularity.desc&with_original_language=ja`),
+      tmdbFetch(`/discover/movie?with_genres=${genreId}&sort_by=popularity.desc&with_original_language=zh`),
+    ]);
+    return interleaveById(
+      (en.results || []).slice(0, 6),
+      (ko.results || []).slice(0, 6),
+      (ja.results || []).slice(0, 6),
+      (zh.results || []).slice(0, 6),
+    );
   } catch {
     return [];
   }
@@ -43,8 +88,18 @@ export interface TrendingTV {
 
 export async function getTrendingTV (): Promise<TrendingTV[]> {
   try {
-    const data = await tmdbFetch('/trending/tv/week');
-    return (data.results || []).slice(0, 8);
+    const [en, ko, ja, zh] = await Promise.all([
+      tmdbFetch('/trending/tv/week?language=en-US'),
+      tmdbFetch('/discover/tv?sort_by=popularity.desc&with_original_language=ko'),
+      tmdbFetch('/discover/tv?sort_by=popularity.desc&with_original_language=ja'),
+      tmdbFetch('/discover/tv?sort_by=popularity.desc&with_original_language=zh'),
+    ]);
+    return interleaveById(
+      (en.results || []).slice(0, 8),
+      (ko.results || []).slice(0, 8),
+      (ja.results || []).slice(0, 8),
+      (zh.results || []).slice(0, 8),
+    );
   } catch {
     return [];
   }

@@ -56,7 +56,7 @@ function getInitials (name: string) {
 function Avatar ({ username, avatarUrl, size = 10 }: { username: string; avatarUrl?: string | null; size?: number }) {
   const sizeClass = `w-${size} h-${size}`;
   return (
-    <div className={`${sizeClass} rounded-full flex-shrink-0 bg-[#272320] flex items-center justify-center text-[#F2EDE4] font-bold text-sm overflow-hidden relative`}>
+    <div className={`${sizeClass} rounded-full flex-shrink-0 bg-[#272320] flex items-center justify-center text-[#EEEAE2] font-bold text-sm overflow-hidden relative`}>
       {avatarUrl ? (
         <Image src={avatarUrl} alt={username} fill className="object-cover" sizes={`${size * 4}px`} />
       ) : (
@@ -142,7 +142,7 @@ export default function PostDetailPage () {
   const handleDeletePost = async () => {
     setIsDeleting(true);
     const { error } = await supabase.from('posts').delete().eq('id', id);
-    if (!error) router.push('/discover');
+    if (!error) router.push('/feed');
     setIsDeleting(false);
   };
 
@@ -161,7 +161,7 @@ export default function PostDetailPage () {
     return (
       <div className="min-h-screen bg-[#161210]">
         <Header variant="dark" />
-        <div className="flex items-center justify-center h-64 text-[#6A5E50]">Post not found.</div>
+        <div className="flex items-center justify-center h-64 text-[#8C7E6E]">Post not found.</div>
       </div>
     );
   }
@@ -170,15 +170,15 @@ export default function PostDetailPage () {
   const isOwner = user?.id === post.user_id;
 
   return (
-    <div className="font-dm-sans min-h-screen bg-[#161210] text-[#F2EDE4]">
+    <div className="font-dm-sans min-h-screen bg-[#161210] text-[#EEEAE2]">
       <Header variant="dark" />
 
       <div className="mx-auto w-full max-w-4xl xl:max-w-5xl 2xl:max-w-6xl px-6 lg:px-10 py-8">
 
         {/* Back */}
         <Link
-          href="/discover"
-          className="inline-flex items-center gap-1.5 text-sm font-semibold text-[#6A5E50] hover:text-[#F2EDE4] transition-colors mb-6"
+          href="/feed"
+          className="inline-flex items-center gap-1.5 text-sm font-semibold text-[#8C7E6E] hover:text-[#EEEAE2] transition-colors mb-6"
         >
           <ArrowLeftIcon className="w-4 h-4" />
           Back to feed
@@ -192,15 +192,15 @@ export default function PostDetailPage () {
             <div className="flex items-center gap-3">
               <Avatar username={authorName} avatarUrl={post.profiles?.avatar_url} size={10} />
               <div>
-                <div className="font-semibold text-sm text-[#F2EDE4]">{authorName}</div>
-                <div className="text-xs text-[#6A5E50]">{formatTimestamp(post.created_at)}</div>
+                <div className="font-semibold text-sm text-[#EEEAE2]">{authorName}</div>
+                <div className="text-xs text-[#8C7E6E]">{formatTimestamp(post.created_at)}</div>
               </div>
             </div>
             {isOwner && !edit && (
               <div className="flex gap-2">
                 <button
                   onClick={() => setEdit(true)}
-                  className="flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-xs font-semibold text-[#6A5E50] hover:text-[#F2EDE4] hover:bg-[#272320] transition-all"
+                  className="flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-xs font-semibold text-[#8C7E6E] hover:text-[#EEEAE2] hover:bg-[#272320] transition-all"
                 >
                   <PencilSquareIcon className="w-3.5 h-3.5" />
                   Edit
@@ -234,7 +234,7 @@ export default function PostDetailPage () {
             <>
               {/* Reaction content */}
               <div className="px-6 pb-6">
-                <h1 className="font-plus-jakarta font-extrabold text-2xl text-[#F2EDE4] leading-snug mb-4">
+                <h1 className="font-plus-jakarta font-extrabold text-2xl text-[#EEEAE2] leading-snug mb-4">
                   {post.title}
                 </h1>
                 {post.content && (
@@ -279,7 +279,7 @@ export default function PostDetailPage () {
                   className={`flex items-center gap-2 px-4 py-2 rounded-xl text-sm font-semibold transition-all ${
                     liked
                       ? 'bg-rose-500/10 text-rose-400 border border-rose-500/30'
-                      : 'bg-[#272320] text-[#6A5E50] hover:text-rose-400 border border-[#3A3530]'
+                      : 'bg-[#272320] text-[#8C7E6E] hover:text-rose-400 border border-[#3A3530]'
                   }`}
                 >
                   {liked ? <HeartSolidIcon className="w-4 h-4" /> : <HeartIcon className="w-4 h-4" />}
@@ -287,7 +287,7 @@ export default function PostDetailPage () {
                 </button>
                 <a
                   href="#comments"
-                  className="flex items-center gap-2 px-4 py-2 rounded-xl text-sm font-semibold bg-[#272320] border border-[#3A3530] text-[#6A5E50] hover:text-[#F2EDE4] transition-colors"
+                  className="flex items-center gap-2 px-4 py-2 rounded-xl text-sm font-semibold bg-[#272320] border border-[#3A3530] text-[#8C7E6E] hover:text-[#EEEAE2] transition-colors"
                 >
                   <ChatBubbleLeftEllipsisIcon className="w-4 h-4" />
                   {comments.length} {comments.length === 1 ? 'reply' : 'replies'}
@@ -315,7 +315,7 @@ export default function PostDetailPage () {
                 onChange={e => setNewComment(e.target.value)}
                 placeholder="Share your reaction..."
                 rows={3}
-                className="w-full px-4 py-3 border border-[#3A3530] focus:border-[#C8956A]/60 bg-[#272320] rounded-xl text-sm text-[#F2EDE4] placeholder:text-[#4A4038] outline-none transition-all resize-none leading-relaxed"
+                className="w-full px-4 py-3 border border-[#3A3530] focus:border-[#C8956A]/60 bg-[#272320] rounded-xl text-sm text-[#EEEAE2] placeholder:text-[#4A4038] outline-none transition-all resize-none leading-relaxed"
               />
               <button
                 onClick={handleAddComment}
@@ -341,8 +341,8 @@ export default function PostDetailPage () {
                     <Avatar username={name} avatarUrl={comment.profiles?.avatar_url} size={8} />
                     <div className="flex-1 min-w-0">
                       <div className="flex items-baseline gap-2 mb-1">
-                        <span className="text-sm font-semibold text-[#F2EDE4]">{name}</span>
-                        <span className="text-xs text-[#6A5E50]">
+                        <span className="text-sm font-semibold text-[#EEEAE2]">{name}</span>
+                        <span className="text-xs text-[#8C7E6E]">
                           {new Date(comment.created_at).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' })}
                         </span>
                       </div>
@@ -372,15 +372,15 @@ export default function PostDetailPage () {
           <div className="bg-[#1E1B18] border border-[#3A3530] rounded-2xl w-full max-w-sm p-6 flex flex-col gap-5">
             <div>
               <p className="text-xs font-bold uppercase tracking-widest text-rose-400 mb-1">Heads up</p>
-              <h2 className="font-plus-jakarta font-extrabold text-xl text-[#F2EDE4]">Delete this post?</h2>
-              <p className="text-sm text-[#6A5E50] mt-2 leading-relaxed">
+              <h2 className="font-plus-jakarta font-extrabold text-xl text-[#EEEAE2]">Delete this post?</h2>
+              <p className="text-sm text-[#8C7E6E] mt-2 leading-relaxed">
                 This will permanently remove your reaction. There&rsquo;s no way to get it back.
               </p>
             </div>
             <div className="flex gap-3">
               <button
                 onClick={() => setShowDeleteModal(false)}
-                className="flex-1 py-2.5 rounded-xl text-sm font-semibold text-[#C8B8A2] bg-[#272320] border border-[#3A3530] hover:bg-[#3A3530] hover:text-[#F2EDE4] transition-all"
+                className="flex-1 py-2.5 rounded-xl text-sm font-semibold text-[#C8B8A2] bg-[#272320] border border-[#3A3530] hover:bg-[#3A3530] hover:text-[#EEEAE2] transition-all"
               >
                 Keep it
               </button>
