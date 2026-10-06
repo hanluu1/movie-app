@@ -8,7 +8,7 @@ interface FormFieldProps {
   hint?: string;
 }
 
-const inputClass = "w-full px-4 py-3 border border-[#3A3530] rounded-xl text-sm transition-all focus:outline-none focus:border-[#C8956A]/60 placeholder:text-[#4A4038] bg-[#272320] text-[#F2EDE4]";
+const inputClass = "w-full px-4 py-3 border border-[#3A3530] rounded-xl text-sm transition-all focus:outline-none focus:border-[#C8956A]/60 placeholder:text-[#4A4038] bg-[#272320] text-[#EEEAE2]";
 
 export default function FormField ({ label, type = 'text', placeholder, value, onChange, required, hint }: FormFieldProps) {
   return (

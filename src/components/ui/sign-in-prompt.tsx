@@ -40,11 +40,11 @@ export const SignInPrompt = ({ isOpen, onClose, action }: SignInPromptProps) => 
         <div className="px-6 pt-6 pb-5 flex items-start justify-between border-b border-[#1A1410]">
           <div>
             <p className="text-xs font-bold uppercase tracking-widest text-[#C8956A] mb-0.5">Members only</p>
-            <h2 className="font-plus-jakarta font-extrabold text-xl text-[#F2EDE4]">Join the conversation</h2>
+            <h2 className="font-plus-jakarta font-extrabold text-xl text-[#EEEAE2]">Join the conversation</h2>
           </div>
           <button
             onClick={onClose}
-            className="w-8 h-8 rounded-full flex items-center justify-center text-[#6A5E50] hover:text-[#F2EDE4] hover:bg-[#1E1B18] transition-all"
+            className="w-8 h-8 rounded-full flex items-center justify-center text-[#8C7E6E] hover:text-[#EEEAE2] hover:bg-[#1E1B18] transition-all"
           >
             <XMarkIcon className="w-4 h-4" />
           </button>
