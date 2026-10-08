@@ -1,6 +1,6 @@
-# Reel Emotions
+# ReelEmotion
 
-A full-stack movie review platform where users can discover trending films, write and upvote reviews, comment on posts, and manage a personal watchlist.
+A full-stack movie and TV community where people discover what to watch by feeling, read real reactions, and share how a film or series stayed with them. No star ratings — just honest reactions.
 
 **[Live Demo →](https://reel-emotions.vercel.app/)**
 _
@@ -9,11 +9,12 @@ _
 
 ## Features
 
-- **Movie Search** — debounced search across movies and TV shows via the TMDB API, with year filtering and instant results
-- **Community Reviews** — create, edit, delete, and upvote reviews with live like counts via Supabase Realtime subscriptions
-- **Comment Threads** — discuss reviews inline without leaving the feed
-- **Watchlist** — track movies as Watched, Watching, or To-Watch with per-user persistence
-- **Trending Sidebar** — weekly trending movies and TV shows with ranking badges and ratings
+- **Mood Discovery** — browse movies and TV shows by feelings such as “Mind-bending,” “Comforting,” and “Broke my heart”
+- **Movie Search** — debounced search across movies, TV shows, and community reactions via the TMDB API
+- **Community Reactions** — create, edit, delete, and upvote reactions with live like counts via Supabase Realtime subscriptions
+- **Comment Threads** — discuss reactions inline without leaving the community feed
+- **Movie Details** — view overviews, genres, cast, directors, ratings, and related community reactions
+- **Trending Films and Series** — explore what is popular worldwide this week
 - **Authentication** — email/password and Google OAuth with a profile completion flow
 
 ## Tech Stack
@@ -61,5 +62,4 @@ Start the dev server:
 ```bash
 yarn dev
 ```
-
 
