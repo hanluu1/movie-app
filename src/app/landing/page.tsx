@@ -75,33 +75,27 @@ export default function LandingPage () {
       </header>
 
       {/* Hero */}
-      <section className="flex flex-col items-center justify-center text-center px-6 pt-16 pb-24 max-w-4xl mx-auto">
-        <p className="text-xs font-bold uppercase tracking-[0.2em] text-[#C8956A] mb-10">
+      <section className="flex flex-col items-center justify-center text-center px-6 pt-16 pb-24 max-w-3xl mx-auto">
+        <p className="text-xs font-bold uppercase tracking-[0.2em] text-[#C8956A] mb-6">
           Not reviews. Reactions.
         </p>
-        <blockquote className="font-plus-jakarta font-extrabold text-[clamp(2rem,5vw,3.5rem)] leading-[1.2] tracking-tight text-[#EEEAE2] mb-8">
-          &ldquo;I watched it alone at midnight and couldn&apos;t move for twenty minutes after it ended.&rdquo;
-        </blockquote>
-        <div className="flex items-center gap-3 mb-12">
-          <span className="text-sm text-[#8C7E6E]">— Arrival</span>
-          <span className="text-[#2A2520]">·</span>
-          <div className="flex items-center gap-1.5 text-sm font-semibold text-[#C8956A]">
-            <HeartIcon className="w-4 h-4" />
-            <span>47 people felt this</span>
-          </div>
-        </div>
+        <h1 className="font-plus-jakarta font-extrabold text-[clamp(2rem,5vw,3.2rem)] leading-[1.2] tracking-tight text-[#EEEAE2] mb-6">
+          Find movies through real emotional reactions.
+        </h1>
+        <p className="text-base sm:text-lg text-[#8C7E6E] leading-relaxed mb-10 max-w-xl">
+          Browse by feeling, read what stayed with other people, and share your own response. No star ratings, just honest reactions.
+        </p>
         <div className="flex gap-3 flex-wrap justify-center">
-          <Link href="/feed">
+          <Link href="/discover">
             <button className="px-7 py-3.5 rounded-xl font-bold text-sm bg-[#C8956A] text-[#0A0908] hover:bg-[#D4A870] transition-all">
-              Browse reactions →
+              Find something by mood
             </button>
           </Link>
-          <button
-            onClick={() => document.getElementById('reactions')?.scrollIntoView({ behavior: 'smooth' })}
-            className="px-7 py-3.5 rounded-xl font-semibold text-sm border border-[#3A3530] text-[#C8B8A2] hover:text-[#EEEAE2] hover:border-[#C8956A]/50 transition-all"
-          >
-            See what people are feeling
-          </button>
+          <Link href="/community">
+            <button className="px-7 py-3.5 rounded-xl font-semibold text-sm border border-[#3A3530] text-[#C8B8A2] hover:text-[#EEEAE2] hover:border-[#C8956A]/50 transition-all">
+              Read community reactions
+            </button>
+          </Link>
         </div>
       </section>
 
@@ -195,9 +189,9 @@ export default function LandingPage () {
         </div>
 
         <div className="text-center mt-10">
-          <Link href="/feed">
+          <Link href="/community">
             <button className="px-6 py-3 rounded-xl text-sm font-semibold border border-[#3A3530] text-[#C8B8A2] hover:text-[#EEEAE2] hover:border-[#C8956A]/50 transition-all">
-              See all reactions →
+              See all reactions 
             </button>
           </Link>
         </div>
@@ -217,8 +211,8 @@ export default function LandingPage () {
           </p>
           <div className="flex gap-3 justify-center flex-wrap">
             <Link href="/login">
-              <button className="px-7 py-3.5 rounded-xl font-bold text-sm bg-[#EEEAE2] text-[#0A0908] hover:bg-[#E0D8C8] transition-all">
-                Start writing →
+              <button className="px-7 py-3.5 rounded-xl font-bold text-sm bg-[#C8956A] text-[#0A0908] hover:bg-[#E0D8C8] transition-all">
+                Start writing 
               </button>
             </Link>
             <Link href="/discover">
