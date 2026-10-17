@@ -63,26 +63,26 @@ export default function LandingPage () {
     <div className="min-h-screen bg-[#0A0908] text-[#EEEAE2] font-sans overflow-x-hidden">
 
       {/* Header */}
-      <header className="flex items-center justify-between px-8 py-5 max-w-7xl mx-auto">
-        <span className="font-plus-jakarta font-extrabold text-xl tracking-tight text-[#EEEAE2]">
+      <header className="flex items-center justify-between px-6 sm:px-10 lg:px-14 py-5 lg:py-7 w-full">
+        <span className="font-plus-jakarta font-extrabold text-xl lg:text-2xl tracking-tight text-[#EEEAE2]">
           ReelEmotion
         </span>
         <Link href="/login">
-          <button className="px-4 py-2 rounded-lg text-sm font-semibold bg-[#EEEAE2] text-[#0A0908] hover:bg-[#E0D8C8] transition-colors">
+          <button className="px-5 py-2.5 rounded-lg text-sm lg:text-base font-semibold bg-[#EEEAE2] text-[#0A0908] hover:bg-[#E0D8C8] transition-colors">
             Sign up
           </button>
         </Link>
       </header>
 
       {/* Hero */}
-      <section className="flex flex-col items-center justify-center text-center px-6 pt-16 pb-24 max-w-3xl mx-auto">
+      <section className="flex flex-col items-center justify-center text-center px-6 pt-16 lg:pt-24 pb-24 lg:pb-32 max-w-5xl mx-auto">
         <p className="text-xs font-bold uppercase tracking-[0.2em] text-[#C8956A] mb-6">
           Not reviews. Reactions.
         </p>
-        <h1 className="font-plus-jakarta font-extrabold text-[clamp(2rem,5vw,3.2rem)] leading-[1.2] tracking-tight text-[#EEEAE2] mb-6">
+        <h1 className="font-plus-jakarta font-extrabold text-[clamp(2rem,5vw,4.5rem)] leading-[1.12] tracking-tight text-[#EEEAE2] mb-8 max-w-4xl">
           Find movies through real emotional reactions.
         </h1>
-        <p className="text-base sm:text-lg text-[#8C7E6E] leading-relaxed mb-10 max-w-xl">
+        <p className="text-base sm:text-lg lg:text-xl text-[#8C7E6E] leading-relaxed mb-12 max-w-2xl">
           Browse by feeling, read what stayed with other people, and share your own response. No star ratings, just honest reactions.
         </p>
         <div className="flex gap-3 flex-wrap justify-center">
@@ -122,16 +122,16 @@ export default function LandingPage () {
       </div>
 
       {/* Reactions */}
-      <section id="reactions" className="px-8 py-16 max-w-6xl mx-auto">
+      <section id="reactions" className="px-6 sm:px-10 lg:px-14 py-16 lg:py-24 max-w-7xl mx-auto">
 
         {/* Featured reaction */}
-        <div className="rounded-2xl border border-[#1E1B18] bg-[#111009] p-8 sm:p-10 mb-6">
+        <div className="rounded-2xl border border-[#1E1B18] bg-[#111009] p-8 sm:p-10 lg:p-14 mb-6">
           <div className="flex items-center gap-3 mb-7">
             <div className="w-9 h-9 rounded-full flex items-center justify-center text-[#0A0908] text-xs font-bold flex-shrink-0 bg-[#C8956A]">
               {FEATURED.initials}
             </div>
             <div>
-              <div className="text-sm font-bold text-[#EEEAE2]">{FEATURED.username}</div>
+              <div className="text-sm lg:text-base font-bold text-[#EEEAE2]">{FEATURED.username}</div>
               <div className="text-xs text-[#4A4038]">{FEATURED.role}</div>
             </div>
             <span className="ml-auto text-xs font-medium px-3 py-1 rounded-full border border-[#272320] text-[#8C7E6E]">
