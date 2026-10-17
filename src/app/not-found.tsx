@@ -11,10 +11,10 @@ export default function NotFound () {
         <h2 className="font-plus-jakarta font-extrabold text-xl text-[#EEEAE2]">Page not found</h2>
         <p className="text-[#8C7E6E] text-sm max-w-sm">We couldn&apos;t find what you were looking for.</p>
         <Link
-          href="/feed"
+          href="/community"
           className="mt-2 px-6 py-2.5 rounded-xl font-semibold text-sm text-[#0A0908] bg-[#C8956A] hover:bg-[#D4A870] transition-all hover:-translate-y-0.5"
         >
-          Back to feed
+          Back to community
         </Link>
       </div>
     </div>

@@ -310,7 +310,7 @@ export const CreatePostModal = ({ isOpen, onClose, onCreated, preselectedMovie }
                 onClick={() => { onCreated(); onClose(); }}
                 className="px-8 py-3 rounded-xl font-semibold text-sm text-[#0A0908] bg-[#C8956A] hover:bg-[#D4A870] transition-all hover:-translate-y-0.5"
               >
-                Back to the feed
+                Back to the community
               </button>
             </div>
           )}

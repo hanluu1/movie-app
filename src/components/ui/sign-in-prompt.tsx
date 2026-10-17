@@ -37,7 +37,7 @@ export const SignInPrompt = ({ isOpen, onClose, action }: SignInPromptProps) => 
         onClick={e => e.stopPropagation()}
       >
         {/* Header */}
-        <div className="px-6 pt-6 pb-5 flex items-start justify-between border-b border-[#1A1410]">
+        <div className="px-6 pt-6 flex items-start justify-between border-b border-[#1A1410]">
           <div>
             <p className="text-xs font-bold uppercase tracking-widest text-[#C8956A] mb-0.5">Members only</p>
             <h2 className="font-plus-jakarta font-extrabold text-xl text-[#EEEAE2]">Join the conversation</h2>
@@ -51,24 +51,24 @@ export const SignInPrompt = ({ isOpen, onClose, action }: SignInPromptProps) => 
         </div>
 
         {/* Body */}
-        <div className="px-6 py-6">
+        <div className="px-6 py-3">
           <p className="text-sm text-[#C8B8A2] leading-relaxed mb-6">
-            Sign in to {action || 'join in'} and find people who see films the way you do.
-            Browsing stays free — no account needed to read.
+            Sign in to {action || 'join the conversation'} and connect with people who love films the way you do.
+          You can browse without an account.
           </p>
 
-          <div className="flex flex-col gap-3">
+          <div className="flex flex-row gap-3">
             <button
               onClick={goToLogin}
-              className="w-full py-3 rounded-xl font-semibold text-sm text-[#0A0908] bg-[#C8956A] hover:bg-[#D4A870] transition-all hover:-translate-y-0.5"
+              className="w-full py-3 rounded-xl font-semibold text-sm text-[#C8B8A2] bg-[#1A1714] hover:bg-[#D4A870] transition-all hover:-translate-y-0.5"
             >
               Sign In
             </button>
             <button
               onClick={onClose}
-              className="w-full py-3 rounded-xl font-semibold text-sm text-[#C8B8A2] bg-[#1A1714] border border-[#2A2520] hover:bg-[#1E1B18] transition-all"
+              className="w-full py-3 rounded-xl font-semibold text-sm text-[#0A0908] bg-[#C8956A] border border-[#2A2520] hover:bg-[#1E1B18] transition-all"
             >
-              Maybe later
+              Join Free
             </button>
           </div>
         </div>

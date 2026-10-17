@@ -163,8 +163,8 @@ export default function DiscoverPage () {
 
         {/* Page title */}
         <div className="mb-8">
-          <h1 className="font-plus-jakarta font-extrabold text-3xl text-[#EEEAE2]">Films and Series for Every Mood</h1>
-          <p className="text-sm text-[#8C7E6E] mt-1">Find your next watch based on how you want to feel.</p>
+          <h1 className="font-plus-jakarta font-extrabold text-3xl text-[#EEEAE2]">Find something by feeling</h1>
+          <p className="text-sm text-[#8C7E6E] mt-1">Browse movies and shows by mood, then see what the community thinks.</p>
         </div>
 
         {/* Mood filter */}
@@ -234,9 +234,9 @@ export default function DiscoverPage () {
         {activeMood && moodMovies.length > 0 && (
           <section className="mb-12">
             <div className="mb-4">
-              <p className="text-xs font-bold uppercase tracking-widest text-[#C8956A] mb-1">Mood match</p>
-              <h2 className="font-plus-jakarta font-extrabold text-xl text-[#EEEAE2]">{`Feels like "${activeMood}"`}</h2>
-              <p className="text-xs text-[#8C7E6E] mt-1">Curated by mood — not ranked by popularity</p>
+              <p className="text-xs font-bold uppercase tracking-widest text-[#C8956A] mb-1">By feeling</p>
+              <h2 className="font-plus-jakarta font-extrabold text-xl text-[#EEEAE2]">{`Movies to explore for "${activeMood}"`}</h2>
+              <p className="text-xs text-[#8C7E6E] mt-1">A mood-based starting point — read community reactions for the full picture.</p>
             </div>
             <HorizontalRow>
               {moodMovies.map(m => (
@@ -256,7 +256,7 @@ export default function DiscoverPage () {
                 <p className="text-xs text-[#8C7E6E] mt-1">Ranked by reactions from our community</p>
               </div>
               <Link href="/feed" className="text-xs font-semibold text-[#C8956A] hover:text-[#E8A870] transition-colors flex-shrink-0 mb-1">
-                Browse the feed →
+                Browse the community →
               </Link>
             </div>
             <HorizontalRow>

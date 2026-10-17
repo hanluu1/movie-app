@@ -17,7 +17,7 @@ export default function Error ({
         <p className="text-4xl">⚠️</p>
         <h2 className="font-plus-jakarta font-extrabold text-xl text-[#EEEAE2]">Something went wrong</h2>
         <p className="text-[#8C7E6E] text-sm max-w-sm">
-          An unexpected error occurred. You can try again, or head back to the feed.
+          An unexpected error occurred. You can try again, or head back to the community.
         </p>
         <button
           onClick={reset}

@@ -21,9 +21,9 @@ export function MobileNavTabs ({ dark = false }: { dark?: boolean }) {
           <FilmIcon className="w-4 h-4" />
         </Link>
         <Link
-          href="/feed"
+          href="/community"
           className={`flex items-center justify-center w-10 h-8 rounded-full transition-all ${
-            pathname === '/feed'
+            pathname === '/community'
               ? 'bg-[#C8956A] text-[#0A0908] shadow-sm'
               : dark ? 'text-[#8C7E6E] hover:text-[#EEEAE2]' : 'text-[#6F8C88] hover:text-[#172526]'
           }`}

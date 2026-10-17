@@ -105,15 +105,15 @@ export function Header ({ onCreatePost, showSearch = true, variant = 'light' }: 
             Discover
           </Link>
           <Link
-            href="/feed"
+            href="/community"
             className={`flex items-center gap-1.5 px-3 py-1.5 rounded-full text-sm font-semibold transition-all ${
-              pathname === '/feed'
+              pathname === '/community'
                 ? isDark ? 'text-[#EEEAE2] bg-[#272320]' : 'text-[#172526] bg-[#EEF2ED]'
                 : isDark ? 'text-[#8C7E6E] hover:text-[#EEEAE2]' : 'text-[#6F8C88] hover:text-[#172526]'
             }`}
           >
             <GlobeAltIcon className="w-4 h-4" />
-            Feed
+            Community
           </Link>
         </nav>
       </div>
