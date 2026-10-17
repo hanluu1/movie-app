@@ -101,7 +101,7 @@ export default function CommunityPage () {
           activeSort === 'upvotes' ? 'bg-[#EEEAE2] text-[#0A0908]' : 'text-[#8C7E6E] hover:text-[#EEEAE2]'
         }`}
       >
-        Most reactions
+        Most felt
       </button>
     </div>
   );
@@ -114,11 +114,11 @@ export default function CommunityPage () {
       />
       <MobileNavTabs dark />
 
-      <div className="mx-auto w-full 2xl:max-w-7xl px-6 lg:px-10 sm:pt-6 pb-16">
+      <div className="w-full px-6 lg:px-10 pt-6 sm:pt-10 pb-16">
 
         <div className="mb-6">
-          <h1 className="font-plus-jakarta font-extrabold text-3xl text-[#EEEAE2]">Community reactions</h1>
-          <p className="text-sm text-[#8C7E6E] mt-1">See what people felt about the movies and shows they watched.</p>
+          <p className="text-xs font-bold uppercase tracking-widest text-[#C8956A] mb-1">Community</p>
+          <h1 className="font-plus-jakarta text-2xl sm:text-3xl font-extrabold text-[#EEEAE2]">What stayed with you?</h1>
         </div>
 
         {/* Write prompt bar */}
@@ -135,58 +135,63 @@ export default function CommunityPage () {
           </div>
         </button>
 
-        <div className="mb-3">
-          <p className="text-xs font-bold uppercase tracking-widest text-[#8C7E6E] mb-2">Filter reactions</p>
-          <div className="flex flex-wrap items-center gap-2">
-            {typeFilters}
-            <div className="relative" ref={moodRef}>
-              <button
-                onClick={() => activeMood ? setActiveMood(null) : setMoodOpen(o => !o)}
-                className={`flex items-center gap-1.5 px-4 py-2 rounded-full text-sm font-semibold transition-all border whitespace-nowrap ${
-                  activeMood
-                    ? 'bg-[#C8956A] text-[#0A0908] border-[#C8956A]'
-                    : 'border-[#C8956A]/40 text-[#C8956A] hover:border-[#C8956A] hover:bg-[#C8956A]/10'
-                }`}
-              >
-                {activeMood ? (
-                  <>
-                    <span className="max-w-[160px] truncate">Feeling: {activeMood}</span>
-                    <XMarkIcon className="w-3.5 h-3.5 flex-shrink-0" />
-                  </>
-                ) : (
-                  <>
-                    <span>Filter by feeling</span>
-                    <ChevronDownIcon className={`w-3.5 h-3.5 flex-shrink-0 transition-transform ${moodOpen ? 'rotate-180' : ''}`} />
-                  </>
-                )}
-              </button>
+        <div className="mb-5 rounded-2xl border border-[#272320] bg-[#1A1714] p-3 sm:p-4">
+          <div className="flex flex-col gap-4 lg:flex-row lg:items-center lg:justify-between">
+            <div className="flex flex-col gap-2.5">
+              <p className="text-xs font-bold uppercase tracking-widest text-[#8C7E6E]">Filter by</p>
+              <div className="flex flex-wrap items-center gap-2">
+                <div className="relative" ref={moodRef}>
+                  <button
+                    onClick={() => activeMood ? setActiveMood(null) : setMoodOpen(o => !o)}
+                    className={`flex items-center gap-1.5 px-4 py-2 rounded-full text-sm font-semibold transition-all border whitespace-nowrap ${
+                      activeMood
+                        ? 'bg-[#C8956A] text-[#0A0908] border-[#C8956A]'
+                        : 'border-[#C8956A]/40 text-[#C8956A] hover:border-[#C8956A] hover:bg-[#C8956A]/10'
+                    }`}
+                  >
+                    {activeMood ? (
+                      <>
+                        <span className="max-w-[160px] truncate">Feeling: {activeMood}</span>
+                        <XMarkIcon className="w-3.5 h-3.5 flex-shrink-0" />
+                      </>
+                    ) : (
+                      <>
+                        <span>Filter by feeling</span>
+                        <ChevronDownIcon className={`w-3.5 h-3.5 flex-shrink-0 transition-transform ${moodOpen ? 'rotate-180' : ''}`} />
+                      </>
+                    )}
+                  </button>
 
-              {/* Mood dropdown panel */}
-              {moodOpen && (
-                <div className="absolute top-full mt-2 left-0 z-50 w-72 bg-[#111009] border border-[#272320] rounded-2xl p-3 shadow-xl">
-                  <p className="text-[10px] font-bold uppercase tracking-widest text-[#4A4038] px-1 mb-2">
+                  {/* Mood dropdown panel */}
+                  {moodOpen && (
+                    <div className="absolute top-full mt-2 left-0 z-50 w-72 bg-[#111009] border border-[#272320] rounded-2xl p-3 shadow-xl">
+                      <p className="text-[10px] font-bold uppercase tracking-widest text-[#4A4038] px-1 mb-2">
                     Pick a feeling
-                  </p>
-                  <div className="flex flex-wrap gap-1.5">
-                    {MOODS.map((mood) => (
-                      <button
-                        key={mood}
-                        onClick={() => selectMood(mood)}
-                        className="px-3 py-1.5 rounded-full text-xs font-medium border border-[#272320] text-[#8C7E6E] hover:border-[#C8956A] hover:text-[#C8956A] transition-all"
-                      >
-                        {mood}
-                      </button>
-                    ))}
-                  </div>
+                      </p>
+                      <div className="flex flex-wrap gap-1.5">
+                        {MOODS.map((mood) => (
+                          <button
+                            key={mood}
+                            onClick={() => selectMood(mood)}
+                            className="px-3 py-1.5 rounded-full text-xs font-medium border border-[#272320] text-[#8C7E6E] hover:border-[#C8956A] hover:text-[#C8956A] transition-all"
+                          >
+                            {mood}
+                          </button>
+                        ))}
+                      </div>
+                    </div>
+                  )}
                 </div>
-              )}
+                <div className="h-4 w-px bg-[#272320]" />
+                {typeFilters}
+              </div>
+            </div>
+
+            <div className="flex w-full flex-wrap items-center gap-2 lg:ml-auto lg:w-auto lg:justify-end">
+              <span className="text-xs font-bold uppercase tracking-widest text-[#8C7E6E]">Sort</span>
+              {sortFilters}
             </div>
           </div>
-        </div>
-
-        <div className="flex flex-wrap items-center gap-3 mb-4">
-          <span className="text-xs font-bold uppercase tracking-widest text-[#8C7E6E]">Sort by</span>
-          {sortFilters}
         </div>
 
         {hasActiveFilters && (
@@ -204,7 +209,7 @@ export default function CommunityPage () {
             )}
             {activeSort === 'upvotes' && (
               <button onClick={() => setActiveSort('created_at')} className="flex items-center gap-1 px-2.5 py-1 rounded-full text-xs font-semibold bg-[#C8956A]/15 text-[#C8956A]">
-                Most reactions <XMarkIcon className="w-3 h-3" />
+                Most felt <XMarkIcon className="w-3 h-3" />
               </button>
             )}
             <button onClick={clearFilters} className="text-xs font-semibold text-[#8C7E6E] hover:text-[#EEEAE2] transition-colors">

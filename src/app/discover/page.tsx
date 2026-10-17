@@ -159,17 +159,30 @@ export default function DiscoverPage () {
       <Header variant="dark" />
       <MobileNavTabs dark />
 
-      <div className="mx-auto w-full 2xl:max-w-7xl px-6 lg:px-10 sm:pt-8 pb-16">
+      <div className="w-full px-6 lg:px-10 pt-6 sm:pt-10 pb-16">
 
-        {/* Page title */}
-        <div className="mb-8">
-          <h1 className="font-plus-jakarta font-extrabold text-3xl text-[#EEEAE2]">Find something by feeling</h1>
-          <p className="text-sm text-[#8C7E6E] mt-1">Browse movies and shows by mood, then see what the community thinks.</p>
+        {/* Page header */}
+        <div className="mb-6">
+          <p className="text-xs font-bold uppercase tracking-widest text-[#C8956A] mb-1">Discover by feeling</p>
+          <h1 className="font-plus-jakarta text-2xl sm:text-3xl font-extrabold text-[#EEEAE2]">What are you in the mood for?</h1>
         </div>
 
         {/* Mood filter */}
-        <div className="mb-10">
-          <p className="text-xs font-bold uppercase tracking-widest text-[#8C7E6E] mb-3">Filter by mood</p>
+        <div className="mb-10 rounded-2xl border border-[#272320] bg-[#1A1714] p-4 sm:p-5">
+          <div className="mb-3 flex items-center justify-between gap-3">
+            <div>
+              <p className="text-xs font-bold uppercase tracking-widest text-[#C8956A]">Choose a feeling</p>
+              <p className="mt-1 text-xs text-[#8C7E6E]">There is no wrong answer.</p>
+            </div>
+            {activeMood && (
+              <button
+                onClick={() => setActiveMood(null)}
+                className="text-xs font-semibold text-[#8C7E6E] transition-colors hover:text-[#EEEAE2]"
+              >
+                Clear
+              </button>
+            )}
+          </div>
 
           {/* Dropdown — mobile only */}
           <div className="sm:hidden relative" ref={moodDropdownRef}>
@@ -255,7 +268,7 @@ export default function DiscoverPage () {
                 <h2 className="font-plus-jakarta font-extrabold text-xl text-[#EEEAE2]">Recent Talked About</h2>
                 <p className="text-xs text-[#8C7E6E] mt-1">Ranked by reactions from our community</p>
               </div>
-              <Link href="/feed" className="text-xs font-semibold text-[#C8956A] hover:text-[#E8A870] transition-colors flex-shrink-0 mb-1">
+              <Link href="/community" className="text-xs font-semibold text-[#C8956A] hover:text-[#E8A870] transition-colors flex-shrink-0 mb-1">
                 Browse the community →
               </Link>
             </div>

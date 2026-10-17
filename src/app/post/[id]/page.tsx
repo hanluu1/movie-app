@@ -142,7 +142,7 @@ export default function PostDetailPage () {
   const handleDeletePost = async () => {
     setIsDeleting(true);
     const { error } = await supabase.from('posts').delete().eq('id', id);
-    if (!error) router.push('/feed');
+    if (!error) router.push('/community');
     setIsDeleting(false);
   };
 
@@ -177,11 +177,11 @@ export default function PostDetailPage () {
 
         {/* Back */}
         <Link
-          href="/feed"
+          href="/community"
           className="inline-flex items-center gap-1.5 text-sm font-semibold text-[#8C7E6E] hover:text-[#EEEAE2] transition-colors mb-6"
         >
           <ArrowLeftIcon className="w-4 h-4" />
-          Back to feed
+          Back to community
         </Link>
 
         {/* Post */}
