@@ -12,6 +12,7 @@ interface PostCardProps {
   movieImage?: string | null;
   movieId?: number | null;
   mediaType?: string | null;
+  mood?: string[] | null;
   postTitle?: string;
   createdAt: string;
   upvotes: number;
