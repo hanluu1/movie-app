@@ -2,6 +2,7 @@
 
 import { useEffect, useState, forwardRef, useImperativeHandle } from 'react';
 import { FilmIcon } from '@heroicons/react/24/outline';
+import Link from 'next/link';
 import { supabase } from '@/lib/supabase/client';
 import { PostCard } from '../components/post-card';
 import { PostCardSkeleton } from '../components/post-card-skeleton';
@@ -17,6 +18,7 @@ interface Post {
   movie_title: string | null;
   movie_id?: number | null;
   media_type?: string | null;
+  mood?: string[] | null;
   id: string;
   title: string;
   created_at: string;
@@ -193,28 +195,58 @@ export const AllPost = forwardRef<{ refetch: () => void }, AllPostProps>(
 
     if (posts.length === 0) return (
       <div className="text-center py-20 px-4">
-        <FilmIcon className="w-10 h-10 text-[#3A3530] mb-3" />
+        <FilmIcon className="block w-10 h-10 mx-auto text-[#3A3530] mb-3" />
         {activeMood ? (
           <>
             <p className="font-semibold text-[#EEEAE2] text-sm mb-1">
               No one has written about feeling &ldquo;{activeMood}&rdquo; yet.
             </p>
-            <p className="text-xs text-[#4A4038] mb-5">Be the first to share a movie that made you feel this way.</p>
-            {onWriteClick && (
-              <button
-                onClick={onWriteClick}
-                className="px-6 py-2.5 rounded-xl text-sm font-semibold bg-[#C8956A] text-[#0A0908] hover:bg-[#D4A870] transition-all"
+            <p className="text-xs text-[#4A4038] mb-5">
+              Browse movies by mood, or be the first to share a movie that made you feel this way.
+            </p>
+            <div className="flex items-center justify-center gap-2 flex-wrap">
+              <Link
+                href="/discover"
+                className="px-5 py-2.5 rounded-xl text-sm font-semibold border border-[#3A3530] text-[#C8B8A2] hover:border-[#C8956A]/50 hover:text-[#EEEAE2] transition-all"
               >
-                Write a Feeling
-              </button>
-            )}
+                Browse by mood
+              </Link>
+              {onWriteClick && (
+                <button
+                  onClick={onWriteClick}
+                  className="px-5 py-2.5 rounded-xl text-sm font-semibold bg-[#C8956A] text-[#0A0908] hover:bg-[#D4A870] transition-all"
+                >
+                  Share a reaction
+                </button>
+              )}
+            </div>
           </>
         ) : (
           <>
             <p className="font-semibold text-[#EEEAE2] text-sm mb-1">
               {filter === 'movies' ? 'No movie reactions yet.' : filter === 'tv' ? 'No TV show reactions yet.' : 'No reactions yet.'}
             </p>
-            <p className="text-xs text-[#4A4038]">Be the first to share how something made you feel.</p>
+            <p className="text-xs text-[#4A4038] mb-5">
+              {filter === 'movies' || filter === 'tv'
+                ? 'Try another filter, or be the first to share how something made you feel.'
+                : 'Browse by mood, or be the first to share how something made you feel.'}
+            </p>
+            <div className="flex items-center justify-center gap-2 flex-wrap">
+              <Link
+                href="/discover"
+                className="px-5 py-2.5 rounded-xl text-sm font-semibold border border-[#3A3530] text-[#C8B8A2] hover:border-[#C8956A]/50 hover:text-[#EEEAE2] transition-all"
+              >
+                Browse movies
+              </Link>
+              {onWriteClick && (
+                <button
+                  onClick={onWriteClick}
+                  className="px-5 py-2.5 rounded-xl text-sm font-semibold bg-[#C8956A] text-[#0A0908] hover:bg-[#D4A870] transition-all"
+                >
+                  Share a reaction
+                </button>
+              )}
+            </div>
           </>
         )}
       </div>
@@ -233,6 +265,7 @@ export const AllPost = forwardRef<{ refetch: () => void }, AllPostProps>(
               movieImage={post.movie_image}
               movieId={post.movie_id}
               mediaType={post.media_type}
+              mood={post.mood}
               postTitle={post.title}
               createdAt={post.created_at}
               upvotes={post.upvotes}
