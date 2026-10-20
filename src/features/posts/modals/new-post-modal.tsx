@@ -62,7 +62,7 @@ export const CreatePostModal = ({ isOpen, onClose, onCreated, preselectedMovie }
   }, [searchQuery]);
 
   const handleSubmit = async () => {
-    if (!reviewTitle.trim() || reviewContent.length < 50 || isSubmitting) return;
+    if (!reviewTitle.trim() || !reviewContent.trim() || isSubmitting) return;
     setIsSubmitting(true);
     try {
       const { data: { user } } = await supabase.auth.getUser();
@@ -92,7 +92,7 @@ export const CreatePostModal = ({ isOpen, onClose, onCreated, preselectedMovie }
 
   if (!isOpen) return null;
 
-  const canContinue = step === 1 ? !!selectedMovie : reviewTitle.trim().length > 0 && reviewContent.length >= 50;
+  const canContinue = step === 1 ? !!selectedMovie : reviewTitle.trim().length > 0 && reviewContent.trim().length > 0;
   const displayTitle = selectedMovie?.title || selectedMovie?.name || '';
 
   return (
@@ -247,10 +247,8 @@ export const CreatePostModal = ({ isOpen, onClose, onCreated, preselectedMovie }
                     onChange={(e) => setReviewContent(e.target.value)}
                     className="w-full px-4 py-3 border border-[#2A2520] focus:border-[#C8956A]/60 bg-[#1A1714] rounded-xl text-sm text-[#EEEAE2] placeholder:text-[#4A4038] outline-none transition-all resize-none min-h-[140px] leading-relaxed"
                   />
-                  <div className={`text-right text-xs mt-1.5 ${reviewContent.length < 50 ? 'text-[#4A4038]' : 'text-[#C8956A]'}`}>
-                    {reviewContent.length < 50
-                      ? `${50 - reviewContent.length} more characters to go`
-                      : `${reviewContent.length} characters`}
+                  <div className="text-right text-xs mt-1.5 text-[#8C7E6E]">
+                    {reviewContent.length} {reviewContent.length === 1 ? 'character' : 'characters'}
                   </div>
                 </div>
 
