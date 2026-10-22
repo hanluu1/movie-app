@@ -89,7 +89,7 @@ export function Header ({ onCreatePost, showSearch = true, variant = 'light' }: 
         <div className="flex items-center gap-3 sm:gap-6">
         
           <span className={`font-plus-jakarta font-extrabold text-xl lg:text-2xl tracking-tight ${isDark ? 'text-[#EEEAE2]' : 'text-[#172526]'}`}>
-            ReelEmotion
+            Reel<span className="text-[#C8956A]">Emotion</span>
           </span>
        
 
