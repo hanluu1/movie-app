@@ -5,6 +5,8 @@ import { AllPost, CreatePostModal } from '@/features/posts';
 import { Header, MobileNavTabs } from '@/components/layout';
 import { SignInPrompt } from '@/components/ui/sign-in-prompt';
 import { useAuthUser } from '@/hooks/use-auth-user';
+import { supabase } from '@/lib/supabase/client';
+import Image from 'next/image';
 import { FilmIcon, TvIcon, ChevronDownIcon, XMarkIcon, PencilSquareIcon } from '@heroicons/react/24/outline';
 import { MOODS } from '@/lib/moods';
 
@@ -20,6 +22,7 @@ export default function CommunityPage () {
   const [activeSort, setActiveSort] = useState<Sort>('created_at');
   const [activeMood, setActiveMood] = useState<string | null>(null);
   const [moodOpen, setMoodOpen] = useState(false);
+  const [profile, setProfile] = useState<{ username: string; avatar_url: string | null } | null>(null);
   const { user } = useAuthUser();
 
   useEffect(() => {
@@ -31,6 +34,22 @@ export default function CommunityPage () {
     document.addEventListener('mousedown', handler);
     return () => document.removeEventListener('mousedown', handler);
   }, []);
+
+  useEffect(() => {
+    if (!user) {
+      setProfile(null);
+      return;
+    }
+
+    supabase
+      .from('profiles')
+      .select('username, avatar_url')
+      .eq('id', user.id)
+      .single()
+      .then(({ data }) => {
+        if (data) setProfile(data);
+      });
+  }, [user]);
 
   const requireAuth = (action: string) => {
     if (user) return true;
@@ -114,31 +133,44 @@ export default function CommunityPage () {
       />
       <MobileNavTabs dark />
 
-      <div className="w-full px-6 lg:px-10 pt-6 sm:pt-10 pb-16">
+      <main className="mx-auto w-full max-w-5xl px-4 sm:px-6 lg:px-8 pt-6 sm:pt-10 pb-16">
 
-        <div className="mb-6">
+        <div className="mb-5">
           <p className="text-xs font-bold uppercase tracking-widest text-[#C8956A] mb-1">Community</p>
-          <h1 className="font-plus-jakarta text-2xl sm:text-3xl font-extrabold text-[#EEEAE2]">What stayed with you?</h1>
+          <h1 className="font-plus-jakarta text-2xl sm:text-3xl font-extrabold text-[#EEEAE2]">The conversation</h1>
         </div>
 
         {/* Write prompt bar */}
         <button
           onClick={openReview}
-          className="w-full flex items-center gap-3 px-4 py-3.5 mb-5 rounded-2xl bg-[#1E1B18] border-l-4 border-l-transparent hover:border-l-[#C8956A] border border-[#2A2520] hover:border-[#2A2520] transition-all text-left group"
+          className="group mb-4 flex w-full items-center gap-3 rounded-2xl border border-[#2A2520] bg-[#1E1B18] px-4 py-3.5 text-left transition-all hover:border-[#C8956A]/60"
         >
-          <span className="flex-1 text-sm text-[#8C7E6E] group-hover:text-[#EEEAE2] transition-colors">
-            What did a movie make you feel lately?
+          <span className="relative flex h-10 w-10 shrink-0 items-center justify-center overflow-hidden rounded-full bg-[#C8956A] text-xs font-extrabold text-[#17110E]">
+            {profile?.avatar_url ? (
+              <Image
+                src={profile.avatar_url}
+                alt={profile.username}
+                fill
+                sizes="40px"
+                className="object-cover"
+              />
+            ) : (
+              (profile?.username || user?.email || 'You').slice(0, 2).toUpperCase()
+            )}
           </span>
-          <div className="flex items-center gap-1.5 text-[#C8956A] group-hover:text-[#E8A870] transition-colors flex-shrink-0">
+          <span className="flex-1 text-sm text-[#8C7E6E] group-hover:text-[#EEEAE2] transition-colors">
+            Share a reaction...
+          </span>
+          <div className="flex shrink-0 items-center gap-1.5 text-[#C8956A] group-hover:text-[#E8A870] transition-colors">
             <PencilSquareIcon className="w-4 h-4" />
-            <span className="text-xs font-semibold">Share a reaction</span>
+            <span className="text-xs font-semibold">Share</span>
           </div>
         </button>
 
-        <div className="mb-5 rounded-2xl border border-[#272320] bg-[#1A1714] p-3 sm:p-4">
+        <div className="mb-6 rounded-2xl border border-[#272320] bg-[#1A1714]/70 p-3 sm:px-4 sm:py-3">
           <div className="flex flex-col gap-4 lg:flex-row lg:items-center lg:justify-between">
             <div className="flex flex-col gap-2.5">
-              <p className="text-xs font-bold uppercase tracking-widest text-[#8C7E6E]">Filter by</p>
+              <p className="text-xs font-bold uppercase tracking-widest text-[#8C7E6E]">Browse the feed</p>
               <div className="flex flex-wrap items-center gap-2">
                 <div className="relative" ref={moodRef}>
                   <button
@@ -227,7 +259,7 @@ export default function CommunityPage () {
           activeMood={activeMood}
           onWriteClick={openReview}
         />
-      </div>
+      </main>
 
       <CreatePostModal
         isOpen={showCreatePostModal}

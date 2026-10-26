@@ -17,6 +17,7 @@ interface Post {
   movie_image: string | null;
   movie_id?: number | null;
   media_type?: string | null;
+  mood?: string[] | null;
   created_at: string;
   upvotes: number;
   isLiked?: boolean;
@@ -141,6 +142,11 @@ export function MovieCommunityPosts ({ movieId, movieTitle, posterPath, mediaTyp
               id={post.id}
               username={post.profiles?.username || 'Anonymous'}
               avatarUrl={post.profiles?.avatar_url}
+              movieTitle={post.movie_title}
+              movieImage={post.movie_image}
+              movieId={post.movie_id}
+              mediaType={post.media_type}
+              mood={post.mood}
               postTitle={post.title}
               postContent={post.content}
               createdAt={post.created_at}
