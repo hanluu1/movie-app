@@ -16,6 +16,7 @@ type Post = {
   movie_image: string | null;
   movie_id: number | null;
   media_type: string | null;
+  mood?: string[] | null;
   upvotes: number;
   created_at: string;
   comment_count?: number;
@@ -70,7 +71,7 @@ export default function MyProfilePage () {
       const { data: postData } = await supabase
         .from('posts')
         .select(
-          'id, title, content, movie_title, movie_image, movie_id, media_type, upvotes, created_at, comments(count)'
+          'id, title, content, movie_title, movie_image, movie_id, media_type, mood, upvotes, created_at, comments(count)'
         )
         .eq('user_id', user.id)
         .order('created_at', { ascending: false });
@@ -266,6 +267,7 @@ export default function MyProfilePage () {
                   movieImage={post.movie_image}
                   movieId={post.movie_id}
                   mediaType={post.media_type}
+                  mood={post.mood}
                   postTitle={post.title}
                   postContent={post.content}
                   createdAt={post.created_at}

@@ -86,6 +86,23 @@ export interface TrendingTV {
   first_air_date: string;
 }
 
+export async function searchTvShows (query: string): Promise<TrendingTV[]> {
+  if (!query.trim()) return [];
+
+  try {
+    const data = await tmdbFetch(`/search/tv?query=${encodeURIComponent(query.trim())}&language=en-US`);
+    return (data.results || []).map((item: TrendingTV) => ({
+      id: item.id,
+      name: item.name,
+      poster_path: item.poster_path,
+      vote_average: item.vote_average,
+      first_air_date: item.first_air_date,
+    }));
+  } catch {
+    return [];
+  }
+}
+
 export async function getTrendingTV (): Promise<TrendingTV[]> {
   try {
     const [en, ko, ja, zh] = await Promise.all([

@@ -1,229 +1,377 @@
 'use client';
 
 import Link from 'next/link';
-import { HeartIcon } from '@heroicons/react/24/solid';
+import Image from 'next/image';
+import { ArrowUpRightIcon, FireIcon, SparklesIcon } from '@heroicons/react/24/solid';
+import { useEffect, useState } from 'react';
+import { searchMoviesAndTv, searchTvShows, type Movie, type TrendingTV } from '@/lib/tmdb/client';
 
-const MOODS = [
-  'Moved me to tears',
-  'Mind-bending',
-  'Still thinking about it',
-  'Comforting',
-  'Unsettling',
-  'Pure joy',
-  "Couldn't look away",
-  'Broke my heart',
-  'Changed how I see things',
+const FEATURED_REACTIONS = [
+  {
+    search: 'Queen of Tears',
+    mediaType: 'tv' as const,
+    region: 'K-DRAMA',
+    username: 'soojin.exe',
+    initials: 'SE',
+    time: '2h ago',
+    quote: 'I came for the rich people problems and stayed for the emotional damage.',
+    emoji: '😭',
+    likes: 2.4,
+    replies: 186,
+  },
+  {
+    search: 'The Bear',
+    mediaType: 'tv' as const,
+    region: 'US SERIES',
+    username: 'film bro retired',
+    initials: 'FR',
+    time: '5h ago',
+    quote: 'Every episode is just somebody yelling “behind” while my blood pressure leaves the chat.',
+    emoji: '🔥',
+    likes: 1.8,
+    replies: 94,
+  },
+  {
+    search: 'Hidden Love',
+    mediaType: 'tv' as const,
+    region: 'C-DRAMA',
+    username: 'plotwist princess',
+    initials: 'PP',
+    time: '1d ago',
+    quote: 'The butterflies are cute but the episode count is personally attacking my sleep schedule.',
+    emoji: '🫠',
+    likes: 1.2,
+    replies: 71,
+  },
 ];
 
-const FEATURED = {
-  initials: 'EM',
-  username: 'Emma',
-  role: 'Watches everything',
-  movie: 'Arrival',
-  year: '2016',
-  quote: "I watched it alone at midnight and couldn't move for twenty minutes after it ended. Something about time and love and loss just... landed differently than I expected.",
-  relatedCount: 47,
-};
-
-const REACTIONS = [
+const MOOD_FEATURES = [
   {
-    initials: 'MA',
-    username: 'Marcus',
-    role: 'Action enthusiast',
-    movie: 'The Batman',
-    year: '2022',
-    poster: '/batman.png',
-    quote: 'The atmosphere, the music, the tension — everything pulled me in. It made me feel like the city itself was alive and grieving.',
-    relatedCount: 56,
+    mood: 'Pure joy',
+    label: 'Need a good laugh?',
+    subtitle: 'A comfort watch for the plot and the giggles.',
+    search: 'Paddington 2',
+    mediaType: 'movie' as const,
   },
   {
-    initials: 'AN',
-    username: 'Anna',
-    role: 'Book lover',
-    movie: 'Little Women',
-    year: '2019',
-    poster: '/littlewomen.png',
-    quote: 'It reminded me of my own growing up — chasing dreams and still figuring out who I want to be. Such a warm, honest story.',
-    relatedCount: 73,
+    mood: 'Mind-bending',
+    label: 'Mess with my head',
+    subtitle: 'The kind of story that sends you down a rabbit hole.',
+    search: 'Inception',
+    mediaType: 'movie' as const,
   },
   {
-    initials: 'YM',
-    username: 'David',
-    role: 'Sci-fi fan',
-    movie: 'Interstellar',
-    year: '2014',
-    poster: '/interstella.png',
-    quote: 'Time, love, what it means to be human. I had to sit with it for a while. Still am.',
-    relatedCount: 48,
+    mood: 'Moved me to tears',
+    label: 'I need to feel something',
+    subtitle: 'Grab the tissues. You have been warned.',
+    search: 'Reply 1988',
+    mediaType: 'tv' as const,
+  },
+  {
+    mood: "Couldn't look away",
+    label: 'Keep me guessing',
+    subtitle: 'Mysteries, twists, and theories at 2 AM.',
+    search: 'The Glory',
+    mediaType: 'tv' as const,
   },
 ];
 
 export default function LandingPage () {
-  return (
-    <div className="min-h-screen bg-[#0A0908] text-[#EEEAE2] font-sans overflow-x-hidden">
+  const [featuredMedia, setFeaturedMedia] = useState<(TrendingTV | null)[]>([]);
+  const [moodMedia, setMoodMedia] = useState<(Movie | TrendingTV | null)[]>([]);
 
-      {/* Header */}
-      <header className="flex items-center justify-between px-6 sm:px-10 lg:px-14 py-5 lg:py-7 w-full">
-        <span className="font-plus-jakarta font-extrabold text-xl lg:text-2xl tracking-tight text-[#EEEAE2]">
-          ReelEmotion
-        </span>
-        <Link href="/login">
-          <button className="px-5 py-2.5 rounded-lg text-sm lg:text-base font-semibold bg-[#EEEAE2] text-[#0A0908] hover:bg-[#E0D8C8] transition-colors">
-            Sign up
-          </button>
+  useEffect(() => {
+    Promise.all(FEATURED_REACTIONS.map((reaction) => searchTvShows(reaction.search)))
+      .then((results) => setFeaturedMedia(results.map((items, index) => {
+        const expectedTitle = FEATURED_REACTIONS[index].search.trim().toLowerCase();
+        return items.find((item) => item.name.trim().toLowerCase() === expectedTitle)
+          ?? items[0]
+          ?? null;
+      })));
+  }, []);
+
+  useEffect(() => {
+    Promise.all(MOOD_FEATURES.map((item) => (
+      item.mediaType === 'tv' ? searchTvShows(item.search) : searchMoviesAndTv(item.search)
+    ))).then((results) => {
+      setMoodMedia(results.map((items, index) => {
+        const expected = MOOD_FEATURES[index];
+        const exactMatch = items.find((item) => {
+          const title = 'title' in item ? item.title : item.name;
+          return title.trim().toLowerCase() === expected.search.toLowerCase();
+        });
+
+        return exactMatch ?? items[0] ?? null;
+      }));
+    });
+  }, []);
+
+  return (
+    <main className="min-h-screen overflow-hidden bg-[#0A0908] font-sans text-[#EEEAE2]">
+      <style>{`
+        @keyframes reel-float {
+          0%, 100% { transform: translateY(0) rotate(-3deg); }
+          50% { transform: translateY(-14px) rotate(3deg); }
+        }
+        @keyframes reel-marquee {
+          from { transform: translateX(0); }
+          to { transform: translateX(-50%); }
+        }
+        .reel-float { animation: reel-float 5s ease-in-out infinite; }
+        .reel-marquee { animation: reel-marquee 30s linear infinite; }
+        .reel-marquee-wrap:hover .reel-marquee { animation-play-state: paused; }
+        @media (prefers-reduced-motion: reduce) {
+          .reel-float, .reel-marquee { animation: none; }
+          html { scroll-behavior: auto; }
+        }
+      `}</style>
+
+      {/* NAV */}
+      <header className="mx-auto flex w-full max-w-7xl items-center justify-between px-5 py-5 sm:px-8 lg:px-12">
+        <Link href="/" className="font-plus-jakarta text-xl font-extrabold tracking-tight sm:text-2xl">
+          Reel<span className="text-[#C8956A]">Emotion</span>
+        </Link>
+        <nav className="hidden items-center gap-7 text-sm font-medium text-[#B9ADA1] sm:flex">
+          <a href="#takes" className="transition hover:text-white">Community reactions</a>
+          <a href="#browse-by-mood" className="transition hover:text-white">Browse by mood</a>
+        </nav>
+        <Link href="/login" className="rounded-full bg-[#EEEAE2] px-5 py-2.5 text-sm font-bold text-[#17110E] transition hover:bg-[#D9C9B7]">
+          Sign up 
         </Link>
       </header>
+      {/* HERO */}
+      <section className="relative mx-auto flex max-w-7xl flex-col items-center px-5 pb-16 pt-14 text-center sm:px-8 sm:pt-20 lg:pb-20 lg:pt-24">
+        <div className="pointer-events-none absolute left-[8%] top-24 hidden h-28 w-28 rounded-full bg-[#A95E3E]/10 blur-3xl lg:block" />
+        <div className="pointer-events-none absolute right-[8%] top-40 hidden h-36 w-36 rounded-full bg-[#C8956A]/10 blur-3xl lg:block" />
+        <div className="mb-6 inline-flex items-center gap-2 rounded-full border border-[#4B3427] bg-[#211711] px-4 py-2 text-xs font-bold tracking-wide text-[#E4B17F]">
+          <FireIcon className="h-4 w-4" />
+          MOVIE DISCOVERY + COMMUNITY TAKES
+        </div>
 
-      {/* Hero */}
-      <section className="flex flex-col items-center justify-center text-center px-6 pt-16 lg:pt-24 pb-24 lg:pb-32 max-w-5xl mx-auto">
-        <p className="text-xs font-bold uppercase tracking-[0.2em] text-[#C8956A] mb-6">
-          Not reviews. Reactions.
-        </p>
-        <h1 className="font-plus-jakarta font-extrabold text-[clamp(2rem,5vw,4.5rem)] leading-[1.12] tracking-tight text-[#EEEAE2] mb-8 max-w-4xl">
-          Find movies through real emotional reactions.
+        <h1 className="max-w-4xl font-plus-jakarta text-[clamp(2.8rem,7.5vw,6.4rem)] font-extrabold leading-[0.98] tracking-[-0.055em]">
+          Find your next watch through <span className="text-[#D99A68]">real reactions.</span>
         </h1>
-        <p className="text-base sm:text-lg lg:text-xl text-[#8C7E6E] leading-relaxed mb-12 max-w-2xl">
-          Browse by feeling, read what stayed with other people, and share your own response. No star ratings, just honest reactions.
+
+        <p className="mt-8 max-w-xl text-base leading-7 text-[#B8AAA0] sm:text-lg">
+          Browse by mood, read what people actually felt, and share your own reaction when a movie gives you something to talk about.
         </p>
-        <div className="flex gap-3 flex-wrap justify-center">
-          <Link href="/discover">
-            <button className="px-7 py-3.5 rounded-xl font-bold text-sm bg-[#C8956A] text-[#0A0908] hover:bg-[#D4A870] transition-all">
-              Find something by mood
-            </button>
+
+        <div className="mt-9 flex w-full flex-col justify-center gap-3 sm:w-auto sm:flex-row">
+          <Link href="/community" className="inline-flex items-center justify-center gap-2 rounded-xl bg-[#C8956A] px-7 py-3.5 text-sm font-extrabold text-[#17110E] shadow-[0_8px_30px_rgba(200,149,106,0.12)] transition hover:-translate-y-0.5 hover:bg-[#D9A779]">
+            See community reactions <ArrowUpRightIcon className="h-4 w-4" />
           </Link>
-          <Link href="/community">
-            <button className="px-7 py-3.5 rounded-xl font-semibold text-sm border border-[#3A3530] text-[#C8B8A2] hover:text-[#EEEAE2] hover:border-[#C8956A]/50 transition-all">
-              Read community reactions
-            </button>
+          <Link href="/discover" className="inline-flex items-center justify-center rounded-xl border border-[#44362D] bg-[#171310] px-7 py-3.5 text-sm font-bold text-[#EEEAE2] transition hover:border-[#C8956A]/70 hover:bg-[#211A15]">
+            Discover movies & shows
           </Link>
+        </div>
+
+        {/* Floating reactions */}
+        <div className="relative mt-10 hidden h-20 w-full max-w-3xl sm:block">
+          <div className="reel-float absolute left-[2%] top-5 rounded-2xl border border-[#493528] bg-[#211711] px-4 py-2 text-sm font-bold text-[#E9C09A] shadow-lg">
+            “LET HER COOK” 🍳
+          </div>
+          <div className="reel-float absolute left-[32%] top-0 rounded-2xl border border-[#493528] bg-[#18120F] px-4 py-2 text-sm font-bold text-[#D5C7BA] shadow-lg" style={{ animationDelay: '1.2s' }}>
+            “NO BECAUSE SAME” 🤝
+          </div>
+          <div className="reel-float absolute right-[29%] top-7 rounded-2xl border border-[#493528] bg-[#211711] px-4 py-2 text-sm font-bold text-[#E9C09A] shadow-lg" style={{ animationDelay: '2.1s' }}>
+            “THE ENDING???” 🫠
+          </div>
+          <div className="reel-float absolute right-[1%] top-2 rounded-2xl border border-[#493528] bg-[#18120F] px-4 py-2 text-sm font-bold text-[#D5C7BA] shadow-lg" style={{ animationDelay: '3s' }}>
+            “I SAID WHAT I SAID” 🗣️
+          </div>
         </div>
       </section>
-
-      {/* Mood ticker */}
-      <style>{`
-        @keyframes marquee {
-          0% { transform: translateX(0); }
-          100% { transform: translateX(-50%); }
-        }
-        .marquee-track { animation: marquee 28s linear infinite; }
-        .marquee-wrap:hover .marquee-track { animation-play-state: paused; }
-      `}</style>
-      <div className="border-t border-b border-[#161310] py-5 overflow-hidden marquee-wrap">
-        <div className="marquee-track flex gap-2.5 w-max">
-          {[...MOODS, ...MOODS].map((mood, i) => (
-            <span
-              key={i}
-              className="whitespace-nowrap px-4 py-2 rounded-full text-sm font-medium border border-[#272320] text-[#8C7E6E]"
-            >
-              {mood}
-            </span>
-          ))}
-        </div>
-      </div>
-
-      {/* Reactions */}
-      <section id="reactions" className="px-6 sm:px-10 lg:px-14 py-16 lg:py-24 max-w-7xl mx-auto">
-
-        {/* Featured reaction */}
-        <div className="rounded-2xl border border-[#1E1B18] bg-[#111009] p-8 sm:p-10 lg:p-14 mb-6">
-          <div className="flex items-center gap-3 mb-7">
-            <div className="w-9 h-9 rounded-full flex items-center justify-center text-[#0A0908] text-xs font-bold flex-shrink-0 bg-[#C8956A]">
-              {FEATURED.initials}
-            </div>
+      {/* COMMUNITY TAKES */}
+      <section id="takes" className="border-y border-[#211A15] bg-[#100D0B]">
+        <div className="mx-auto max-w-7xl px-5 py-16 sm:px-8 lg:px-12 lg:py-20">
+          <div className="mb-8 flex flex-col gap-4 sm:flex-row sm:items-end sm:justify-between">
             <div>
-              <div className="text-sm lg:text-base font-bold text-[#EEEAE2]">{FEATURED.username}</div>
-              <div className="text-xs text-[#4A4038]">{FEATURED.role}</div>
+              <p className="mb-3 text-xs font-extrabold uppercase tracking-[0.18em] text-[#C8956A]">Community reactions</p>
+              <h2 className="font-plus-jakarta text-3xl font-extrabold tracking-tight sm:text-4xl">See what people felt.</h2>
+              <p className="mt-3 max-w-xl text-sm leading-6 text-[#9E9083] sm:text-base">Real reactions from people watching the same movies and shows.</p>
             </div>
-            <span className="ml-auto text-xs font-medium px-3 py-1 rounded-full border border-[#272320] text-[#8C7E6E]">
-              {FEATURED.movie} · {FEATURED.year}
-            </span>
+            <Link href="/community" className="inline-flex shrink-0 items-center gap-2 text-sm font-bold text-[#D9A779] transition hover:text-[#F0C69D]">
+              See all reactions <ArrowUpRightIcon className="h-4 w-4" />
+            </Link>
           </div>
-          <blockquote className="font-plus-jakarta font-bold text-[clamp(1.2rem,2.5vw,1.8rem)] leading-[1.5] text-[#EEEAE2] mb-8 max-w-2xl">
-            &ldquo;{FEATURED.quote}&rdquo;
-          </blockquote>
-          <div className="flex items-center gap-2 text-[#C8956A] font-bold text-base">
-            <HeartIcon className="w-5 h-5" />
-            <span>{FEATURED.relatedCount} people felt the same</span>
+
+          <div className="grid grid-cols-1 gap-4 md:grid-cols-3">
+            {FEATURED_REACTIONS.map((post, index) => {
+              const media = featuredMedia[index];
+              const mediaType = 'tv';
+              const mediaTitle = media?.name || post.search;
+              const movieHref = media
+                ? `/movie-more-info/${media.id}?type=${mediaType}`
+                : '/discover';
+
+              return (
+                <article key={post.search} className="group flex min-w-0 flex-col overflow-hidden rounded-2xl border border-[#30241D] bg-[#17120F] transition duration-300 hover:-translate-y-1 hover:border-[#72513B]">
+                  <Link href={movieHref} className="relative block h-56 overflow-hidden sm:h-64">
+                    {media?.poster_path ? (
+                      <Image
+                        src={`https://image.tmdb.org/t/p/w500${media.poster_path}`}
+                        alt={`${mediaTitle} poster`}
+                        fill
+                        sizes="(min-width: 768px) 33vw, 100vw"
+                        className="h-full w-full object-cover object-center opacity-75 transition duration-500 group-hover:scale-105 group-hover:opacity-90"
+                      />
+                    ) : (
+                      <div className="h-full w-full bg-[#2A1D15]" />
+                    )}
+                    <div className="absolute inset-0 bg-gradient-to-t from-[#17120F] via-[#17120F]/20 to-transparent" />
+                    <span className="absolute left-4 top-4 rounded-full border border-white/10 bg-[#100D0B]/85 px-3 py-1.5 text-[10px] font-extrabold tracking-[0.1em] text-[#F0C69D] backdrop-blur-sm">
+                      {post.region}
+                    </span>
+                    <div className="absolute bottom-4 left-4 right-4">
+                      <h3 className="font-plus-jakarta text-xl font-extrabold">{mediaTitle}</h3>
+                      <p className="mt-1 text-xs font-medium text-[#C4B5A7]">Tap to see the movie or show</p>
+                    </div>
+                  </Link>
+
+                  <div className="flex flex-1 flex-col p-5">
+                    <div className="mb-4 flex items-center gap-2.5">
+                      <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-full bg-[#D6A174] text-xs font-extrabold text-[#24170F]">{post.initials}</div>
+                      <div className="min-w-0">
+                        <p className="truncate text-sm font-bold text-[#EEEAE2]">@{post.username}</p>
+                        <p className="text-xs text-[#84766A]">{post.time}</p>
+                      </div>
+                      <span className="ml-auto text-lg" aria-hidden="true">{post.emoji}</span>
+                    </div>
+
+                    <p className="flex-1 text-[15px] font-medium leading-6 text-[#E7DDD3]">“{post.quote}”</p>
+
+                    <div className="mt-5 flex items-center gap-4 border-t border-[#30241D] pt-4 text-xs font-semibold text-[#B5A496]">
+                      <span>♥ {post.likes}k felt this</span>
+                      <span>·</span>
+                      <span>{post.replies} replies</span>
+                    </div>
+                  </div>
+                </article>
+              );
+            })}
           </div>
-        </div>
-
-        {/* Reaction cards grid */}
-        <div className="grid grid-cols-1 sm:grid-cols-3 gap-5">
-          {REACTIONS.map(({ initials, username, role, movie, year, poster, quote, relatedCount }) => (
-            <div
-              key={username}
-              className="rounded-2xl border border-[#1E1B18] bg-[#111009] overflow-hidden hover:border-[#2A2520] transition-all group flex flex-col"
-            >
-              <div className="relative h-36 overflow-hidden flex-shrink-0">
-                <img
-                  src={poster}
-                  alt={movie}
-                  className="w-full h-full object-cover opacity-60 group-hover:opacity-80 transition-opacity duration-300"
-                />
-                <div className="absolute inset-0 bg-gradient-to-t from-[#111009] via-[#111009]/30 to-transparent" />
-                <div className="absolute bottom-3 left-4 right-4 flex items-end justify-between">
-                  <span className="text-sm font-bold text-[#EEEAE2]">{movie}</span>
-                  <span className="text-xs text-[#8C7E6E]">{year}</span>
-                </div>
-              </div>
-              <div className="p-5 flex flex-col flex-1">
-                <div className="flex items-center gap-2.5 mb-4">
-                  <div className="w-7 h-7 rounded-full flex items-center justify-center text-[#0A0908] text-[10px] font-bold flex-shrink-0 bg-[#C8956A]">
-                    {initials}
-                  </div>
-                  <div>
-                    <div className="text-xs font-bold text-[#EEEAE2]">{username}</div>
-                    <div className="text-[10px] text-[#4A4038]">{role}</div>
-                  </div>
-                </div>
-                <p className="text-sm leading-relaxed italic text-[#EEEAE2] font-dm-sans flex-1">
-                  &ldquo;{quote}&rdquo;
-                </p>
-                <div className="flex items-center gap-1.5 text-xs font-semibold text-[#C8956A] mt-5 pt-4 border-t border-[#1E1B18]">
-                  <HeartIcon className="w-3.5 h-3.5" />
-                  <span>{relatedCount} felt the same</span>
-                </div>
-              </div>
-            </div>
-          ))}
-        </div>
-
-        <div className="text-center mt-10">
-          <Link href="/community">
-            <button className="px-6 py-3 rounded-xl text-sm font-semibold border border-[#3A3530] text-[#C8B8A2] hover:text-[#EEEAE2] hover:border-[#C8956A]/50 transition-all">
-              See all reactions 
-            </button>
-          </Link>
+          <p className="mt-4 text-center text-[11px] text-[#65574B]">Featured reactions for a taste of the community.</p>
         </div>
       </section>
 
-      {/* Final CTA */}
-      <section className="px-8 pb-20">
-        <div className="max-w-6xl mx-auto rounded-2xl border border-[#1E1B18] bg-[#111009] px-8 py-16 text-center">
-          <p className="text-xs font-bold uppercase tracking-[0.2em] text-[#C8956A] mb-4">
-            What do you want to feel tonight?
+
+      {/* MOVIE DISCOVERY */}
+      <section
+        id="browse-by-mood"
+        className="mx-auto max-w-7xl px-5 py-16 sm:px-8 lg:px-12 lg:py-20"
+      >
+        <div className="mb-8 max-w-2xl">
+          <p className="mb-3 text-xs font-extrabold uppercase tracking-[0.18em] text-[#C8956A]">
+            BROWSE BY MOOD
           </p>
-          <h2 className="font-plus-jakarta font-extrabold text-[clamp(1.8rem,3.5vw,2.8rem)] tracking-tight text-[#EEEAE2] mb-4 max-w-xl mx-auto">
-            Your feelings are someone else&apos;s discovery.
+
+          <h2 className="font-plus-jakarta text-3xl font-extrabold tracking-tight sm:text-4xl">
+            Find something that fits the moment.
           </h2>
-          <p className="text-sm text-[#4A4038] mb-10 max-w-sm mx-auto leading-relaxed">
-            Write about a movie that moved you. Help someone else find it.
+
+          <p className="mt-3 text-sm leading-6 text-[#9E9083] sm:text-base">
+            Pick a feeling and find a movie or show to match it.
           </p>
-          <div className="flex gap-3 justify-center flex-wrap">
-            <Link href="/login">
-              <button className="px-7 py-3.5 rounded-xl font-bold text-sm bg-[#C8956A] text-[#0A0908] hover:bg-[#E0D8C8] transition-all">
-                Start writing 
-              </button>
-            </Link>
-            <Link href="/discover">
-              <button className="px-7 py-3.5 rounded-xl font-semibold text-sm border border-[#3A3530] text-[#C8B8A2] hover:text-[#EEEAE2] hover:border-[#C8956A]/50 transition-all">
-                Browse first
-              </button>
-            </Link>
+        </div>
+
+        <div className="grid grid-cols-1 gap-3 sm:grid-cols-2">
+          {MOOD_FEATURES.map((item, index) => {
+            const media = moodMedia[index];
+            const mediaTitle = media
+              ? ('title' in media ? media.title : media.name)
+              : item.search;
+            const posterPath = media?.poster_path;
+            const mediaHref = media
+              ? `/movie-more-info/${media.id}?type=${item.mediaType}`
+              : `/discover?mood=${encodeURIComponent(item.mood)}`;
+
+            return (
+              <Link
+                href={mediaHref}
+                key={item.mood}
+                className="group flex min-h-36 items-stretch gap-4 overflow-hidden rounded-2xl border border-[#34271F] bg-[#15100D] p-3 transition duration-200 hover:-translate-y-0.5 hover:border-[#C8956A]/70 sm:min-h-40 sm:gap-5 sm:p-4"
+              >
+                <div className="relative aspect-square h-28 w-28 shrink-0 overflow-hidden rounded-xl bg-[#2A1D15] sm:h-32 sm:w-32">
+                  {posterPath ? (
+                    <Image
+                      src={`https://image.tmdb.org/t/p/w300${posterPath}`}
+                      alt={`${mediaTitle} poster`}
+                      fill
+                      sizes="128px"
+                      className="object-cover transition duration-500 group-hover:scale-105"
+                    />
+                  ) : (
+                    <div className="h-full w-full bg-[#2A1D15]" />
+                  )}
+                </div>
+
+                <div className="min-w-0 flex flex-1 flex-col justify-center py-1">
+                  <p className="text-[10px] font-extrabold uppercase tracking-[0.16em] text-[#D9A779]">
+                    {item.mood}
+                  </p>
+                  <h3 className="mt-1 font-plus-jakarta text-base font-extrabold sm:text-lg">
+                    {item.label}
+                  </h3>
+                  <p className="mt-1 line-clamp-2 text-sm leading-5 text-[#9E9083]">
+                    {item.subtitle}
+                  </p>
+                  <p className="mt-2 flex items-center gap-1 text-xs font-semibold text-[#F0C69D]">
+                    {mediaTitle}
+                    <ArrowUpRightIcon className="h-3.5 w-3.5 shrink-0 transition group-hover:translate-x-0.5 group-hover:-translate-y-0.5" />
+                  </p>
+                </div>
+              </Link>
+            );
+          })}
+        </div>
+
+        {/* PLAYFUL MARQUEE */}
+        <div className="reel-marquee-wrap mt-14 overflow-hidden border-y border-[#30231A] py-4">
+          <div className="reel-marquee flex w-max gap-4">
+            {[...Array(2)].flatMap(() => [
+              'LET PEOPLE ENJOY THINGS ✦',
+              'BUT THAT ENDING THO ✦',
+              'I SAID WHAT I SAID ✦',
+              'THE GROUP CHAT NEEDS THIS ✦',
+            ]).map((item, i) => (
+              <span
+                key={`${item}-${i}`}
+                className="whitespace-nowrap font-plus-jakarta text-sm font-extrabold tracking-wide text-[#B58B67]"
+              >
+                {item}
+              </span>
+            ))}
           </div>
         </div>
       </section>
 
-    </div>
+      {/* FINAL CTA */}
+      <section className="px-5 pb-16 sm:px-8 lg:px-12 lg:pb-24">
+        <div className="relative mx-auto max-w-7xl overflow-hidden rounded-3xl border border-[#4A3325] bg-[#21160F] px-6 py-12 text-center sm:px-12 sm:py-16">
+          <div className="pointer-events-none absolute -left-12 -top-16 h-48 w-48 rounded-full bg-[#C8956A]/10 blur-3xl" />
+          <div className="pointer-events-none absolute -bottom-20 -right-8 h-56 w-56 rounded-full bg-[#A95E3E]/10 blur-3xl" />
+          <div className="relative mx-auto max-w-2xl">
+            <div className="mx-auto mb-5 flex h-12 w-12 items-center justify-center rounded-2xl bg-[#3A2619] text-[#E3B081]">
+              <SparklesIcon className="h-6 w-6" />
+            </div>
+            <p className="mb-3 text-xs font-extrabold uppercase tracking-[0.18em] text-[#D9A779]">Your take belongs here</p>
+            <h2 className="font-plus-jakarta text-3xl font-extrabold tracking-tight sm:text-5xl">Got a reaction? <span className="text-[#D99A68]">We’re listening.</span></h2>
+            <p className="mx-auto mt-4 max-w-lg text-sm leading-6 text-[#B8A393] sm:text-base">Share what you felt, find your people, and see what everyone’s watching. No essays required.</p>
+            <div className="mt-8">
+              <Link href="/community" className="inline-flex items-center justify-center gap-2 rounded-xl bg-[#C8956A] px-7 py-3.5 text-sm font-extrabold text-[#17110E] transition hover:-translate-y-0.5 hover:bg-[#D9A779]">
+                Join the conversation <ArrowUpRightIcon className="h-4 w-4" />
+              </Link>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <footer className="border-t border-[#211A15] px-5 py-6 sm:px-8 lg:px-12">
+        <div className="mx-auto flex max-w-7xl flex-col items-center justify-between gap-3 text-xs text-[#796B5F] sm:flex-row">
+          <span className="font-plus-jakarta text-sm font-extrabold text-[#BBAA99]">ReelEmotion</span>
+          <p>For the takes, the feels, and the group chat debates.</p>
+        </div>
+      </footer>
+    </main>
   );
 }
