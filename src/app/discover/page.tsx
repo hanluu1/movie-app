@@ -3,12 +3,11 @@
 import { useEffect, useRef, useState } from 'react';
 import Image from 'next/image';
 import Link from 'next/link';
-import { FilmIcon } from '@heroicons/react/24/outline';
+import { FilmIcon, MagnifyingGlassIcon } from '@heroicons/react/24/outline';
 import { Header, MobileNavTabs } from '@/components/layout';
+import { AppSearch } from '@/components/search/app-search';
 import { supabase } from '@/lib/supabase/client';
 import { getMoviesByGenre, getTrendingMovies, getTrendingTV, type TrendingMovie, type TrendingTV } from '@/lib/tmdb/client';
-import { MOODS } from '@/lib/moods';
-
 const MOOD_GENRE_MAP: Record<string, number> = {
   'Moved me to tears': 18,
   'Mind-bending': 878,
@@ -25,12 +24,12 @@ const MOOD_GENRE_MAP: Record<string, number> = {
   'Genuinely scared me': 27,
 };
 
-const MOOD_SECTIONS: { mood: string; heading: string }[] = [
-  { mood: 'Genuinely scared me',  heading: 'Films that will genuinely scare you' },
-  { mood: 'Moved me to tears',    heading: 'Films that will move you to tears' },
-  { mood: 'Mind-bending',         heading: 'Films that will bend your mind' },
-  { mood: 'Pure joy',             heading: 'Films that will fill you with joy' },
-  { mood: 'Had me on the edge',   heading: 'Films that will keep you on the edge' },
+const VIBES: { mood: string; label: string; genreId: number }[] = [
+  { mood: 'Pure joy', label: 'Pure joy', genreId: 35 },
+  { mood: 'Moved me to tears', label: 'Moved me to tears', genreId: 18 },
+  { mood: 'Mind-bending', label: 'Mind-bending', genreId: 878 },
+  { mood: 'Genuinely scared me', label: 'Genuinely scared me', genreId: 27 },
+  { mood: "Couldn't look away", label: "Couldn't look away", genreId: 28 },
 ];
 
 interface ReactionCount {
@@ -93,14 +92,21 @@ export default function DiscoverPage () {
   const moodDropdownRef = useRef<HTMLDivElement>(null);
   const [mostReacted, setMostReacted] = useState<ReactionCount[]>([]);
   const [moodMovies, setMoodMovies] = useState<TrendingMovie[]>([]);
-  const [moodSections, setMoodSections] = useState<Record<string, TrendingMovie[]>>({});
   const [trendingMovies, setTrendingMovies] = useState<TrendingMovie[]>([]);
   const [trendingTV, setTrendingTV] = useState<TrendingTV[]>([]);
   const [loading, setLoading] = useState(true);
+  const [searchOpen, setSearchOpen] = useState(false);
+
+  useEffect(() => {
+    const moodFromUrl = new URLSearchParams(window.location.search).get('mood');
+    if (moodFromUrl && VIBES.some(vibe => vibe.mood === moodFromUrl)) {
+      setActiveMood(moodFromUrl);
+    }
+  }, []);
 
   useEffect(() => {
     const init = async () => {
-      const [reactionsRes, trendingMoviesRes, trendingTVRes, ...sectionResults] = await Promise.all([
+      const [reactionsRes, trendingMoviesRes, trendingTVRes] = await Promise.all([
         supabase
           .from('posts')
           .select('movie_id, movie_title, movie_image, media_type')
@@ -108,7 +114,6 @@ export default function DiscoverPage () {
           .order('created_at', { ascending: false }),
         getTrendingMovies(),
         getTrendingTV(),
-        ...MOOD_SECTIONS.map(s => getMoviesByGenre(MOOD_GENRE_MAP[s.mood])),
       ]);
 
       const counts: Record<number, ReactionCount> = {};
@@ -129,9 +134,6 @@ export default function DiscoverPage () {
       setTrendingMovies(trendingMoviesRes as TrendingMovie[]);
       setTrendingTV(trendingTVRes as TrendingTV[]);
 
-      const sections: Record<string, TrendingMovie[]> = {};
-      MOOD_SECTIONS.forEach((s, i) => { sections[s.mood] = sectionResults[i] as TrendingMovie[]; });
-      setMoodSections(sections);
       setLoading(false);
     };
     init();
@@ -159,21 +161,18 @@ export default function DiscoverPage () {
       <Header variant="dark" />
       <MobileNavTabs dark />
 
-      <div className="w-full px-6 lg:px-10 pt-6 sm:pt-10 pb-16">
+      <div className="flex w-full flex-col px-6 lg:px-10 pt-6 sm:pt-10 pb-16">
 
         {/* Page header */}
-        <div className="mb-6">
-          <p className="text-xs font-bold uppercase tracking-widest text-[#C8956A] mb-1">Discover by feeling</p>
-          <h1 className="font-plus-jakarta text-2xl sm:text-3xl font-extrabold text-[#EEEAE2]">What are you in the mood for?</h1>
+        <div className="order-0 mb-6">
+          <p className="text-xs font-bold uppercase tracking-widest text-[#C8956A] mb-1">Discover</p>
+          <h1 className="font-plus-jakarta text-2xl sm:text-3xl font-extrabold text-[#EEEAE2]">Find something to watch</h1>
         </div>
 
         {/* Mood filter */}
-        <div className="mb-10 rounded-2xl border border-[#272320] bg-[#1A1714] p-4 sm:p-5">
-          <div className="mb-3 flex items-center justify-between gap-3">
-            <div>
-              <p className="text-xs font-bold uppercase tracking-widest text-[#C8956A]">Choose a feeling</p>
-              <p className="mt-1 text-xs text-[#8C7E6E]">There is no wrong answer.</p>
-            </div>
+        <div className="order-30 mb-10 rounded-2xl border border-[#272320] bg-[#1A1714]/70 p-3 sm:px-4 sm:py-3">
+          <div className="flex items-center justify-between gap-3">
+            <p className="text-xs font-bold uppercase tracking-widest text-[#8C7E6E]">Pick a vibe</p>
             {activeMood && (
               <button
                 onClick={() => setActiveMood(null)}
@@ -194,7 +193,7 @@ export default function DiscoverPage () {
                   : 'bg-transparent border-[#2A2520] text-[#8C7E6E]'
               }`}
             >
-              <span>{activeMood ?? 'Pick your mood'}</span>
+              <span>{VIBES.find(vibe => vibe.mood === activeMood)?.label ?? 'Pick a vibe'}</span>
               <span className="ml-2 text-[10px]">▾</span>
             </button>
 
@@ -206,9 +205,9 @@ export default function DiscoverPage () {
                     !activeMood ? 'text-[#C8956A]' : 'text-[#8C7E6E] hover:text-[#EEEAE2] hover:bg-[#1E1B18]'
                   }`}
                 >
-                  All moods
+                  All vibes
                 </button>
-                {MOODS.map(mood => (
+                {VIBES.map(({ mood, label }) => (
                   <button
                     key={mood}
                     onClick={() => { setActiveMood(mood); setMoodDropdownOpen(false); }}
@@ -218,7 +217,7 @@ export default function DiscoverPage () {
                         : 'text-[#8C7E6E] hover:text-[#EEEAE2] hover:bg-[#1E1B18]'
                     }`}
                   >
-                    {mood}
+                    {label}
                   </button>
                 ))}
               </div>
@@ -227,7 +226,7 @@ export default function DiscoverPage () {
 
           {/* Pills — sm and above */}
           <div className="hidden sm:flex flex-wrap gap-2">
-            {MOODS.map(mood => (
+            {VIBES.map(({ mood, label }) => (
               <button
                 key={mood}
                 onClick={() => setActiveMood(activeMood === mood ? null : mood)}
@@ -237,7 +236,7 @@ export default function DiscoverPage () {
                     : 'border-[#2A2520] text-[#8C7E6E] hover:border-[#C8956A]/50 hover:text-[#C8956A]'
                 }`}
               >
-                {mood}
+                {label}
               </button>
             ))}
           </div>
@@ -245,11 +244,10 @@ export default function DiscoverPage () {
 
         {/* Active mood results */}
         {activeMood && moodMovies.length > 0 && (
-          <section className="mb-12">
+          <section className="order-40 mb-12">
             <div className="mb-4">
-              <p className="text-xs font-bold uppercase tracking-widest text-[#C8956A] mb-1">By feeling</p>
+              <p className="text-xs font-bold uppercase tracking-widest text-[#C8956A] mb-1">Your vibe</p>
               <h2 className="font-plus-jakarta font-extrabold text-xl text-[#EEEAE2]">{`Movies to explore for "${activeMood}"`}</h2>
-              <p className="text-xs text-[#8C7E6E] mt-1">A mood-based starting point — read community reactions for the full picture.</p>
             </div>
             <HorizontalRow>
               {moodMovies.map(m => (
@@ -259,14 +257,14 @@ export default function DiscoverPage () {
           </section>
         )}
 
-        {/* Recent Talked About */}
+        {/* Popular with the community */}
         {!loading && mostReacted.length > 0 && (
-          <section className="mb-12">
+          <section className="order-20 mb-12">
             <div className="flex items-end justify-between mb-4">
               <div>
                 <p className="text-xs font-bold uppercase tracking-widest text-[#C8956A] mb-1">Community</p>
-                <h2 className="font-plus-jakarta font-extrabold text-xl text-[#EEEAE2]">Recent Talked About</h2>
-                <p className="text-xs text-[#8C7E6E] mt-1">Ranked by reactions from our community</p>
+                <h2 className="font-plus-jakarta font-extrabold text-xl text-[#EEEAE2]">Popular with the community</h2>
+                <p className="text-xs text-[#8C7E6E] mt-1">Movies and shows people are talking about</p>
               </div>
               <Link href="/community" className="text-xs font-semibold text-[#C8956A] hover:text-[#E8A870] transition-colors flex-shrink-0 mb-1">
                 Browse the community →
@@ -287,29 +285,33 @@ export default function DiscoverPage () {
           </section>
         )}
 
-        {/* Trending Films */}
-        <section className="mb-12">
-          <div className="mb-4">
-            <p className="text-xs font-bold uppercase tracking-widest text-[#C8956A] mb-1">Worldwide</p>
-            <h2 className="font-plus-jakarta font-extrabold text-xl text-[#EEEAE2]">Trending Films</h2>
-            <p className="text-xs text-[#8C7E6E] mt-1">Popular this week</p>
+
+        {/* Browse movies and shows */}
+        <section className="order-50 mb-12">
+          <div className="mb-5 flex flex-col gap-4 sm:flex-row sm:items-end sm:justify-between">
+            <div>
+              <p className="text-xs font-bold uppercase tracking-widest text-[#C8956A] mb-1">Browse</p>
+              <h2 className="font-plus-jakarta font-extrabold text-xl text-[#EEEAE2]">Movies and shows</h2>
+              <p className="text-xs text-[#8C7E6E] mt-1">Keep exploring what is on your list</p>
+            </div>
+            <button
+              type="button"
+              onClick={() => setSearchOpen(true)}
+              className="flex w-full items-center gap-2 rounded-xl border border-[#2A2520] bg-[#1A1714] px-3.5 py-2.5 text-left text-sm text-[#8C7E6E] transition-colors hover:border-[#C8956A]/60 hover:text-[#EEEAE2] sm:w-64"
+            >
+              <MagnifyingGlassIcon className="h-4 w-4 shrink-0" />
+              <span className="truncate">Search movies and shows</span>
+            </button>
           </div>
-          {loading ? <RowSkeleton /> : (
+          <div className="mb-8">
+            <h3 className="mb-3 text-sm font-bold text-[#C8B8A2]">Movies</h3>
             <HorizontalRow>
               {trendingMovies.map(m => (
                 <MovieCard key={m.id} id={m.id} title={m.title} posterPath={m.poster_path} mediaType="movie" />
               ))}
             </HorizontalRow>
-          )}
-        </section>
-
-        {/* Trending Series */}
-        <section className="mb-12">
-          <div className="mb-4">
-            <p className="text-xs font-bold uppercase tracking-widest text-[#C8956A] mb-1">Worldwide</p>
-            <h2 className="font-plus-jakarta font-extrabold text-xl text-[#EEEAE2]">Trending Series</h2>
-            <p className="text-xs text-[#8C7E6E] mt-1">Popular this week</p>
           </div>
+          <h3 className="mb-3 text-sm font-bold text-[#C8B8A2]">Shows</h3>
           {loading ? <RowSkeleton /> : (
             <HorizontalRow>
               {trendingTV.map(m => (
@@ -320,6 +322,7 @@ export default function DiscoverPage () {
         </section>
 
       </div>
+      <AppSearch open={searchOpen} onClose={() => setSearchOpen(false)} dark />
     </div>
   );
 }
