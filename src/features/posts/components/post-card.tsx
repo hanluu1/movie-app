@@ -31,6 +31,7 @@ interface PostCardProps {
   canLike?: boolean;
   variant?: 'card' | 'featured';
   hideAvatar?: boolean;
+  imageUrl?: string | null;
 }
 
 function formatRelativeTime (dateStr: string) {
@@ -82,6 +83,7 @@ export const PostCard = ({
   canLike = true,
   variant = 'card',
   hideAvatar = false,
+  imageUrl,
 }: PostCardProps) => {
   const [liked, setLiked] = useState(isLiked);
   const router = useRouter();
@@ -130,8 +132,8 @@ export const PostCard = ({
       >
         {/* USER HEADER */}
         {!hideAvatar && (
-          <div className="mb-5 flex items-center gap-3.5">
-            <div className="relative flex h-11 w-11 shrink-0 items-center justify-center overflow-hidden rounded-full border border-[#60422F] bg-[#C8956A] text-sm font-extrabold text-[#17110E] sm:h-12 sm:w-12">
+          <div className="mb-3 flex items-start gap-3.5">
+            <div className="relative flex h-11 w-11 shrink-0 self-center items-center justify-center overflow-hidden rounded-full border border-[#60422F] bg-[#C8956A] text-sm font-extrabold text-[#17110E] sm:h-12 sm:w-12">
               {avatarUrl ? (
                 <Image
                   src={avatarUrl}
@@ -149,20 +151,48 @@ export const PostCard = ({
               <p className="truncate text-base font-bold text-[#EEEAE2]">
                 {username || 'Anonymous'}
               </p>
-              <p className="mt-1 text-xs text-[#89796B]">
-                {formatRelativeTime(createdAt)}
-              </p>
+              {movieTitle && (
+                <div className="mt-2">
+                  {movieHref ? (
+                    <Link
+                      href={movieHref}
+                      onClick={(e) => e.stopPropagation()}
+                      className="group/movie inline-flex items-center gap-2 rounded-xl border border-[#493325] bg-[#211710] px-2.5 py-1.5 transition-colors hover:border-[#C8956A]/70 hover:bg-[#2A1D15]"
+                    >
+                      {movieImage && (
+                        <div className="relative h-6 w-4 shrink-0 overflow-hidden rounded bg-[#30231A]">
+                          <Image src={movieImage} alt={movieTitle} fill sizes="16px" className="object-cover" />
+                        </div>
+                      )}
+                      <span className="text-xs font-semibold text-[#C8B8A2] truncate max-w-[180px]">{movieTitle}</span>
+                      <ArrowUpRightIcon className="h-3 w-3 shrink-0 text-[#89796B] transition group-hover/movie:text-[#D9A779]" />
+                    </Link>
+                  ) : (
+                    <div className="inline-flex items-center gap-2 rounded-xl border border-[#493325] bg-[#211710] px-2.5 py-1.5">
+                      {movieImage && (
+                        <div className="relative h-6 w-4 shrink-0 overflow-hidden rounded bg-[#30231A]">
+                          <Image src={movieImage} alt={movieTitle} fill sizes="16px" className="object-cover" />
+                        </div>
+                      )}
+                      <span className="text-xs font-semibold text-[#C8B8A2] truncate max-w-[180px]">{movieTitle}</span>
+                    </div>
+                  )}
+                </div>
+              )}
             </div>
+            <p className="shrink-0 self-start text-xs text-[#89796B]">
+              {formatRelativeTime(createdAt)}
+            </p>
           </div>
         )}
 
-        <div className="mb-5 flex flex-col gap-5 lg:flex-row lg:items-start lg:gap-8">
+        <div className="mb-4 flex flex-col gap-3">
           {/* POST CONTENT */}
-          <div className="min-w-0 flex-1 order-1">
+          <div className="min-w-0">
             {postContent && (
               <div className="mb-1">
                 <p
-                  className={`whitespace-pre-wrap break-words text-lg leading-7 text-[#EEEAE2] sm:text-xl sm:leading-8 ${
+                  className={`whitespace-pre-wrap break-words text-sm leading-6 text-[#C8B8A2] ${
                     isFeatured ? '' : 'line-clamp-5'
                   }`}
                 >
@@ -181,70 +211,18 @@ export const PostCard = ({
               </div>
             )}
 
+            {imageUrl && (
+              <div className="mt-3 rounded-xl overflow-hidden border border-[#2A2520] relative w-full h-64">
+                <Image
+                  src={imageUrl}
+                  alt="Post photo"
+                  fill
+                  sizes="(max-width: 768px) 100vw, 700px"
+                  className="object-cover"
+                />
+              </div>
+            )}
           </div>
-
-          {/* MOVIE REFERENCE */}
-          {movieTitle && (
-            <div className="order-2 min-w-0 lg:w-56 lg:shrink-0">
-              {movieHref ? (
-                <Link
-                  href={movieHref}
-                  onClick={(e) => e.stopPropagation()}
-                  className="group/movie flex w-full min-w-0 items-center gap-3 rounded-xl border border-[#493325] bg-[#211710] p-2.5 pr-3 transition-colors hover:border-[#C8956A]/70 hover:bg-[#2A1D15]"
-                >
-                  {movieImage ? (
-                    <div className="relative h-16 w-11 shrink-0 overflow-hidden rounded-lg bg-[#30231A]">
-                      <Image
-                        src={movieImage}
-                        alt={movieTitle}
-                        fill
-                        sizes="44px"
-                        className="object-cover transition-transform duration-300 group-hover/movie:scale-105"
-                      />
-                    </div>
-                  ) : (
-                    <div className="flex h-16 w-11 shrink-0 items-center justify-center rounded-lg bg-[#30231A] text-lg">
-                    🎬
-                    </div>
-                  )}
-
-                  <div className="min-w-0 flex-1">
-                    <p className="mb-1 text-[10px] font-extrabold uppercase tracking-[0.14em] text-[#89796B]">
-                    WATCHING
-                    </p>
-                    <p className="truncate text-sm font-bold text-[#EEEAE2]">
-                      {movieTitle}
-                    </p>
-                  </div>
-
-                  <ArrowUpRightIcon className="h-4 w-4 shrink-0 text-[#89796B] transition group-hover/movie:text-[#D9A779]" />
-                </Link>
-              ) : (
-                <div className="flex w-full min-w-0 items-center gap-3 rounded-xl border border-[#493325] bg-[#211710] p-2.5 pr-3">
-                  {movieImage && (
-                    <div className="relative h-16 w-11 shrink-0 overflow-hidden rounded-lg">
-                      <Image
-                        src={movieImage}
-                        alt={movieTitle}
-                        fill
-                        sizes="44px"
-                        className="object-cover"
-                      />
-                    </div>
-                  )}
-
-                  <div className="min-w-0 flex-1">
-                    <p className="mb-1 text-[10px] font-extrabold uppercase tracking-[0.14em] text-[#89796B]">
-                    WATCHING
-                    </p>
-                    <p className="truncate text-sm font-bold text-[#EEEAE2]">
-                      {movieTitle}
-                    </p>
-                  </div>
-                </div>
-              )}
-            </div>
-          )}
         </div>
 
         {/* ENGAGEMENT */}

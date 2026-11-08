@@ -22,6 +22,7 @@ interface Post {
   upvotes: number;
   isLiked?: boolean;
   comment_count?: number;
+  image_url?: string | null;
   profiles: { username: string; avatar_url: string | null } | null;
 }
 
@@ -151,6 +152,7 @@ export function MovieCommunityPosts ({ movieId, movieTitle, posterPath, mediaTyp
               postContent={post.content}
               createdAt={post.created_at}
               upvotes={post.upvotes}
+              imageUrl={post.image_url}
               isLiked={post.isLiked}
               commentCount={post.comment_count || 0}
               canLike={!!user}

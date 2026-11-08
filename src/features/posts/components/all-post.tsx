@@ -27,6 +27,7 @@ interface Post {
   content?: string;
   isLiked?: boolean;
   comment_count?: number;
+  image_url?: string | null;
 }
 
 interface AllPostProps {
@@ -272,6 +273,7 @@ export const AllPost = forwardRef<{ refetch: () => void }, AllPostProps>(
               postContent={post.content}
               isLiked={post.isLiked}
               commentCount={post.comment_count || 0}
+              imageUrl={post.image_url}
               canLike={isAuthed}
               onLike={() => handleToggleLike(post.id)}
               onComment={() => openCommentModal(post.id)}

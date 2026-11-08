@@ -30,6 +30,7 @@ interface Post {
   media_type?: string | null;
   user_id: string;
   mood?: string[] | null;
+  image_url?: string | null;
   profiles?: { username: string; avatar_url?: string | null } | null;
 }
 
@@ -141,6 +142,10 @@ export default function PostDetailPage () {
 
   const handleDeletePost = async () => {
     setIsDeleting(true);
+    if (post?.image_url) {
+      const path = post.image_url.split('/post-images/')[1];
+      if (path) await supabase.storage.from('post-images').remove([path]);
+    }
     const { error } = await supabase.from('posts').delete().eq('id', id);
     if (!error) router.push('/community');
     setIsDeleting(false);
@@ -221,9 +226,9 @@ export default function PostDetailPage () {
             <div className="px-6 pb-6">
               <EditPostForm
                 postId={post.id}
-                title={post.title}
                 content={post.content || ''}
                 mood={post.mood ?? []}
+                imageUrl={post.image_url}
                 onCancel={() => setEdit(false)}
                 onSave={async () => { setEdit(false); await fetchPost(); }}
               />
@@ -234,13 +239,15 @@ export default function PostDetailPage () {
             <>
               {/* Reaction content */}
               <div className="px-6 pb-6">
-                <h1 className="font-plus-jakarta font-extrabold text-2xl text-[#EEEAE2] leading-snug mb-4">
-                  {post.title}
-                </h1>
                 {post.content && (
                   <p className="text-[#C8B8A2] text-base leading-relaxed">
                     {post.content}
                   </p>
+                )}
+                {post.image_url && (
+                  <div className="mt-4 rounded-xl overflow-hidden border border-[#3A3530] relative w-full h-72">
+                    <Image src={post.image_url} alt="Post photo" fill sizes="800px" className="object-cover" />
+                  </div>
                 )}
               </div>
 

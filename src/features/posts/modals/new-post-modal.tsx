@@ -29,11 +29,12 @@ export const CreatePostModal = ({ isOpen, onClose, onCreated, preselectedMovie }
   const [searchQuery, setSearchQuery] = useState('');
   const [searchResults, setSearchResults] = useState<MovieResult[]>([]);
   const [selectedMovie, setSelectedMovie] = useState<MovieResult | null>(null);
-  const [reviewTitle, setReviewTitle] = useState('');
   const [reviewContent, setReviewContent] = useState('');
   const [containsSpoilers, setContainsSpoilers] = useState(false);
   const [selectedMoods, setSelectedMoods] = useState<string[]>([]);
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [imageFile, setImageFile] = useState<File | null>(null);
+  const [imagePreview, setImagePreview] = useState<string | null>(null);
 
   useEffect(() => {
     if (!isOpen) {
@@ -41,10 +42,11 @@ export const CreatePostModal = ({ isOpen, onClose, onCreated, preselectedMovie }
       setSearchQuery('');
       setSearchResults([]);
       setSelectedMovie(null);
-      setReviewTitle('');
       setReviewContent('');
       setContainsSpoilers(false);
       setSelectedMoods([]);
+      setImageFile(null);
+      setImagePreview(null);
     } else if (preselectedMovie) {
       setSelectedMovie(preselectedMovie);
       setStep(2);
@@ -61,12 +63,35 @@ export const CreatePostModal = ({ isOpen, onClose, onCreated, preselectedMovie }
     return () => clearTimeout(timer);
   }, [searchQuery]);
 
+  const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+    setImageFile(file);
+    setImagePreview(URL.createObjectURL(file));
+  };
+
   const handleSubmit = async () => {
-    if (!reviewTitle.trim() || !reviewContent.trim() || isSubmitting) return;
+    if (!reviewContent.trim() || isSubmitting) return;
     setIsSubmitting(true);
     try {
       const { data: { user } } = await supabase.auth.getUser();
       if (!user) return;
+
+      let imageUrl: string | null = null;
+      if (imageFile) {
+        const ext = imageFile.name.split('.').pop();
+        const path = `${user.id}/${Date.now()}.${ext}`;
+        const { error: uploadError } = await supabase.storage
+          .from('post-images')
+          .upload(path, imageFile);
+        if (!uploadError) {
+          const { data: { publicUrl } } = supabase.storage
+            .from('post-images')
+            .getPublicUrl(path);
+          imageUrl = publicUrl;
+        }
+      }
+
       const movieName = selectedMovie?.title || selectedMovie?.name || null;
       const movieImage = selectedMovie?.poster_path
         ? `https://image.tmdb.org/t/p/w500${selectedMovie.poster_path}`
@@ -75,7 +100,7 @@ export const CreatePostModal = ({ isOpen, onClose, onCreated, preselectedMovie }
         ? (selectedMovie.title ? 'movie' : 'tv')
         : null;
       await supabase.from('posts').insert({
-        title: reviewTitle,
+        title: '',
         content: reviewContent,
         movie_title: movieName,
         movie_image: movieImage,
@@ -83,6 +108,7 @@ export const CreatePostModal = ({ isOpen, onClose, onCreated, preselectedMovie }
         movie_id: selectedMovie?.id ?? null,
         mood: selectedMoods,
         user_id: user.id,
+        image_url: imageUrl,
       });
       setStep('success');
     } finally {
@@ -92,7 +118,7 @@ export const CreatePostModal = ({ isOpen, onClose, onCreated, preselectedMovie }
 
   if (!isOpen) return null;
 
-  const canContinue = step === 1 ? !!selectedMovie : reviewTitle.trim().length > 0 && reviewContent.trim().length > 0;
+  const canContinue = step === 1 ? !!selectedMovie : reviewContent.trim().length > 0;
   const displayTitle = selectedMovie?.title || selectedMovie?.name || '';
 
   return (
@@ -222,19 +248,7 @@ export const CreatePostModal = ({ isOpen, onClose, onCreated, preselectedMovie }
               )}
 
               <div className="flex flex-col gap-5">
-                <div>
-                  <label className="block text-sm font-semibold text-[#C8B8A2] mb-2" htmlFor="reviewTitle">
-                    Give it a title
-                  </label>
-                  <input
-                    id="reviewTitle"
-                    type="text"
-                    placeholder="Sum up your feeling in one line..."
-                    value={reviewTitle}
-                    onChange={(e) => setReviewTitle(e.target.value)}
-                    className="w-full px-4 py-3 border border-[#2A2520] focus:border-[#C8956A]/60 bg-[#1A1714] rounded-xl text-sm text-[#EEEAE2] placeholder:text-[#4A4038] outline-none transition-all"
-                  />
-                </div>
+                
 
                 <div>
                   <label className="block text-sm font-semibold text-[#C8B8A2] mb-2" htmlFor="reviewContent">
@@ -250,6 +264,30 @@ export const CreatePostModal = ({ isOpen, onClose, onCreated, preselectedMovie }
                   <div className="text-right text-xs mt-1.5 text-[#8C7E6E]">
                     {reviewContent.length} {reviewContent.length === 1 ? 'character' : 'characters'}
                   </div>
+                </div>
+
+                <div>
+                  <label className="block text-sm font-semibold text-[#C8B8A2] mb-2">
+                    Add a photo (optional)
+                  </label>
+                  {imagePreview ? (
+                    <div className="relative rounded-xl overflow-hidden border border-[#2A2520] h-48 w-full">
+                      <Image src={imagePreview} alt="Preview" fill className="object-cover" />
+                      <button
+                        type="button"
+                        onClick={() => { setImageFile(null); setImagePreview(null); }}
+                        className="absolute top-2 right-2 w-7 h-7 rounded-full bg-black/60 flex items-center justify-center text-white hover:bg-black/80 transition-all"
+                      >
+                        <XMarkIcon className="w-4 h-4" />
+                      </button>
+                    </div>
+                  ) : (
+                    <label className="flex flex-col items-center justify-center gap-2 p-6 border border-dashed border-[#2A2520] rounded-xl cursor-pointer hover:border-[#C8956A]/50 transition-all bg-[#111009]">
+                      <span className="text-2xl">📷</span>
+                      <span className="text-xs text-[#8C7E6E]">Click to upload a photo</span>
+                      <input type="file" accept="image/*" className="hidden" onChange={handleImageChange} />
+                    </label>
+                  )}
                 </div>
 
                 <div>
