@@ -7,7 +7,7 @@ import { PostCard } from './post-card';
 import { PostCardSkeleton } from './post-card-skeleton';
 import { CreatePostModal } from '../modals/new-post-modal';
 import { useAuthUser } from '@/hooks/use-auth-user';
-import { PencilSquareIcon, ChatBubbleLeftEllipsisIcon  } from '@heroicons/react/24/outline';
+import { PencilSquareIcon, ChatBubbleLeftEllipsisIcon } from '@heroicons/react/24/outline';
 
 interface Post {
   id: string;
@@ -108,35 +108,47 @@ export function MovieCommunityPosts ({ movieId, movieTitle, posterPath, mediaTyp
   return (
     <div className="mt-10">
       {/* Section header */}
-      <div className="flex items-center justify-between mb-5">
+      <div className="mb-5 flex flex-wrap items-end justify-between gap-4">
         <div>
-          <p className="text-xs font-bold uppercase tracking-widest text-[#C8956A] mb-1">Community</p>
-          <h2 className="font-plus-jakarta font-extrabold text-xl text-[#EEEAE2]">
-            What people felt
+          <p className="mb-1 text-[11px] font-black uppercase tracking-[0.18em] text-[#B8AA98]">Community</p>
+          <h2 className="font-plus-jakarta text-2xl font-extrabold text-[#EEEAE2]">
+            What people <span className="shimmer-text">felt</span>
           </h2>
         </div>
         <button
+          type="button"
           onClick={handleWriteClick}
-          className="flex items-center gap-1.5 px-4 py-2 rounded-full text-sm font-semibold bg-[#1E1B18] border border-[#3A3530] text-[#C8956A] hover:bg-[#272320] hover:border-[#C8956A]/50 transition-all"
+          className="press flex items-center gap-2 rounded-full px-5 py-2.5 text-sm font-black text-[#0D0A08]"
+          style={{
+            background: 'linear-gradient(135deg,#FFD83D,#F5A623 60%,#FF5A36)',
+            boxShadow: '0 0 24px rgba(245,166,35,0.35)',
+          }}
         >
-          <PencilSquareIcon className="w-4 h-4" />
-          Write your reaction
+          <PencilSquareIcon className="h-4 w-4" strokeWidth={2.5} />
+          Yap about this
         </button>
       </div>
 
       {loading ? (
-        <div className="flex flex-col gap-3">
+        <div className="mx-auto flex max-w-[620px] flex-col gap-4">
           {Array.from({ length: 2 }).map((_, i) => <PostCardSkeleton key={i} />)}
         </div>
       ) : posts.length === 0 ? (
-        <div className="bg-[#1E1B18] border border-[#3A3530] rounded-2xl px-6 py-14 text-center">
-          <ChatBubbleLeftEllipsisIcon className="w-10 h-10 text-[#3A3530] mb-3 mx-auto" />
-          <p className="font-semibold text-[#EEEAE2] text-sm mb-1">No reactions yet</p>
-          <p className="text-xs text-[#4A4038] mb-5">Be the first to share how this made you feel.</p>
-      
+        <div className="rounded-3xl border border-white/10 bg-white/[0.04] px-6 py-14 text-center backdrop-blur-md">
+          <div aria-hidden className="mb-3 text-4xl">🎬</div>
+          <p className="mb-1 font-plus-jakarta text-lg font-extrabold text-[#EEEAE2]">No yaps yet</p>
+          <p className="mb-5 text-sm text-[#B8AA98]">Be the first to say how this one made you feel.</p>
+          <button
+            type="button"
+            onClick={handleWriteClick}
+            className="press inline-flex items-center gap-2 rounded-full bg-[#F5A623] px-5 py-2 text-sm font-black text-[#0D0A08]"
+          >
+            <ChatBubbleLeftEllipsisIcon className="h-4 w-4" />
+            Start the yapping
+          </button>
         </div>
       ) : (
-        <div className="flex flex-col gap-3">
+        <div className="mx-auto flex max-w-[620px] flex-col gap-4">
           {posts.map(post => (
             <PostCard
               key={post.id}
