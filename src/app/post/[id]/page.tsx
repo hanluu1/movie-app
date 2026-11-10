@@ -3,20 +3,23 @@
 import { useCallback, useEffect, useState } from 'react';
 import { useParams, useRouter } from 'next/navigation';
 import { supabase } from '@/lib/supabase/client';
-import { Header } from '@/components/layout';
+import { AppShell, useShell } from '@/components/layout';
 import { EditPostForm } from '@/features/posts';
+import { BackButton } from '@/components/ui/back-button';
+import { BRAND_COLOR, getFeeling } from '@/lib/moods';
 import Image from 'next/image';
 import Link from 'next/link';
 import {
-  ArrowLeftIcon,
-  HeartIcon,
+  ArrowUpRightIcon,
   ChatBubbleLeftEllipsisIcon,
+  HeartIcon,
+  PaperAirplaneIcon,
   PencilSquareIcon,
   TrashIcon,
 } from '@heroicons/react/24/outline';
 import { HeartIcon as HeartSolidIcon } from '@heroicons/react/24/solid';
-import { SignInPrompt } from '@/components/ui/sign-in-prompt';
-import { useAuthUser } from '@/hooks/use-auth-user';
+
+const LIKE_COLOR = '#FF4D6D';
 
 interface Post {
   id: string;
@@ -54,12 +57,14 @@ function getInitials (name: string) {
     : name.slice(0, 2).toUpperCase();
 }
 
-function Avatar ({ username, avatarUrl, size = 10 }: { username: string; avatarUrl?: string | null; size?: number }) {
-  const sizeClass = `w-${size} h-${size}`;
+function Avatar ({ username, avatarUrl, px = 40 }: { username: string; avatarUrl?: string | null; px?: number }) {
   return (
-    <div className={`${sizeClass} rounded-full flex-shrink-0 bg-[#272320] flex items-center justify-center text-[#EEEAE2] font-bold text-sm overflow-hidden relative`}>
+    <div
+      style={{ width: px, height: px }}
+      className="relative flex flex-shrink-0 items-center justify-center overflow-hidden rounded-full border border-white/20 bg-white/10 text-xs font-black text-white"
+    >
       {avatarUrl ? (
-        <Image src={avatarUrl} alt={username} fill className="object-cover" sizes={`${size * 4}px`} />
+        <Image src={avatarUrl} alt={username} fill className="object-cover" sizes={`${px}px`} />
       ) : (
         getInitials(username)
       )}
@@ -67,10 +72,11 @@ function Avatar ({ username, avatarUrl, size = 10 }: { username: string; avatarU
   );
 }
 
-export default function PostDetailPage () {
+function PostDetail () {
   const params = useParams<{ id: string }>();
   const id = params.id;
   const router = useRouter();
+  const { user, profile: currentProfile, requireAuth } = useShell();
 
   const [post, setPost] = useState<Post | null>(null);
   const [comments, setComments] = useState<Comment[]>([]);
@@ -78,17 +84,8 @@ export default function PostDetailPage () {
   const [loading, setLoading] = useState(true);
   const [edit, setEdit] = useState(false);
   const [liked, setLiked] = useState(false);
-  const [authPromptAction, setAuthPromptAction] = useState<string | null>(null);
   const [showDeleteModal, setShowDeleteModal] = useState(false);
   const [isDeleting, setIsDeleting] = useState(false);
-  const [currentProfile, setCurrentProfile] = useState<{ username: string; avatar_url?: string | null } | null>(null);
-  const { user } = useAuthUser();
-
-  const requireAuth = (action: string) => {
-    if (user) return true;
-    setAuthPromptAction(action);
-    return false;
-  };
 
   const fetchPost = useCallback(async () => {
     if (!id) return;
@@ -116,12 +113,6 @@ export default function PostDetailPage () {
       setLoading(false);
     })();
   }, [id, fetchPost, fetchComments]);
-
-  useEffect(() => {
-    if (!user) return;
-    supabase.from('profiles').select('username, avatar_url').eq('id', user.id).single()
-      .then(({ data }) => { if (data) setCurrentProfile(data); });
-  }, [user]);
 
   const handleUpvote = async () => {
     if (!post) return;
@@ -153,248 +144,296 @@ export default function PostDetailPage () {
 
   if (loading) {
     return (
-      <div className="min-h-screen bg-[#161210] flex flex-col">
-        <Header variant="dark" />
-        <div className="flex-1 flex items-center justify-center">
-          <div className="w-8 h-8 rounded-full border-2 border-[#272320] border-t-[#C8956A] animate-spin" />
+      <>
+        <BackButton />
+        <div className="flex flex-col gap-4" aria-busy="true">
+          <div className="skeleton h-80 rounded-3xl" />
+          <div className="skeleton h-40 rounded-3xl" />
         </div>
-      </div>
+      </>
     );
   }
 
   if (!post) {
     return (
-      <div className="min-h-screen bg-[#161210]">
-        <Header variant="dark" />
-        <div className="flex items-center justify-center h-64 text-[#8C7E6E]">Post not found.</div>
-      </div>
+      <>
+        <BackButton />
+        <div className="rounded-3xl border border-white/10 bg-white/[0.04] px-6 py-16 text-center backdrop-blur-md">
+          <div aria-hidden className="mb-3 text-4xl">🫥</div>
+          <p className="font-plus-jakarta text-lg font-extrabold">Post not found</p>
+          <p className="mt-1 text-sm text-[#B8AA98]">This yap may have been deleted.</p>
+        </div>
+      </>
     );
   }
 
   const authorName = post.profiles?.username || 'Anonymous';
   const isOwner = user?.id === post.user_id;
+  const primaryMood = post.mood?.[0] ?? null;
+  const feeling = getFeeling(primaryMood);
+  const color = feeling?.color ?? BRAND_COLOR;
+  const extraFeelings = Math.max(0, (post.mood?.length ?? 0) - 1);
+  const movieHref = post.movie_id
+    ? `/movie-more-info/${post.movie_id}${post.media_type ? `?type=${post.media_type}` : ''}`
+    : undefined;
+
+  const moviePill = (
+    <>
+      {post.movie_image && (
+        <div className="relative h-6 w-4 shrink-0 overflow-hidden rounded">
+          <Image src={post.movie_image} alt="" fill sizes="16px" className="object-cover" />
+        </div>
+      )}
+      <span className="max-w-[240px] truncate text-xs font-bold text-white/90">{post.movie_title}</span>
+    </>
+  );
 
   return (
-    <div className="font-dm-sans min-h-screen bg-[#161210] text-[#EEEAE2]">
-      <Header variant="dark" />
+    <>
+      <BackButton />
 
-      <div className="mx-auto w-full max-w-4xl xl:max-w-5xl 2xl:max-w-6xl px-6 lg:px-10 py-8">
+      {/* Post */}
+      <article
+        className="relative mb-5 overflow-hidden rounded-3xl border"
+        style={{ borderColor: `${color}33`, boxShadow: `0 12px 40px -18px ${color}55` }}
+      >
+        <div aria-hidden className="pointer-events-none absolute inset-0">
+          {post.movie_image && (
+            <Image src={post.movie_image} alt="" fill sizes="700px" className="scale-110 object-cover opacity-35 blur-2xl" />
+          )}
+          <div className="absolute inset-0 bg-[#0D0A08]" style={{ opacity: post.movie_image ? 0.6 : 0.92 }} />
+          <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/30 to-transparent" />
+          <div
+            className="absolute -right-16 -top-16 h-72 w-72 rounded-full blur-3xl"
+            style={{ background: `radial-gradient(circle, ${color}66 0%, transparent 70%)`, opacity: 0.85 }}
+          />
+          <div className="film-grain absolute inset-0" />
+        </div>
 
-        {/* Back */}
-        <Link
-          href="/community"
-          className="inline-flex items-center gap-1.5 text-sm font-semibold text-[#8C7E6E] hover:text-[#EEEAE2] transition-colors mb-6"
-        >
-          <ArrowLeftIcon className="w-4 h-4" />
-          Back to community
-        </Link>
-
-        {/* Post */}
-        <div className="bg-[#1E1B18] border border-[#3A3530] rounded-2xl overflow-hidden mb-6">
-
-          {/* Author row */}
-          <div className="px-6 pt-6 pb-5 flex items-center justify-between gap-4">
-            <div className="flex items-center gap-3">
-              <Avatar username={authorName} avatarUrl={post.profiles?.avatar_url} size={10} />
-              <div>
-                <div className="font-semibold text-sm text-[#EEEAE2]">{authorName}</div>
-                <div className="text-xs text-[#8C7E6E]">{formatTimestamp(post.created_at)}</div>
+        <div className="relative z-10 p-5 sm:p-6">
+          {/* Author + feeling */}
+          <div className="mb-4 flex items-center justify-between gap-3">
+            <div className="flex min-w-0 items-center gap-2.5">
+              <Avatar username={authorName} avatarUrl={post.profiles?.avatar_url} px={40} />
+              <div className="min-w-0 leading-tight">
+                <p className="truncate text-sm font-bold text-white">{authorName}</p>
+                <p className="text-[11px] font-semibold text-white/70">{formatTimestamp(post.created_at)}</p>
               </div>
             </div>
-            {isOwner && !edit && (
-              <div className="flex gap-2">
-                <button
-                  onClick={() => setEdit(true)}
-                  className="flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-xs font-semibold text-[#8C7E6E] hover:text-[#EEEAE2] hover:bg-[#272320] transition-all"
-                >
-                  <PencilSquareIcon className="w-3.5 h-3.5" />
-                  Edit
-                </button>
-                <button
-                  onClick={() => setShowDeleteModal(true)}
-                  className="flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-xs font-semibold text-rose-400 hover:text-rose-300 hover:bg-rose-500/10 transition-all"
-                >
-                  <TrashIcon className="w-3.5 h-3.5" />
-                  Delete
-                </button>
-              </div>
+            {feeling && (
+              <span
+                className="inline-flex shrink-0 items-center gap-1 rounded-full px-2.5 py-1 text-xs font-black backdrop-blur-sm"
+                style={{ background: `${color}22`, color, boxShadow: `inset 0 0 0 1px ${color}44` }}
+              >
+                <span aria-hidden>{feeling.emoji}</span>
+                {feeling.label}
+                {extraFeelings > 0 && <span className="text-white/70">+{extraFeelings}</span>}
+              </span>
             )}
           </div>
 
-          {/* Edit form */}
-          {edit && (
-            <div className="px-6 pb-6">
-              <EditPostForm
-                postId={post.id}
-                content={post.content || ''}
-                mood={post.mood ?? []}
-                imageUrl={post.image_url}
-                onCancel={() => setEdit(false)}
-                onSave={async () => { setEdit(false); await fetchPost(); }}
-              />
+          {/* Show pill */}
+          {post.movie_title && (
+            <div className="mb-4">
+              {movieHref ? (
+                <Link
+                  href={movieHref}
+                  className="press group/movie inline-flex items-center gap-2 rounded-full border border-white/15 bg-white/10 py-1 pl-1.5 pr-2.5 backdrop-blur-md transition-colors hover:border-white/35 hover:bg-white/15"
+                >
+                  {moviePill}
+                  <ArrowUpRightIcon className="h-3 w-3 shrink-0 text-white/70 transition group-hover/movie:text-white" />
+                </Link>
+              ) : (
+                <div className="inline-flex items-center gap-2 rounded-full border border-white/15 bg-white/10 py-1 pl-1.5 pr-2.5 backdrop-blur-md">
+                  {moviePill}
+                </div>
+              )}
             </div>
           )}
 
-          {!edit && (
+          {edit ? (
+            <EditPostForm
+              postId={post.id}
+              content={post.content || ''}
+              mood={post.mood ?? []}
+              imageUrl={post.image_url}
+              onCancel={() => setEdit(false)}
+              onSave={async () => { setEdit(false); await fetchPost(); }}
+            />
+          ) : (
             <>
-              {/* Reaction content */}
-              <div className="px-6 pb-6">
-                {post.content && (
-                  <p className="text-[#C8B8A2] text-base leading-relaxed">
-                    {post.content}
-                  </p>
-                )}
-                {post.image_url && (
-                  <div className="mt-4 rounded-xl overflow-hidden border border-[#3A3530] relative w-full h-72">
-                    <Image src={post.image_url} alt="Post photo" fill sizes="800px" className="object-cover" />
-                  </div>
-                )}
-              </div>
+              {post.content && (
+                <p
+                  className="whitespace-pre-wrap break-words text-xl font-bold leading-snug text-white sm:text-2xl"
+                  style={{ textShadow: `0 2px 24px ${color}55` }}
+                >
+                  {post.content}
+                </p>
+              )}
 
-              {/* Movie pill */}
-              {post.movie_title && (
-                <div className="px-6 pb-5">
-                  {post.movie_id ? (
-                    <Link
-                      href={`/movie-more-info/${post.movie_id}${post.media_type ? `?type=${post.media_type}` : ''}`}
-                      className="inline-flex items-center gap-2.5 bg-[#272320] hover:bg-[#3A3530] border border-[#3A3530] rounded-xl px-3 py-2 transition-colors"
-                    >
-                      {post.movie_image && (
-                        <div className="relative w-6 h-9 rounded flex-shrink-0 overflow-hidden">
-                          <Image src={post.movie_image} alt={post.movie_title} fill className="object-cover" sizes="24px" />
-                        </div>
-                      )}
-                      <span className="text-xs font-semibold text-[#C8B8A2]">{post.movie_title}</span>
-                    </Link>
-                  ) : (
-                    <div className="inline-flex items-center gap-2.5 bg-[#272320] border border-[#3A3530] rounded-xl px-3 py-2">
-                      {post.movie_image && (
-                        <div className="relative w-6 h-9 rounded flex-shrink-0 overflow-hidden">
-                          <Image src={post.movie_image} alt={post.movie_title} fill className="object-cover" sizes="24px" />
-                        </div>
-                      )}
-                      <span className="text-xs font-semibold text-[#C8B8A2]">{post.movie_title}</span>
-                    </div>
-                  )}
+              {post.image_url && (
+                <div className="relative mt-4 h-72 w-full overflow-hidden rounded-2xl border border-white/10 sm:h-96">
+                  <Image src={post.image_url} alt="Post photo" fill sizes="700px" className="object-cover" />
                 </div>
               )}
 
-              {/* Action bar */}
-              <div className="px-6 py-4 border-t border-[#3A3530] flex items-center gap-4">
-                <button
-                  onClick={handleUpvote}
-                  className={`flex items-center gap-2 px-4 py-2 rounded-xl text-sm font-semibold transition-all ${
-                    liked
-                      ? 'bg-rose-500/10 text-rose-400 border border-rose-500/30'
-                      : 'bg-[#272320] text-[#8C7E6E] hover:text-rose-400 border border-[#3A3530]'
-                  }`}
-                >
-                  {liked ? <HeartSolidIcon className="w-4 h-4" /> : <HeartIcon className="w-4 h-4" />}
-                  {post.upvotes} felt the same
-                </button>
-                <a
-                  href="#comments"
-                  className="flex items-center gap-2 px-4 py-2 rounded-xl text-sm font-semibold bg-[#272320] border border-[#3A3530] text-[#8C7E6E] hover:text-[#EEEAE2] transition-colors"
-                >
-                  <ChatBubbleLeftEllipsisIcon className="w-4 h-4" />
-                  {comments.length} {comments.length === 1 ? 'reply' : 'replies'}
-                </a>
+              {/* Exact phrase + actions */}
+              <div className="mt-5 flex flex-wrap items-center justify-between gap-3">
+                <p className="min-w-0 text-xs font-semibold italic" style={{ color: primaryMood ? color : 'rgba(255,255,255,0.7)' }}>
+                  {primaryMood ? `“${primaryMood}”` : ''}
+                </p>
+                <div className="flex shrink-0 items-center gap-1.5">
+                  <button
+                    type="button"
+                    onClick={handleUpvote}
+                    aria-pressed={liked}
+                    aria-label={`${liked ? 'Unlike' : 'Like'}, ${post.upvotes} likes`}
+                    className="press inline-flex items-center gap-1.5 rounded-full px-3.5 py-2 text-xs font-black backdrop-blur-md transition-all"
+                    style={liked
+                      ? { background: `${LIKE_COLOR}30`, color: LIKE_COLOR, boxShadow: `0 0 14px ${LIKE_COLOR}55` }
+                      : { background: 'rgba(255,255,255,0.1)', color: 'rgba(255,255,255,0.85)' }}
+                  >
+                    {liked ? <HeartSolidIcon aria-hidden className="h-4 w-4" /> : <HeartIcon aria-hidden className="h-4 w-4" />}
+                    <span>{post.upvotes}</span>
+                  </button>
+                  <a
+                    href="#comments"
+                    className="press inline-flex items-center gap-1.5 rounded-full bg-white/10 px-3.5 py-2 text-xs font-bold text-white/85 backdrop-blur-md transition-colors hover:bg-white/15"
+                  >
+                    <ChatBubbleLeftEllipsisIcon aria-hidden className="h-4 w-4" />
+                    <span>{comments.length}</span>
+                  </a>
+                </div>
               </div>
+
+              {isOwner && (
+                <div className="mt-4 flex gap-2 border-t border-white/10 pt-4">
+                  <button
+                    type="button"
+                    onClick={() => setEdit(true)}
+                    className="press inline-flex items-center gap-1.5 rounded-full border border-white/15 bg-white/[0.06] px-3.5 py-1.5 text-xs font-bold text-[#EEEAE2] transition-colors hover:bg-white/10"
+                  >
+                    <PencilSquareIcon className="h-3.5 w-3.5" />
+                    Edit
+                  </button>
+                  <button
+                    type="button"
+                    onClick={() => setShowDeleteModal(true)}
+                    className="press inline-flex items-center gap-1.5 rounded-full border border-rose-400/30 bg-rose-500/10 px-3.5 py-1.5 text-xs font-bold text-rose-300 transition-colors hover:bg-rose-500/20"
+                  >
+                    <TrashIcon className="h-3.5 w-3.5" />
+                    Delete
+                  </button>
+                </div>
+              )}
             </>
           )}
         </div>
+      </article>
 
-        {/* Comments */}
-        <div id="comments" className="bg-[#1E1B18] border border-[#3A3530] rounded-2xl px-6 py-6">
+      {/* Comments thread */}
+      <section
+        id="comments"
+        className="scroll-mt-24 rounded-3xl border border-white/10 bg-white/[0.04] p-4 backdrop-blur-md sm:p-5"
+      >
+        <h2 className="mb-4 font-plus-jakarta text-lg font-extrabold text-[#EEEAE2]">
+          The <span className="shimmer-text">chat</span>
+          <span className="ml-2 text-sm font-semibold text-[#B8AA98]">
+            {comments.length} {comments.length === 1 ? 'reply' : 'replies'}
+          </span>
+        </h2>
 
-          <p className="text-xs font-bold uppercase tracking-widest text-[#C8956A] mb-5">
-            {comments.length === 0 ? 'Replies' : `${comments.length} ${comments.length === 1 ? 'Reply' : 'Replies'}`}
-          </p>
-
-          {/* Input */}
-          <div className="flex gap-3 mb-6">
-            {user && (
-              <Avatar username={currentProfile?.username ?? user.email ?? ''} avatarUrl={currentProfile?.avatar_url} size={8} />
-            )}
-            <div className="flex-1">
-              <textarea
-                value={newComment}
-                onChange={e => setNewComment(e.target.value)}
-                placeholder="Share your reaction..."
-                rows={3}
-                className="w-full px-4 py-3 border border-[#3A3530] focus:border-[#C8956A]/60 bg-[#272320] rounded-xl text-sm text-[#EEEAE2] placeholder:text-[#4A4038] outline-none transition-all resize-none leading-relaxed"
-              />
-              <button
-                onClick={handleAddComment}
-                disabled={!newComment.trim()}
-                className="mt-2 px-5 py-2 rounded-xl text-sm font-semibold text-[#0A0908] bg-[#C8956A] hover:bg-[#D4A870] transition-all hover:-translate-y-0.5 hover:shadow-md disabled:opacity-40 disabled:cursor-not-allowed disabled:translate-y-0 disabled:shadow-none"
-              >
-                Reply
-              </button>
-            </div>
+        {comments.length === 0 ? (
+          <div className="py-8 text-center text-sm font-semibold text-[#B8AA98]">
+            No replies yet. Start the chat.
           </div>
-
-          {/* List */}
-          {comments.length === 0 ? (
-            <div className="text-center py-8 text-[#4A4038] text-sm">
-              No replies yet — be the first.
-            </div>
-          ) : (
-            <div className="flex flex-col divide-y divide-[#3A3530]">
-              {comments.map(comment => {
-                const name = comment.profiles?.username || 'Anonymous';
-                return (
-                  <div key={comment.id} className="py-4 flex gap-3">
-                    <Avatar username={name} avatarUrl={comment.profiles?.avatar_url} size={8} />
-                    <div className="flex-1 min-w-0">
-                      <div className="flex items-baseline gap-2 mb-1">
-                        <span className="text-sm font-semibold text-[#EEEAE2]">{name}</span>
-                        <span className="text-xs text-[#8C7E6E]">
-                          {new Date(comment.created_at).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' })}
-                        </span>
-                      </div>
-                      <p className="text-sm text-[#C8B8A2] leading-relaxed">{comment.content}</p>
+        ) : (
+          <div className="flex flex-col gap-3">
+            {comments.map(comment => {
+              const name = comment.profiles?.username || 'Anonymous';
+              const mine = !!user && !!currentProfile && name === currentProfile.username;
+              return (
+                <div key={comment.id} className={`flex items-end gap-2.5 ${mine ? 'flex-row-reverse' : ''}`}>
+                  <Avatar username={name} avatarUrl={comment.profiles?.avatar_url} px={32} />
+                  <div className={`min-w-0 max-w-[82%] ${mine ? 'items-end text-right' : ''} flex flex-col`}>
+                    <div className="mb-1 flex items-baseline gap-2 px-1">
+                      <span className="text-xs font-bold text-[#EEEAE2]">{name}</span>
+                      <span className="text-[11px] text-[#B8AA98]">
+                        {new Date(comment.created_at).toLocaleDateString('en-US', { month: 'short', day: 'numeric' })}
+                      </span>
                     </div>
+                    <p
+                      className={`whitespace-pre-wrap break-words border px-4 py-2.5 text-left text-sm leading-relaxed ${
+                        mine
+                          ? 'rounded-3xl rounded-br-lg border-[#F5A623]/30 bg-[#F5A623]/15 text-[#EEEAE2]'
+                          : 'rounded-3xl rounded-bl-lg border-white/10 bg-white/[0.06] text-[#EEEAE2]'
+                      }`}
+                    >
+                      {comment.content}
+                    </p>
                   </div>
-                );
-              })}
-            </div>
+                </div>
+              );
+            })}
+          </div>
+        )}
+      </section>
+
+      {/* Sticky comment input */}
+      <div className="sticky bottom-20 z-20 mt-4 lg:bottom-4">
+        <div className="flex items-end gap-2 rounded-3xl border border-white/10 bg-[#17120E]/90 p-2 backdrop-blur-xl">
+          {user && (
+            <Avatar username={currentProfile?.username ?? user.email ?? ''} avatarUrl={currentProfile?.avatar_url} px={36} />
           )}
+          <textarea
+            value={newComment}
+            onChange={e => setNewComment(e.target.value)}
+            onKeyDown={(e) => { if (e.key === 'Enter' && (e.metaKey || e.ctrlKey)) handleAddComment(); }}
+            placeholder="say something..."
+            aria-label="Write a reply"
+            rows={1}
+            className="max-h-32 min-h-[40px] flex-1 resize-none rounded-2xl bg-transparent px-2 py-2.5 text-sm leading-relaxed text-[#EEEAE2] outline-none placeholder:text-[#B8AA98]"
+          />
+          <button
+            type="button"
+            onClick={handleAddComment}
+            disabled={!newComment.trim()}
+            aria-label="Send reply"
+            className="press flex h-10 w-10 flex-shrink-0 items-center justify-center rounded-full text-[#0D0A08] transition-opacity disabled:cursor-not-allowed disabled:opacity-40"
+            style={{ background: 'linear-gradient(135deg,#FFD83D,#F5A623 60%,#FF5A36)' }}
+          >
+            <PaperAirplaneIcon className="h-5 w-5" />
+          </button>
         </div>
-
       </div>
-
-      <SignInPrompt
-        isOpen={authPromptAction !== null}
-        onClose={() => setAuthPromptAction(null)}
-        action={authPromptAction ?? undefined}
-      />
 
       {/* Delete confirmation modal */}
       {showDeleteModal && (
         <div
-          className="fixed inset-0 z-50 flex items-center justify-center p-6 bg-black/70 backdrop-blur-sm"
+          className="fixed inset-0 z-[70] flex items-center justify-center bg-black/70 p-6 backdrop-blur-sm"
           onClick={(e) => e.target === e.currentTarget && setShowDeleteModal(false)}
         >
-          <div className="bg-[#1E1B18] border border-[#3A3530] rounded-2xl w-full max-w-sm p-6 flex flex-col gap-5">
+          <div role="dialog" aria-modal="true" className="flex w-full max-w-sm flex-col gap-5 rounded-3xl border border-white/10 bg-[#17120E]/95 p-6 backdrop-blur-xl">
             <div>
-              <p className="text-xs font-bold uppercase tracking-widest text-rose-400 mb-1">Heads up</p>
-              <h2 className="font-plus-jakarta font-extrabold text-xl text-[#EEEAE2]">Delete this post?</h2>
-              <p className="text-sm text-[#8C7E6E] mt-2 leading-relaxed">
+              <p className="mb-1 text-[11px] font-black uppercase tracking-[0.18em] text-rose-300">Heads up</p>
+              <h2 className="font-plus-jakarta text-xl font-extrabold text-[#EEEAE2]">Delete this yap?</h2>
+              <p className="mt-2 text-sm leading-relaxed text-[#B8AA98]">
                 This will permanently remove your reaction. There&rsquo;s no way to get it back.
               </p>
             </div>
             <div className="flex gap-3">
               <button
+                type="button"
                 onClick={() => setShowDeleteModal(false)}
-                className="flex-1 py-2.5 rounded-xl text-sm font-semibold text-[#C8B8A2] bg-[#272320] border border-[#3A3530] hover:bg-[#3A3530] hover:text-[#EEEAE2] transition-all"
+                className="press flex-1 rounded-full border border-white/15 bg-white/[0.06] py-2.5 text-sm font-bold text-[#EEEAE2] transition-colors hover:bg-white/10"
               >
                 Keep it
               </button>
               <button
+                type="button"
                 onClick={handleDeletePost}
                 disabled={isDeleting}
-                className="flex-1 py-2.5 rounded-xl text-sm font-semibold text-white bg-rose-500 hover:bg-rose-400 transition-all hover:-translate-y-0.5 disabled:opacity-50 disabled:cursor-not-allowed disabled:translate-y-0"
+                className="press flex-1 rounded-full bg-rose-500 py-2.5 text-sm font-black text-white transition-colors hover:bg-rose-400 disabled:cursor-not-allowed disabled:opacity-50"
               >
                 {isDeleting ? 'Deleting…' : 'Yes, delete'}
               </button>
@@ -402,6 +441,14 @@ export default function PostDetailPage () {
           </div>
         </div>
       )}
-    </div>
+    </>
+  );
+}
+
+export default function PostDetailPage () {
+  return (
+    <AppShell width="feed">
+      <PostDetail />
+    </AppShell>
   );
 }
