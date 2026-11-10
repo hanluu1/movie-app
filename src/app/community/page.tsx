@@ -1,280 +1,209 @@
 'use client';
 
-import { useRef, useState, useEffect } from 'react';
-import { AllPost, CreatePostModal } from '@/features/posts';
-import { Header, MobileNavTabs } from '@/components/layout';
-import { SignInPrompt } from '@/components/ui/sign-in-prompt';
-import { useAuthUser } from '@/hooks/use-auth-user';
-import { supabase } from '@/lib/supabase/client';
+import { useRef, useState } from 'react';
 import Image from 'next/image';
-import { FilmIcon, TvIcon, ChevronDownIcon, XMarkIcon, PencilSquareIcon } from '@heroicons/react/24/outline';
-import { MOODS } from '@/lib/moods';
+import { AllPost } from '@/features/posts';
+import { AppShell, useShell } from '@/components/layout';
+import { FeelingPicker } from '@/components/ui/feeling-picker';
+import { BRAND_COLOR, FEELINGS, type FeelingKey } from '@/lib/moods';
+import { FilmIcon, TvIcon, XMarkIcon } from '@heroicons/react/24/outline';
 
 type Filter = 'all' | 'movies' | 'tv';
 type Sort = 'created_at' | 'upvotes';
 
-export default function CommunityPage () {
-  const postRef = useRef<{ refetch: () => void } | null>(null);
-  const moodRef = useRef<HTMLDivElement>(null);
-  const [showCreatePostModal, setShowCreatePostModal] = useState(false);
-  const [authPromptAction, setAuthPromptAction] = useState<string | null>(null);
-  const [activeFilter, setActiveFilter] = useState<Filter>('all');
-  const [activeSort, setActiveSort] = useState<Sort>('created_at');
-  const [activeMood, setActiveMood] = useState<string | null>(null);
-  const [moodOpen, setMoodOpen] = useState(false);
-  const [profile, setProfile] = useState<{ username: string; avatar_url: string | null } | null>(null);
-  const { user } = useAuthUser();
+interface FeedProps {
+  activeFilter: Filter;
+  setActiveFilter: (f: Filter) => void;
+  activeSort: Sort;
+  setActiveSort: (s: Sort) => void;
+  activeFeeling: FeelingKey | null;
+  setActiveFeeling: (k: FeelingKey | null) => void;
+  showFeelingSheet: boolean;
+  setShowFeelingSheet: (open: boolean) => void;
+  postRef: React.RefObject<{ refetch: () => void } | null>;
+}
 
-  useEffect(() => {
-    const handler = (e: MouseEvent) => {
-      if (moodRef.current && !moodRef.current.contains(e.target as Node)) {
-        setMoodOpen(false);
-      }
-    };
-    document.addEventListener('mousedown', handler);
-    return () => document.removeEventListener('mousedown', handler);
-  }, []);
-
-  useEffect(() => {
-    if (!user) {
-      setProfile(null);
-      return;
-    }
-
-    supabase
-      .from('profiles')
-      .select('username, avatar_url')
-      .eq('id', user.id)
-      .single()
-      .then(({ data }) => {
-        if (data) setProfile(data);
-      });
-  }, [user]);
-
-  const requireAuth = (action: string) => {
-    if (user) return true;
-    setAuthPromptAction(action);
-    return false;
-  };
-
-  const openReview = () => {
-    if (!requireAuth('share your take')) return;
-    setShowCreatePostModal(true);
-  };
-
-  const selectMood = (mood: string) => {
-    setActiveMood(mood);
-    setMoodOpen(false);
-  };
+function CommunityFeed ({
+  activeFilter, setActiveFilter, activeSort, setActiveSort,
+  activeFeeling, setActiveFeeling, showFeelingSheet, setShowFeelingSheet, postRef,
+}: FeedProps) {
+  const { user, profile, openComposer, requireAuth } = useShell();
 
   const clearFilters = () => {
     setActiveFilter('all');
     setActiveSort('created_at');
-    setActiveMood(null);
-    setMoodOpen(false);
+    setActiveFeeling(null);
   };
 
-  const hasActiveFilters = activeFilter !== 'all' || activeSort !== 'created_at' || activeMood !== null;
-
-  const filterButtonClass = (isActive: boolean) => `flex items-center gap-1.5 px-3.5 py-2 rounded-full text-sm font-semibold transition-all border ${
-    isActive
-      ? 'bg-[#EEEAE2] text-[#0A0908] border-[#EEEAE2]'
-      : 'border-[#272320] text-[#8C7E6E] hover:border-[#3A3530] hover:text-[#EEEAE2]'
-  }`;
-
-  const typeFilters = (
-    <>
-      <button onClick={() => setActiveFilter('all')} className={filterButtonClass(activeFilter === 'all')}>
-        All
-      </button>
-      <button
-        onClick={() => setActiveFilter('movies')}
-        className={filterButtonClass(activeFilter === 'movies')}
-      >
-        <FilmIcon className="w-3.5 h-3.5 text-[#C8956A]" />
-        Movies
-      </button>
-      <button
-        onClick={() => setActiveFilter('tv')}
-        className={filterButtonClass(activeFilter === 'tv')}
-      >
-        <TvIcon className="w-3.5 h-3.5 text-[#C8956A]" />
-        TV shows
-      </button>
-    </>
-  );
-
-  const sortFilters = (
-    <div className="flex items-center gap-1 rounded-full border border-[#272320] p-1">
-      <button
-        onClick={() => setActiveSort('created_at')}
-        className={`px-3 py-1.5 rounded-full text-xs font-semibold transition-all ${
-          activeSort === 'created_at' ? 'bg-[#EEEAE2] text-[#0A0908]' : 'text-[#8C7E6E] hover:text-[#EEEAE2]'
-        }`}
-      >
-        Newest
-      </button>
-      <button
-        onClick={() => setActiveSort('upvotes')}
-        className={`px-3 py-1.5 rounded-full text-xs font-semibold transition-all ${
-          activeSort === 'upvotes' ? 'bg-[#EEEAE2] text-[#0A0908]' : 'text-[#8C7E6E] hover:text-[#EEEAE2]'
-        }`}
-      >
-        Most felt
-      </button>
-    </div>
-  );
+  const hasActiveFilters = activeFilter !== 'all' || activeSort !== 'created_at' || activeFeeling !== null;
+  const feeling = activeFeeling ? FEELINGS[activeFeeling] : null;
 
   return (
-    <div className="font-dm-sans bg-[#161210] min-h-screen text-[#EEEAE2]">
-      <Header
-        onCreatePost={() => openReview()}
-        variant="dark"
-      />
-      <MobileNavTabs dark />
+    <>
+      <div className="mb-5">
+        <h1 className="font-plus-jakarta text-3xl font-extrabold leading-tight sm:text-4xl">
+          The <span className="shimmer-text">Yap</span> Feed
+        </h1>
+        <p className="mt-1 text-sm text-[#B8AA98]">what everyone&apos;s watching &amp; feeling rn</p>
+      </div>
 
-      <main className="mx-auto w-full max-w-5xl px-4 sm:px-6 lg:px-8 pt-6 sm:pt-10 pb-16">
+      {/* Composer */}
+      <button
+        onClick={openComposer}
+        className="press group mb-5 flex w-full items-center gap-3 rounded-3xl border border-white/10 bg-white/[0.04] px-4 py-3.5 text-left backdrop-blur-md transition-all hover:border-[#F5A623]/50 hover:bg-white/[0.07]"
+      >
+        <span className="relative flex h-10 w-10 shrink-0 items-center justify-center overflow-hidden rounded-full bg-[#F5A623] text-xs font-extrabold text-[#17110E]">
+          {profile?.avatar_url ? (
+            <Image src={profile.avatar_url} alt={profile.username} fill sizes="40px" className="object-cover" />
+          ) : (
+            (profile?.username || user?.email || 'You').slice(0, 2).toUpperCase()
+          )}
+        </span>
+        <span className="flex-1 text-sm text-[#B8AA98] transition-colors group-hover:text-white">
+          what are you watching? yap about it... 🎬
+        </span>
+        <span className="shrink-0 rounded-full bg-[#F5A623] px-4 py-1.5 text-xs font-black text-[#0D0A08]">
+          Yap
+        </span>
+      </button>
 
-        <div className="mb-5">
-          <p className="text-xs font-bold uppercase tracking-widest text-[#C8956A] mb-1">Community</p>
-          <h1 className="font-plus-jakarta text-2xl sm:text-3xl font-extrabold text-[#EEEAE2]">The conversation</h1>
-        </div>
+      {/* Feelings: orbs below xl; moved to right rail at xl */}
+      <div className="mb-5 xl:hidden">
+        <p className="mb-2.5 text-[11px] font-black uppercase tracking-[0.18em] text-[#B8AA98]">How are you feeling?</p>
+        <FeelingPicker active={activeFeeling} onChange={setActiveFeeling} />
+      </div>
 
-        {/* Write prompt bar */}
-        <button
-          onClick={openReview}
-          className="group mb-4 flex w-full items-center gap-3 rounded-2xl border border-[#2A2520] bg-[#1E1B18] px-4 py-3.5 text-left transition-all hover:border-[#C8956A]/60"
-        >
-          <span className="relative flex h-10 w-10 shrink-0 items-center justify-center overflow-hidden rounded-full bg-[#C8956A] text-xs font-extrabold text-[#17110E]">
-            {profile?.avatar_url ? (
-              <Image
-                src={profile.avatar_url}
-                alt={profile.username}
-                fill
-                sizes="40px"
-                className="object-cover"
-              />
-            ) : (
-              (profile?.username || user?.email || 'You').slice(0, 2).toUpperCase()
-            )}
-          </span>
-          <span className="flex-1 text-sm text-[#8C7E6E] group-hover:text-[#EEEAE2] transition-colors">
-            Share a reaction...
-          </span>
-          <div className="flex shrink-0 items-center gap-1.5 text-[#C8956A] group-hover:text-[#E8A870] transition-colors">
-            <PencilSquareIcon className="w-4 h-4" />
-            <span className="text-xs font-semibold">Share</span>
-          </div>
-        </button>
-
-        <div className="mb-6 rounded-2xl border border-[#272320] bg-[#1A1714]/70 p-3 sm:px-4 sm:py-3">
-          <div className="flex flex-col gap-4 lg:flex-row lg:items-center lg:justify-between">
-            <div className="flex flex-col gap-2.5">
-              <p className="text-xs font-bold uppercase tracking-widest text-[#8C7E6E]">Browse the feed</p>
-              <div className="flex flex-wrap items-center gap-2">
-                <div className="relative" ref={moodRef}>
-                  <button
-                    onClick={() => activeMood ? setActiveMood(null) : setMoodOpen(o => !o)}
-                    className={`flex items-center gap-1.5 px-4 py-2 rounded-full text-sm font-semibold transition-all border whitespace-nowrap ${
-                      activeMood
-                        ? 'bg-[#C8956A] text-[#0A0908] border-[#C8956A]'
-                        : 'border-[#C8956A]/40 text-[#C8956A] hover:border-[#C8956A] hover:bg-[#C8956A]/10'
-                    }`}
-                  >
-                    {activeMood ? (
-                      <>
-                        <span className="max-w-[160px] truncate">Feeling: {activeMood}</span>
-                        <XMarkIcon className="w-3.5 h-3.5 flex-shrink-0" />
-                      </>
-                    ) : (
-                      <>
-                        <span>Filter by feeling</span>
-                        <ChevronDownIcon className={`w-3.5 h-3.5 flex-shrink-0 transition-transform ${moodOpen ? 'rotate-180' : ''}`} />
-                      </>
-                    )}
-                  </button>
-
-                  {/* Mood dropdown panel */}
-                  {moodOpen && (
-                    <div className="absolute top-full mt-2 left-0 z-50 w-72 bg-[#111009] border border-[#272320] rounded-2xl p-3 shadow-xl">
-                      <p className="text-[10px] font-bold uppercase tracking-widest text-[#4A4038] px-1 mb-2">
-                    Pick a feeling
-                      </p>
-                      <div className="flex flex-wrap gap-1.5">
-                        {MOODS.map((mood) => (
-                          <button
-                            key={mood}
-                            onClick={() => selectMood(mood)}
-                            className="px-3 py-1.5 rounded-full text-xs font-medium border border-[#272320] text-[#8C7E6E] hover:border-[#C8956A] hover:text-[#C8956A] transition-all"
-                          >
-                            {mood}
-                          </button>
-                        ))}
-                      </div>
-                    </div>
-                  )}
-                </div>
-                <div className="h-4 w-px bg-[#272320]" />
-                {typeFilters}
-              </div>
-            </div>
-
-            <div className="flex w-full flex-wrap items-center gap-2 lg:ml-auto lg:w-auto lg:justify-end">
-              <span className="text-xs font-bold uppercase tracking-widest text-[#8C7E6E]">Sort</span>
-              {sortFilters}
-            </div>
-          </div>
-        </div>
-
-        {hasActiveFilters && (
-          <div className="flex flex-wrap items-center gap-2 mb-6">
-            <span className="text-xs text-[#8C7E6E]">Showing:</span>
-            {activeFilter !== 'all' && (
-              <button onClick={() => setActiveFilter('all')} className="flex items-center gap-1 px-2.5 py-1 rounded-full text-xs font-semibold bg-[#C8956A]/15 text-[#C8956A]">
-                {activeFilter === 'movies' ? 'Movies' : 'TV shows'} <XMarkIcon className="w-3 h-3" />
-              </button>
-            )}
-            {activeMood && (
-              <button onClick={() => setActiveMood(null)} className="flex items-center gap-1 px-2.5 py-1 rounded-full text-xs font-semibold bg-[#C8956A]/15 text-[#C8956A]">
-                {activeMood} <XMarkIcon className="w-3 h-3" />
-              </button>
-            )}
-            {activeSort === 'upvotes' && (
-              <button onClick={() => setActiveSort('created_at')} className="flex items-center gap-1 px-2.5 py-1 rounded-full text-xs font-semibold bg-[#C8956A]/15 text-[#C8956A]">
-                Most felt <XMarkIcon className="w-3 h-3" />
-              </button>
-            )}
-            <button onClick={clearFilters} className="text-xs font-semibold text-[#8C7E6E] hover:text-[#EEEAE2] transition-colors">
-              Clear filters
+      {/* Type + sort */}
+      <div className="mb-5 flex flex-wrap items-center justify-between gap-2">
+        <div className="flex flex-wrap items-center gap-2">
+          {(['all', 'movies', 'tv'] as const).map((f) => (
+            <button
+              key={f}
+              onClick={() => setActiveFilter(f)}
+              className={`press flex items-center gap-1.5 rounded-full border px-3.5 py-1.5 text-xs font-bold transition-all ${
+                activeFilter === f
+                  ? 'border-[#EEEAE2] bg-[#EEEAE2] text-[#0D0A08]'
+                  : 'border-white/15 text-[#B8AA98] hover:border-white/30 hover:text-white'
+              }`}
+            >
+              {f === 'movies' && <FilmIcon className="h-3 w-3" />}
+              {f === 'tv' && <TvIcon className="h-3 w-3" />}
+              {f === 'all' ? 'All' : f === 'movies' ? 'Movies' : 'TV shows'}
             </button>
+          ))}
+        </div>
+
+        <div className="flex items-center gap-1 rounded-full border border-white/15 p-1">
+          {(['created_at', 'upvotes'] as const).map((s) => (
+            <button
+              key={s}
+              onClick={() => setActiveSort(s)}
+              className={`rounded-full px-3 py-1 text-xs font-bold transition-all ${
+                activeSort === s ? 'bg-[#EEEAE2] text-[#0D0A08]' : 'text-[#B8AA98] hover:text-white'
+              }`}
+            >
+              {s === 'created_at' ? 'Newest' : 'Most felt'}
+            </button>
+          ))}
+        </div>
+      </div>
+
+      {/* Active filter tags */}
+      {hasActiveFilters && (
+        <div className="mb-5 flex flex-wrap items-center gap-2">
+          <span className="text-xs text-[#B8AA98]">Showing:</span>
+          {activeFilter !== 'all' && (
+            <button onClick={() => setActiveFilter('all')} className="flex items-center gap-1 rounded-full bg-[#F5A623]/15 px-2.5 py-1 text-xs font-bold text-[#F5A623]">
+              {activeFilter === 'movies' ? 'Movies' : 'TV shows'} <XMarkIcon className="h-3 w-3" />
+            </button>
+          )}
+          {feeling && (
+            <button
+              onClick={() => setActiveFeeling(null)}
+              className="flex items-center gap-1 rounded-full px-2.5 py-1 text-xs font-bold"
+              style={{ background: `${feeling.color}22`, color: feeling.color }}
+            >
+              {feeling.emoji} {feeling.label} <XMarkIcon className="h-3 w-3" />
+            </button>
+          )}
+          {activeSort === 'upvotes' && (
+            <button onClick={() => setActiveSort('created_at')} className="flex items-center gap-1 rounded-full bg-[#F5A623]/15 px-2.5 py-1 text-xs font-bold text-[#F5A623]">
+              Most felt <XMarkIcon className="h-3 w-3" />
+            </button>
+          )}
+          <button onClick={clearFilters} className="text-xs font-bold text-[#B8AA98] transition-colors hover:text-white">
+            Clear all
+          </button>
+        </div>
+      )}
+
+      <AllPost
+        ref={postRef}
+        isAuthed={!!user}
+        requireAuth={requireAuth}
+        filter={activeFilter}
+        sort={activeSort}
+        activeFeeling={activeFeeling}
+        onWriteClick={openComposer}
+      />
+
+      {/* Mobile/tablet: feeling sheet from the Mood tab */}
+      {showFeelingSheet && (
+        <div className="fixed inset-0 z-[60] lg:hidden" role="dialog" aria-modal="true" aria-label="How are you feeling?">
+          <button
+            type="button"
+            aria-label="Close"
+            className="absolute inset-0 bg-black/60 backdrop-blur-sm"
+            onClick={() => setShowFeelingSheet(false)}
+          />
+          <div className="absolute inset-x-0 bottom-0 rounded-t-3xl border-t border-white/10 bg-[#17120E] p-5 pb-8">
+            <p className="mb-4 font-plus-jakarta text-xl font-extrabold">How are you feeling?</p>
+            <FeelingPicker
+              layout="grid"
+              active={activeFeeling}
+              onChange={(k) => { setActiveFeeling(k); setShowFeelingSheet(false); }}
+            />
           </div>
-        )}
+        </div>
+      )}
+    </>
+  );
+}
 
-        <AllPost
-          ref={postRef}
-          isAuthed={!!user}
-          requireAuth={requireAuth}
-          filter={activeFilter}
-          sort={activeSort}
-          activeMood={activeMood}
-          onWriteClick={openReview}
-        />
-      </main>
+export default function CommunityPage () {
+  const postRef = useRef<{ refetch: () => void } | null>(null);
+  const [activeFilter, setActiveFilter] = useState<Filter>('all');
+  const [activeSort, setActiveSort] = useState<Sort>('created_at');
+  const [activeFeeling, setActiveFeeling] = useState<FeelingKey | null>(null);
+  const [showFeelingSheet, setShowFeelingSheet] = useState(false);
 
-      <CreatePostModal
-        isOpen={showCreatePostModal}
-        onClose={() => setShowCreatePostModal(false)}
-        onCreated={() => {
-          setShowCreatePostModal(false);
-          postRef.current?.refetch();
-        }}
+  return (
+    <AppShell
+      glowColor={activeFeeling ? FEELINGS[activeFeeling].color : BRAND_COLOR}
+      onPostCreated={() => postRef.current?.refetch()}
+      onMood={() => setShowFeelingSheet(true)}
+      moodActive={activeFeeling !== null}
+      rightRail={
+        <div className="rounded-3xl border border-white/10 bg-white/[0.04] p-4 backdrop-blur-md">
+          <p className="mb-3 text-[11px] font-black uppercase tracking-[0.18em] text-[#B8AA98]">How are you feeling?</p>
+          <FeelingPicker active={activeFeeling} onChange={setActiveFeeling} layout="grid" />
+          <p className="mt-3 text-xs leading-relaxed text-[#B8AA98]">
+            Pick a feeling to see yaps that hit the same way.
+          </p>
+        </div>
+      }
+    >
+      <CommunityFeed
+        activeFilter={activeFilter}
+        setActiveFilter={setActiveFilter}
+        activeSort={activeSort}
+        setActiveSort={setActiveSort}
+        activeFeeling={activeFeeling}
+        setActiveFeeling={setActiveFeeling}
+        showFeelingSheet={showFeelingSheet}
+        setShowFeelingSheet={setShowFeelingSheet}
+        postRef={postRef}
       />
-
-      <SignInPrompt
-        isOpen={authPromptAction !== null}
-        onClose={() => setAuthPromptAction(null)}
-        action={authPromptAction ?? undefined}
-      />
-    </div>
+    </AppShell>
   );
 }

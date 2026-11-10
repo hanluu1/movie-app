@@ -4,6 +4,7 @@ import { useEffect, useState, forwardRef, useImperativeHandle } from 'react';
 import { FilmIcon } from '@heroicons/react/24/outline';
 import Link from 'next/link';
 import { supabase } from '@/lib/supabase/client';
+import { FEELINGS, getMoodsForFeeling, type FeelingKey } from '@/lib/moods';
 import { PostCard } from '../components/post-card';
 import { PostCardSkeleton } from '../components/post-card-skeleton';
 import { CommentModal } from '../modals/comment-modal';
@@ -35,12 +36,12 @@ interface AllPostProps {
   requireAuth?: (action: string) => boolean;
   filter?: Filter;
   sort?: Sort;
-  activeMood?: string | null;
+  activeFeeling?: FeelingKey | null;
   onWriteClick?: () => void;
 }
 
 export const AllPost = forwardRef<{ refetch: () => void }, AllPostProps>(
-  ({ isAuthed = true, requireAuth, filter = 'all', sort = 'created_at', activeMood = null, onWriteClick }, ref) => {
+  ({ isAuthed = true, requireAuth, filter = 'all', sort = 'created_at', activeFeeling = null, onWriteClick }, ref) => {
     const [posts, setPosts] = useState<Post[]>([]);
     const [loading, setLoading] = useState(true);
     const [loadingMore, setLoadingMore] = useState(false);
@@ -97,8 +98,8 @@ export const AllPost = forwardRef<{ refetch: () => void }, AllPostProps>(
 
       if (filter === 'movies') postsQuery = postsQuery.eq('media_type', 'movie');
       if (filter === 'tv') postsQuery = postsQuery.eq('media_type', 'tv');
-      if (activeMood) {
-        postsQuery = postsQuery.contains('mood', [activeMood]);
+      if (activeFeeling) {
+        postsQuery = postsQuery.overlaps('mood', getMoodsForFeeling(activeFeeling));
       }
 
       const [postsResult, likesResult] = await Promise.all([
@@ -144,7 +145,7 @@ export const AllPost = forwardRef<{ refetch: () => void }, AllPostProps>(
     useEffect(() => {
       setOffset(0);
       fetchPosts(0, false);
-    }, [filter, sort, activeMood]); // eslint-disable-line react-hooks/exhaustive-deps
+    }, [filter, sort, activeFeeling]); // eslint-disable-line react-hooks/exhaustive-deps
 
     // Realtime subscription
     useEffect(() => {
@@ -196,26 +197,26 @@ export const AllPost = forwardRef<{ refetch: () => void }, AllPostProps>(
 
     if (posts.length === 0) return (
       <div className="text-center py-20 px-4">
-        <FilmIcon className="block w-10 h-10 mx-auto text-[#3A3530] mb-3" />
-        {activeMood ? (
+        <FilmIcon className="block w-10 h-10 mx-auto text-[#B8AA98] mb-3" />
+        {activeFeeling ? (
           <>
             <p className="font-semibold text-[#EEEAE2] text-sm mb-1">
-              No one has written about feeling &ldquo;{activeMood}&rdquo; yet.
+              No one has yapped about feeling {FEELINGS[activeFeeling].label} {FEELINGS[activeFeeling].emoji} yet.
             </p>
-            <p className="text-xs text-[#4A4038] mb-5">
+            <p className="text-xs text-[#8C7E6E] mb-5">
               Browse movies by mood, or be the first to share a movie that made you feel this way.
             </p>
             <div className="flex items-center justify-center gap-2 flex-wrap">
               <Link
                 href="/discover"
-                className="px-5 py-2.5 rounded-xl text-sm font-semibold border border-[#3A3530] text-[#C8B8A2] hover:border-[#C8956A]/50 hover:text-[#EEEAE2] transition-all"
+                className="px-5 py-2.5 rounded-xl text-sm font-semibold border border-white/15 text-[#C8B8A2] hover:border-[#F5A623]/50 hover:text-[#EEEAE2] transition-all"
               >
                 Browse by mood
               </Link>
               {onWriteClick && (
                 <button
                   onClick={onWriteClick}
-                  className="px-5 py-2.5 rounded-xl text-sm font-semibold bg-[#C8956A] text-[#0A0908] hover:bg-[#D4A870] transition-all"
+                  className="px-5 py-2.5 rounded-xl text-sm font-semibold bg-[#F5A623] text-[#0A0908] hover:bg-[#FFC04D] transition-all"
                 >
                   Share a reaction
                 </button>
@@ -227,7 +228,7 @@ export const AllPost = forwardRef<{ refetch: () => void }, AllPostProps>(
             <p className="font-semibold text-[#EEEAE2] text-sm mb-1">
               {filter === 'movies' ? 'No movie reactions yet.' : filter === 'tv' ? 'No TV show reactions yet.' : 'No reactions yet.'}
             </p>
-            <p className="text-xs text-[#4A4038] mb-5">
+            <p className="text-xs text-[#B8AA98] mb-5">
               {filter === 'movies' || filter === 'tv'
                 ? 'Try another filter, or be the first to share how something made you feel.'
                 : 'Browse by mood, or be the first to share how something made you feel.'}
@@ -235,14 +236,14 @@ export const AllPost = forwardRef<{ refetch: () => void }, AllPostProps>(
             <div className="flex items-center justify-center gap-2 flex-wrap">
               <Link
                 href="/discover"
-                className="px-5 py-2.5 rounded-xl text-sm font-semibold border border-[#3A3530] text-[#C8B8A2] hover:border-[#C8956A]/50 hover:text-[#EEEAE2] transition-all"
+                className="px-5 py-2.5 rounded-xl text-sm font-semibold border border-white/15 text-[#C8B8A2] hover:border-[#F5A623]/50 hover:text-[#EEEAE2] transition-all"
               >
                 Browse movies
               </Link>
               {onWriteClick && (
                 <button
                   onClick={onWriteClick}
-                  className="px-5 py-2.5 rounded-xl text-sm font-semibold bg-[#C8956A] text-[#0A0908] hover:bg-[#D4A870] transition-all"
+                  className="px-5 py-2.5 rounded-xl text-sm font-semibold bg-[#F5A623] text-[#0A0908] hover:bg-[#FFC04D] transition-all"
                 >
                   Share a reaction
                 </button>
@@ -286,7 +287,7 @@ export const AllPost = forwardRef<{ refetch: () => void }, AllPostProps>(
           <button
             onClick={loadMore}
             disabled={loadingMore}
-            className="w-full py-3 rounded-2xl border border-[#272320] text-sm font-semibold text-[#8C7E6E] bg-transparent hover:border-[#3A3530] hover:text-[#EEEAE2] transition-all disabled:opacity-50"
+            className="w-full py-3 rounded-2xl border border-white/15 text-sm font-semibold text-[#8C7E6E] bg-transparent hover:border-white/30 hover:text-[#EEEAE2] transition-all disabled:opacity-50"
           >
             {loadingMore ? 'Loading…' : 'Load more'}
           </button>
