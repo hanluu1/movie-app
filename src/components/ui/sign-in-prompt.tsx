@@ -10,6 +10,8 @@ interface SignInPromptProps {
   action?: string;
 }
 
+const CTA_GRADIENT = 'linear-gradient(135deg,#FFD83D,#F5A623 60%,#FF5A36)';
+
 export const SignInPrompt = ({ isOpen, onClose, action }: SignInPromptProps) => {
   const router = useRouter();
   const pathname = usePathname();
@@ -29,46 +31,50 @@ export const SignInPrompt = ({ isOpen, onClose, action }: SignInPromptProps) => 
 
   return (
     <div
-      className="fixed inset-0 z-[100] flex items-end sm:items-center justify-center sm:p-6 bg-black/70 backdrop-blur-sm"
+      className="fixed inset-0 z-[100] flex items-end justify-center bg-black/70 backdrop-blur-sm sm:items-center sm:p-6"
       onClick={onClose}
     >
       <div
-        className="bg-[#0D0B09] w-full sm:max-w-md sm:rounded-3xl rounded-t-3xl overflow-hidden border border-[#1A1410]"
+        className="relative w-full overflow-hidden rounded-t-3xl border border-white/10 bg-[#0D0A08]/95 backdrop-blur-md sm:max-w-md sm:rounded-3xl"
         onClick={e => e.stopPropagation()}
       >
-        {/* Header */}
-        <div className="px-6 pt-6 flex items-start justify-between border-b border-[#1A1410]">
+        <div className="pointer-events-none absolute -right-16 -top-20 h-56 w-56 rounded-full bg-[#FF4D9D]/20 blur-[100px]" />
+        <div className="pointer-events-none absolute -bottom-24 -left-16 h-56 w-56 rounded-full bg-[#9B6BFF]/20 blur-[100px]" />
+
+        <div className="relative flex items-start justify-between px-6 pt-6">
           <div>
-            <p className="text-xs font-bold uppercase tracking-widest text-[#C8956A] mb-0.5">Members only</p>
-            <h2 className="font-plus-jakarta font-extrabold text-xl text-[#EEEAE2]">Join the conversation</h2>
+            <p className="mb-1 text-xs font-bold uppercase tracking-widest text-[#F5A623]">Members only</p>
+            <h2 className="font-plus-jakarta text-2xl font-extrabold tracking-tight text-[#EEEAE2]">
+              Join the <span className="shimmer-text">yap</span> 🗣️
+            </h2>
           </div>
           <button
             onClick={onClose}
-            className="w-8 h-8 rounded-full flex items-center justify-center text-[#8C7E6E] hover:text-[#EEEAE2] hover:bg-[#1E1B18] transition-all"
+            aria-label="Close"
+            className="press flex h-9 w-9 items-center justify-center rounded-full border border-white/10 bg-white/[0.04] text-[#B8AA98] transition-all hover:text-[#EEEAE2]"
           >
-            <XMarkIcon className="w-4 h-4" />
+            <XMarkIcon className="h-4 w-4" />
           </button>
         </div>
 
-        {/* Body */}
-        <div className="px-6 py-3">
-          <p className="text-sm text-[#C8B8A2] leading-relaxed mb-6">
-            Sign in to {action || 'join the conversation'} and connect with people who love films the way you do.
-          You can browse without an account.
+        <div className="relative px-6 pb-6 pt-3">
+          <p className="mb-6 text-sm leading-relaxed text-[#B8AA98]">
+            Sign in to {action || 'join the conversation'} and tell everyone how it made you feel. You can browse without an account.
           </p>
 
           <div className="flex flex-row gap-3">
             <button
               onClick={goToLogin}
-              className="w-full py-3 rounded-xl font-semibold text-sm text-[#C8B8A2] bg-[#1A1714] hover:bg-[#D4A870] transition-all hover:-translate-y-0.5"
+              className="press w-full rounded-full border border-white/10 bg-white/[0.04] py-3 text-sm font-bold text-[#EEEAE2] backdrop-blur-md transition-all hover:bg-white/[0.08]"
             >
-              Sign In
+              Sign in
             </button>
             <button
-              onClick={onClose}
-              className="w-full py-3 rounded-xl font-semibold text-sm text-[#0A0908] bg-[#C8956A] border border-[#2A2520] hover:bg-[#1E1B18] transition-all"
+              onClick={goToLogin}
+              style={{ background: CTA_GRADIENT }}
+              className="press w-full rounded-full py-3 text-sm font-extrabold text-[#0D0A08] transition-all hover:brightness-110"
             >
-              Join Free
+              Join free
             </button>
           </div>
         </div>

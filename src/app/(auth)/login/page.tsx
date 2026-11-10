@@ -6,6 +6,7 @@ import { supabase } from '@/lib/supabase/client';
 import { getRedirect } from '@/utils/getRedirect';
 import GoogleIcon from '@/components/ui/google-icon';
 import FormField from '@/components/ui/form-field';
+import { Logo } from '@/components/ui/logo';
 import Link from 'next/link';
 
 export default function AuthPage () {
@@ -79,55 +80,45 @@ export default function AuthPage () {
   const switchMode = () => { setIsLogin(prev => !prev); setError(''); };
 
   return (
-    <div className="font-dm-sans min-h-screen bg-[#0A0908] flex items-center justify-center p-6">
+    <div className="font-dm-sans relative flex min-h-screen items-center justify-center overflow-hidden bg-[#0D0A08] p-5">
+      <div className="pointer-events-none absolute -left-24 -top-16 h-96 w-96 rounded-full bg-[#FF4D9D]/20 blur-[120px]" />
+      <div className="pointer-events-none absolute -right-24 top-1/3 h-96 w-96 rounded-full bg-[#9B6BFF]/20 blur-[120px]" />
+      <div className="pointer-events-none absolute -bottom-24 left-1/4 h-80 w-80 rounded-full bg-[#F5A623]/15 blur-[120px]" />
+      <div className="film-grain pointer-events-none fixed inset-0" />
 
-      <div className="w-full max-w-[420px]">
-
-        {/* Logo */}
-        <div className="text-center mb-8">
-          <Link href="/">
-            <span className="font-plus-jakarta font-extrabold text-4xl tracking-tight text-[#EEEAE2]">
-              ReelEmotion
-            </span>
-          </Link>
-          <p className="text-sm text-[#C8B8A2] mt-2">
-            {isLogin ? 'Welcome back.' : 'Find your next movie by how you want to feel.'}
+      <div className="relative w-full max-w-[420px]">
+        <div className="mb-6 text-center">
+          <Logo shimmer className="text-4xl" />
+          <p className="mt-2 text-sm text-[#B8AA98]">
+            {isLogin ? 'Welcome back. The group chat missed you.' : 'Yap about what you watch. Tag how it hit.'}
           </p>
         </div>
 
-        {/* Card */}
-        <div className="bg-[#1A1714] border border-[#3A3530] rounded-3xl p-8">
-
-          {/* Heading */}
-          <div className="mb-8">
-            <h1 className="font-plus-jakarta font-extrabold text-2xl tracking-tight text-[#EEEAE2] mb-1">
+        <div className="rounded-3xl border border-white/10 bg-white/[0.04] p-7 backdrop-blur-md sm:p-8">
+          <div className="mb-6">
+            <h1 className="mb-1 font-plus-jakarta text-2xl font-extrabold tracking-tight text-[#EEEAE2]">
               {isLogin ? 'Sign in' : 'Join ReelEmotion'}
             </h1>
-            <p className="text-sm text-[#4A4038]">
-              {isLogin
-                ? 'Share and discover reactions.'
-                : 'Share how movies make you feel.'}
+            <p className="text-sm text-[#B8AA98]">
+              {isLogin ? 'Share and discover reactions.' : 'Share how movies make you feel.'}
             </p>
           </div>
 
-          {/* Google */}
           <button
             type="button"
             onClick={handleGoogleLogin}
-            className="w-full py-3 border border-[#3A3530] bg-[#272320] rounded-xl font-semibold text-sm text-[#EEEAE2] transition-all hover:border-[#C8956A] flex items-center justify-center gap-2.5 mb-6"
+            className="press mb-6 flex w-full items-center justify-center gap-2.5 rounded-full border border-white/15 bg-white/[0.06] py-3 text-sm font-bold text-[#EEEAE2] transition-all hover:border-[#F5A623]/60 hover:bg-white/[0.1]"
           >
             <GoogleIcon />
             <span>Continue with Google</span>
           </button>
 
-          {/* Divider */}
-          <div className="relative flex items-center gap-3 mb-6">
-            <div className="flex-1 h-px bg-[#3A3530]" />
-            <span className="text-xs text-[#8C7E6E] font-medium">or</span>
-            <div className="flex-1 h-px bg-[#3A3530]" />
+          <div className="relative mb-6 flex items-center gap-3">
+            <div className="h-px flex-1 bg-white/10" />
+            <span className="text-xs font-medium text-[#B8AA98]">or</span>
+            <div className="h-px flex-1 bg-white/10" />
           </div>
 
-          {/* Form */}
           <form onSubmit={handleSubmit} className="flex flex-col gap-4">
             {!isLogin && (
               <FormField
@@ -159,40 +150,37 @@ export default function AuthPage () {
             />
 
             {error && (
-              <p className="text-sm text-rose-400 bg-rose-950/40 border border-rose-900/50 rounded-xl px-4 py-2.5">
+              <p role="alert" className="rounded-2xl border border-[#FF5A36]/40 bg-[#FF5A36]/10 px-4 py-2.5 text-sm text-[#FFB4A3]">
                 {error}
               </p>
             )}
 
             <button
               type="submit"
-              className="w-full py-3 bg-[#EEEAE2] text-[#0A0908] font-semibold rounded-xl text-sm transition-all hover:bg-[#E0D8C8] mt-1"
+              style={{ background: 'linear-gradient(135deg,#FFD83D,#F5A623 60%,#FF5A36)' }}
+              className="press mt-1 w-full rounded-full py-3 text-sm font-extrabold text-[#0D0A08] transition-all hover:brightness-110"
             >
-              {isLogin ? 'Sign In' : 'Create Account'}
+              {isLogin ? 'Sign in' : 'Create account'}
             </button>
           </form>
 
-          {/* Toggle */}
-          <p className="text-center mt-6 text-sm text-[#4A4038]">
+          <p className="mt-6 text-center text-sm text-[#B8AA98]">
             {isLogin ? "Don't have an account? " : 'Already have an account? '}
             <button
               type="button"
               onClick={switchMode}
-              className="text-[#C8956A] font-semibold hover:opacity-70 transition-opacity"
+              className="font-bold text-[#F5A623] transition-opacity hover:opacity-80"
             >
-              {isLogin ? 'Sign Up' : 'Sign In'}
+              {isLogin ? 'Sign up' : 'Sign in'}
             </button>
           </p>
-
         </div>
 
-        {/* Back link */}
-        <p className="text-center mt-6 text-xs text-[#4A4038]">
-          <Link href="/" className="hover:text-[#EEEAE2] transition-colors">
+        <p className="mt-6 text-center text-xs text-[#B8AA98]">
+          <Link href="/" className="transition-colors hover:text-[#EEEAE2]">
             ← Back
           </Link>
         </p>
-
       </div>
     </div>
   );

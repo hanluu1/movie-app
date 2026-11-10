@@ -54,26 +54,39 @@ export default function CompleteProfilePage () {
       const { error: upsertError } = await supabase.from('profiles').upsert({ id: user.id, username }, { onConflict: 'id' });
       if (upsertError) { setError(upsertError.message); setLoading(false); return; }
       router.push(getRedirect());
-    } catch (err: any) {
+    } catch (err: unknown) {
       console.error(err);
-      setError(err?.message || 'An error occurred');
+      setError(err instanceof Error ? err.message : 'An error occurred');
       setLoading(false);
     }
   };
 
-  if (loading) return <div className="p-8">Loading…</div>;
+  if (loading) {
+    return (
+      <div className="font-dm-sans flex min-h-screen items-center justify-center bg-[#0D0A08] text-sm font-semibold text-[#B8AA98]">
+        Loading…
+      </div>
+    );
+  }
 
   return (
-    <div className="min-h-screen flex items-center justify-center p-8 bg-stone-50">
-      <div className="bg-white rounded-2xl p-8 w-full max-w-md shadow-[0_12px_32px_rgba(0,0,0,0.08)]">
-        <h2 className="text-2xl font-bold mb-4">Complete your profile</h2>
-        <p className="text-sm text-stone-600 mb-6">Choose a username so other users can find and mention you.</p>
+    <div className="font-dm-sans relative flex min-h-screen items-center justify-center overflow-hidden bg-[#0D0A08] p-6">
+      <div className="pointer-events-none absolute -left-24 top-0 h-96 w-96 rounded-full bg-[#FF4D9D]/20 blur-[120px]" />
+      <div className="pointer-events-none absolute -right-24 bottom-0 h-96 w-96 rounded-full bg-[#9B6BFF]/20 blur-[120px]" />
+      <div className="film-grain pointer-events-none fixed inset-0" />
+      <div className="relative w-full max-w-md rounded-3xl border border-white/10 bg-white/[0.04] p-8 backdrop-blur-md">
+        <h2 className="mb-2 font-plus-jakarta text-3xl font-extrabold tracking-tight text-[#EEEAE2]">
+          Pick your <span className="shimmer-text">handle</span>
+        </h2>
+        <p className="mb-6 text-sm text-[#B8AA98]">Choose a username so other users can find and mention you.</p>
         <form onSubmit={handleSubmit} className="flex flex-col gap-4">
           <FormField label="Username" placeholder="your-username" value={username} onChange={e => setUsername(e.target.value)} required />
-          {error && <div className="text-red-600 text-sm">{error}</div>}
-          <div className="flex gap-3 mt-2">
-            <button type="button" onClick={() => router.push(getRedirect())} className="flex-1 py-3 rounded-xl border">Skip</button>
-            <button type="submit" className="flex-1 py-3 rounded-xl text-white bg-gradient-to-br from-red-600 to-orange-600">{loading ? 'Saving…' : 'Save'}</button>
+          {error && (
+            <div role="alert" className="rounded-2xl border border-[#FF5A36]/40 bg-[#FF5A36]/10 px-4 py-2.5 text-sm text-[#FFB4A3]">{error}</div>
+          )}
+          <div className="mt-2 flex gap-3">
+            <button type="button" onClick={() => router.push(getRedirect())} className="press flex-1 rounded-full border border-white/10 bg-white/[0.04] py-3 text-sm font-bold text-[#EEEAE2]">Skip</button>
+            <button type="submit" style={{ background: 'linear-gradient(135deg,#FFD83D,#F5A623 60%,#FF5A36)' }} className="press flex-1 rounded-full py-3 text-sm font-extrabold text-[#0D0A08] hover:brightness-110">{loading ? 'Saving…' : 'Save'}</button>
           </div>
         </form>
       </div>
