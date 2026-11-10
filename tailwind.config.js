@@ -8,6 +8,17 @@ module.exports = {
   ],
   theme: {
     extend: {
+      colors: {
+        brand: '#F5A623',
+        feel: {
+          joy: '#FFD83D',
+          love: '#FF4D9D',
+          sad: '#3D8BFF',
+          scared: '#A6FF3D',
+          hype: '#FF5A36',
+          mindblown: '#9B6BFF',
+        },
+      },
       fontFamily: {
         sans: ['var(--font-geist-sans)'],
         mono: ['var(--font-geist-mono)'],
