@@ -6,9 +6,9 @@ import { supabase } from '@/lib/supabase/client';
 import {
   Bars3Icon, XMarkIcon, MagnifyingGlassIcon,
   UserCircleIcon, ArrowRightStartOnRectangleIcon,
-  FilmIcon, GlobeAltIcon,
 } from '@heroicons/react/24/outline';
 import { AppSearch } from '@/components/search/app-search';
+import { Logo } from '@/components/ui/logo';
 import Image from 'next/image';
 import Link from 'next/link';
 import type { User } from '@supabase/auth-js';
@@ -85,39 +85,10 @@ export function Header ({ onCreatePost, showSearch = true, variant = 'light' }: 
     }`}>
       <div className="flex w-full items-center justify-between px-6 lg:px-10">
 
-        {/* Logo + nav */}
-        <div className="flex items-center gap-3 sm:gap-6">
-        
-          <span className={`font-plus-jakarta font-extrabold text-xl lg:text-2xl tracking-tight ${isDark ? 'text-[#EEEAE2]' : 'text-[#172526]'}`}>
-            Reel<span className="text-[#C8956A]">Emotion</span>
-          </span>
-       
-
-          <nav className="hidden sm:flex items-center gap-1">
-            <Link
-              href="/discover"
-              className={`flex items-center gap-1.5 px-3.5 py-2 rounded-full text-sm font-semibold transition-all ${
-                pathname === '/discover'
-                  ? isDark ? 'text-[#EEEAE2] bg-[#272320]' : 'text-[#172526] bg-[#EEF2ED]'
-                  : isDark ? 'text-[#8C7E6E] hover:text-[#EEEAE2]' : 'text-[#6F8C88] hover:text-[#172526]'
-              }`}
-            >
-              <FilmIcon className="w-4 h-4" />
-            Discover
-            </Link>
-            <Link
-              href="/community"
-              className={`flex items-center gap-1.5 px-3.5 py-2 rounded-full text-sm font-semibold transition-all ${
-                pathname === '/community'
-                  ? isDark ? 'text-[#EEEAE2] bg-[#272320]' : 'text-[#172526] bg-[#EEF2ED]'
-                  : isDark ? 'text-[#8C7E6E] hover:text-[#EEEAE2]' : 'text-[#6F8C88] hover:text-[#172526]'
-              }`}
-            >
-              <GlobeAltIcon className="w-4 h-4" />
-            Community
-            </Link>
-          </nav>
-        </div>
+        {/* Logo (navigation lives in the sidebar and bottom tab bar) */}
+        <Link href="/community">
+          <Logo asLink={false} className="text-xl lg:text-2xl" />
+        </Link>
 
         {/* Right side */}
         <div className="flex items-center gap-2">
@@ -139,7 +110,7 @@ export function Header ({ onCreatePost, showSearch = true, variant = 'light' }: 
               <div className="relative hidden sm:block" ref={profileMenuRef}>
                 <button
                   onClick={() => setProfileMenuOpen(o => !o)}
-                  className="w-9 h-9 rounded-full flex items-center justify-center text-white font-bold text-sm flex-shrink-0 transition-all hover:scale-105 bg-[#2A4649] overflow-hidden relative ring-2 ring-transparent hover:ring-[#C8956A]/50"
+                  className="w-9 h-9 rounded-full flex items-center justify-center text-white font-bold text-sm flex-shrink-0 transition-all hover:scale-105 bg-[#2A4649] overflow-hidden relative ring-2 ring-transparent hover:ring-[#F5A623]/50"
                   title="Account"
                 >
                   {profile?.avatar_url
@@ -195,7 +166,7 @@ export function Header ({ onCreatePost, showSearch = true, variant = 'light' }: 
               <Link href={loginHref} className="hidden sm:block">
                 <button className={`px-4 py-2 rounded-xl font-semibold text-sm transition-all ${
                   isDark
-                    ? 'bg-[#C8956A] text-[#0A0908] hover:bg-[#D4A870]'
+                    ? 'bg-[#F5A623] text-[#0A0908] hover:bg-[#FFC04D]'
                     : 'bg-[#2A4649] text-white hover:bg-[#1E3436]'
                 }`}>
                 Join Free
@@ -261,7 +232,7 @@ export function Header ({ onCreatePost, showSearch = true, variant = 'light' }: 
                     <button
                       onClick={() => { router.push(loginHref); setMenuOpen(false); }}
                       className={`w-full px-4 py-3 transition-colors text-left text-sm font-semibold ${
-                        isDark ? 'hover:bg-[#1E1B18] text-[#C8956A]' : 'hover:bg-[#EEF2ED] text-[#2A4649]'
+                        isDark ? 'hover:bg-[#1E1B18] text-[#F5A623]' : 'hover:bg-[#EEF2ED] text-[#2A4649]'
                       }`}
                     >
                     Join Free
