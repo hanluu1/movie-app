@@ -1,11 +1,12 @@
 'use client';
 
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { supabase } from '@/lib/supabase/client';
 import Image from 'next/image';
-import { XMarkIcon, MagnifyingGlassIcon, FilmIcon } from '@heroicons/react/24/outline';
-import { searchMoviesAndTv } from '@/lib/tmdb/client';
-import { MOODS } from '@/lib/moods';
+import { XMarkIcon, MagnifyingGlassIcon, FilmIcon, PhotoIcon } from '@heroicons/react/24/outline';
+import { useMovieSearch } from '@/hooks/use-movie-search';
+import { FeelingMoodSelect } from '@/components/ui/feeling-mood-select';
+import { BRAND_COLOR, getFeeling } from '@/lib/moods';
 
 interface CreatePostModalProps {
   isOpen: boolean;
@@ -21,47 +22,53 @@ interface MovieResult {
   overview: string;
   poster_path: string;
   release_date?: string;
+  first_air_date?: string;
   genre_ids?: number[];
 }
 
+const getYear = (m: MovieResult) => (m.release_date || m.first_air_date || '').slice(0, 4);
+
 export const CreatePostModal = ({ isOpen, onClose, onCreated, preselectedMovie }: CreatePostModalProps) => {
-  const [step, setStep] = useState<1 | 2 | 'success'>(1);
   const [searchQuery, setSearchQuery] = useState('');
-  const [searchResults, setSearchResults] = useState<MovieResult[]>([]);
   const [selectedMovie, setSelectedMovie] = useState<MovieResult | null>(null);
   const [reviewContent, setReviewContent] = useState('');
-  const [containsSpoilers, setContainsSpoilers] = useState(false);
   const [selectedMoods, setSelectedMoods] = useState<string[]>([]);
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [error, setError] = useState<string | null>(null);
   const [imageFile, setImageFile] = useState<File | null>(null);
   const [imagePreview, setImagePreview] = useState<string | null>(null);
+  const textareaRef = useRef<HTMLTextAreaElement>(null);
+  const searchRef = useRef<HTMLInputElement>(null);
+  const { results: searchResults, loading: searching } = useMovieSearch(searchQuery);
 
   useEffect(() => {
     if (!isOpen) {
-      setStep(1);
       setSearchQuery('');
-      setSearchResults([]);
       setSelectedMovie(null);
       setReviewContent('');
-      setContainsSpoilers(false);
       setSelectedMoods([]);
       setImageFile(null);
       setImagePreview(null);
-    } else if (preselectedMovie) {
-      setSelectedMovie(preselectedMovie);
-      setStep(2);
+      setError(null);
+      return;
     }
+    if (preselectedMovie) setSelectedMovie(preselectedMovie);
+    // Land the cursor where the user needs to type next
+    setTimeout(() => (preselectedMovie ? textareaRef.current : searchRef.current)?.focus(), 50);
   }, [isOpen, preselectedMovie]);
 
   useEffect(() => {
-    const fetchResults = async () => {
-      if (!searchQuery.trim()) { setSearchResults([]); return; }
-      const results = await searchMoviesAndTv(searchQuery);
-      setSearchResults(results);
-    };
-    const timer = setTimeout(fetchResults, 300);
-    return () => clearTimeout(timer);
-  }, [searchQuery]);
+    if (!isOpen) return;
+    const onKey = (e: KeyboardEvent) => { if (e.key === 'Escape') onClose(); };
+    document.addEventListener('keydown', onKey);
+    return () => document.removeEventListener('keydown', onKey);
+  }, [isOpen, onClose]);
+
+  const pickMovie = (movie: MovieResult) => {
+    setSelectedMovie(movie);
+    setSearchQuery('');
+    setTimeout(() => textareaRef.current?.focus(), 50);
+  };
 
   const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
@@ -71,11 +78,15 @@ export const CreatePostModal = ({ isOpen, onClose, onCreated, preselectedMovie }
   };
 
   const handleSubmit = async () => {
-    if (!reviewContent.trim() || isSubmitting) return;
+    if (!selectedMovie || !reviewContent.trim() || isSubmitting) return;
     setIsSubmitting(true);
+    setError(null);
     try {
       const { data: { user } } = await supabase.auth.getUser();
-      if (!user) return;
+      if (!user) {
+        setError('You need to be signed in to post.');
+        return;
+      }
 
       let imageUrl: string | null = null;
       if (imageFile) {
@@ -92,25 +103,26 @@ export const CreatePostModal = ({ isOpen, onClose, onCreated, preselectedMovie }
         }
       }
 
-      const movieName = selectedMovie?.title || selectedMovie?.name || null;
-      const movieImage = selectedMovie?.poster_path
-        ? `https://image.tmdb.org/t/p/w500${selectedMovie.poster_path}`
-        : null;
-      const mediaType = selectedMovie
-        ? (selectedMovie.title ? 'movie' : 'tv')
-        : null;
-      await supabase.from('posts').insert({
+      const { error: insertError } = await supabase.from('posts').insert({
         title: '',
         content: reviewContent,
-        movie_title: movieName,
-        movie_image: movieImage,
-        media_type: mediaType,
-        movie_id: selectedMovie?.id ?? null,
+        movie_title: selectedMovie.title || selectedMovie.name || null,
+        movie_image: selectedMovie.poster_path
+          ? `https://image.tmdb.org/t/p/w500${selectedMovie.poster_path}`
+          : null,
+        media_type: selectedMovie.title ? 'movie' : 'tv',
+        movie_id: selectedMovie.id,
         mood: selectedMoods,
         user_id: user.id,
         image_url: imageUrl,
       });
-      setStep('success');
+
+      if (insertError) {
+        setError('Couldn’t post that. Try again in a sec.');
+        return;
+      }
+      onCreated();
+      onClose();
     } finally {
       setIsSubmitting(false);
     }
@@ -118,259 +130,207 @@ export const CreatePostModal = ({ isOpen, onClose, onCreated, preselectedMovie }
 
   if (!isOpen) return null;
 
-  const canContinue = step === 1 ? !!selectedMovie : reviewContent.trim().length > 0;
+  const feeling = getFeeling(selectedMoods[0]);
+  const glow = feeling?.color ?? BRAND_COLOR;
   const displayTitle = selectedMovie?.title || selectedMovie?.name || '';
+  const canPost = !!selectedMovie && reviewContent.trim().length > 0 && !isSubmitting;
+  const showResults = searchQuery.trim().length > 0;
 
   return (
     <div
-      className="fixed inset-0 z-50 flex items-end sm:items-center justify-center sm:p-6 bg-black/70 backdrop-blur-sm"
+      className="fixed inset-0 z-50 flex items-end justify-center bg-black/70 backdrop-blur-sm sm:items-center sm:p-6"
       onClick={(e) => e.target === e.currentTarget && onClose()}
     >
-      <div className="bg-[#0D0B09] w-full sm:max-w-lg max-h-[92dvh] sm:rounded-3xl rounded-t-3xl overflow-hidden flex flex-col border border-[#1A1410]">
+      <div
+        role="dialog"
+        aria-modal="true"
+        aria-label="New yap"
+        className="relative flex max-h-[94dvh] w-full flex-col overflow-hidden rounded-t-3xl border border-white/10 bg-[#120E0B] sm:max-h-[90dvh] sm:max-w-[560px] sm:rounded-3xl"
+      >
+        {/* Aura follows the chosen feeling */}
+        <div
+          aria-hidden
+          className="pointer-events-none absolute -right-24 -top-24 h-72 w-72 rounded-full opacity-30 blur-3xl transition-colors duration-500"
+          style={{ background: glow }}
+        />
+        <div aria-hidden className="film-grain pointer-events-none absolute inset-0" />
 
         {/* Header */}
-        <div className="px-6 pt-6 pb-5 border-b border-[#1A1410] flex items-center justify-between flex-shrink-0">
-          <div>
-            <p className="text-xs font-bold uppercase tracking-widest text-[#C8956A] mb-0.5">
-              {step === 1 ? 'Step 1 of 2' : step === 2 ? 'Step 2 of 2' : ''}
-            </p>
-            <h2 className="font-plus-jakarta font-extrabold text-xl tracking-tight text-[#EEEAE2]">
-              {step === 1 && 'Pick a movie or show'}
-              {step === 2 && 'Write what it made you feel'}
-              {step === 'success' && 'Feeling shared!'}
-            </h2>
-          </div>
+        <div className="relative flex shrink-0 items-center justify-between px-5 pb-3 pt-5">
+          <h2 className="font-plus-jakarta text-xl font-extrabold tracking-tight text-[#EEEAE2]">
+            New <span className="shimmer-text">yap</span>
+          </h2>
           <button
             onClick={onClose}
-            className="w-8 h-8 rounded-full flex items-center justify-center text-[#8C7E6E] hover:text-[#EEEAE2] hover:bg-[#1E1B18] transition-all"
+            aria-label="Close"
+            className="press flex h-9 w-9 items-center justify-center rounded-full text-[#B8AA98] transition-colors hover:bg-white/10 hover:text-white"
           >
-            <XMarkIcon className="w-4 h-4" />
+            <XMarkIcon className="h-5 w-5" />
           </button>
         </div>
 
-        {/* Progress bar */}
-        {step !== 'success' && (
-          <div className="flex gap-1.5 px-6 pt-4 flex-shrink-0">
-            <div className={`flex-1 h-1 rounded-full transition-all ${step >= 1 ? 'bg-[#C8956A]' : 'bg-[#272320]'}`} />
-            <div className={`flex-1 h-1 rounded-full transition-all ${step === 2 ? 'bg-[#C8956A]' : 'bg-[#272320]'}`} />
-          </div>
-        )}
-
         {/* Body */}
-        <div className="px-6 py-6 overflow-y-auto flex-1">
+        <div className="relative flex flex-1 flex-col gap-5 overflow-y-auto px-5 pb-4">
 
-          {/* Step 1 — Movie search */}
-          {step === 1 && (
-            <div>
-              <p className="text-sm text-[#8C7E6E] mb-4">
-                Search for the movie or show that stayed with you.
-              </p>
-              <div className="relative mb-5">
-                <MagnifyingGlassIcon className="absolute left-3.5 top-1/2 -translate-y-1/2 w-4 h-4 text-[#8C7E6E] pointer-events-none" />
-                <input
-                  type="text"
-                  placeholder="Search movies or shows..."
-                  value={searchQuery}
-                  onChange={(e) => setSearchQuery(e.target.value)}
-                  className="w-full pl-10 pr-4 py-3 border border-[#2A2520] focus:border-[#C8956A]/60 bg-[#1A1714] rounded-xl text-sm text-[#e7e2d7] placeholder:text-[#8C7E6E] outline-none transition-all"
-                />
-              </div>
-
-              <div className="flex flex-col gap-2">
-                {searchResults.length === 0 && searchQuery.trim() === '' && (
-                  <p className="text-center text-[#8C7E6E] text-sm py-10">Start typing to find something...</p>
+          {/* 1. Show */}
+          <section aria-label="What you watched">
+            {selectedMovie ? (
+              <div className="flex items-center gap-3 rounded-2xl border border-white/10 bg-white/[0.05] p-2.5 pr-3">
+                {selectedMovie.poster_path ? (
+                  <Image
+                    src={`https://image.tmdb.org/t/p/w92${selectedMovie.poster_path}`}
+                    alt=""
+                    width={36}
+                    height={54}
+                    className="shrink-0 rounded-lg object-cover"
+                  />
+                ) : (
+                  <div className="flex h-[54px] w-9 shrink-0 items-center justify-center rounded-lg bg-white/10">
+                    <FilmIcon className="h-4 w-4 text-[#B8AA98]" />
+                  </div>
                 )}
-                {searchResults.map((movie) => {
-                  const isSelected = selectedMovie?.id === movie.id;
-                  const year = movie.release_date ? new Date(movie.release_date).getFullYear() : null;
-                  const title = movie.title || movie.name;
-                  return (
-                    <button
-                      key={movie.id}
-                      onClick={() => setSelectedMovie(isSelected ? null : movie)}
-                      className={`flex gap-3 p-3 border rounded-xl text-left w-full transition-all ${
-                        isSelected
-                          ? 'border-[#C8956A]/60 bg-[#1E1B18]'
-                          : 'border-[#2A2520] bg-[#111009] hover:border-[#3A3530] hover:bg-[#1A1714]'
-                      }`}
-                    >
-                      {movie.poster_path ? (
-                        <Image
-                          src={`https://image.tmdb.org/t/p/w92${movie.poster_path}`}
-                          alt={title}
-                          width={44}
-                          height={66}
-                          className="rounded-lg object-cover flex-shrink-0"
-                        />
-                      ) : (
-                        <div className="w-11 h-[66px] rounded-lg flex items-center justify-center flex-shrink-0 bg-[#1E1B18]">
-                          <FilmIcon className="w-5 h-5 text-[#3A3530]" />
-                        </div>
-                      )}
-                      <div className="flex-1 min-w-0 flex flex-col justify-center">
-                        <div className="font-semibold text-sm text-[#EEEAE2] truncate">{title}</div>
-                        {year && <div className="text-xs text-[#8C7E6E] mt-0.5">{year}</div>}
-                        {!movie.title && <div className="text-[10px] text-[#C8956A] font-semibold mt-1">TV Show</div>}
-                      </div>
-                      {isSelected && (
-                        <div className="flex-shrink-0 w-5 h-5 rounded-full bg-[#C8956A] flex items-center justify-center self-center">
-                          <svg className="w-3 h-3 text-[#0A0908]" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={3}>
-                            <path strokeLinecap="round" strokeLinejoin="round" d="M5 13l4 4L19 7" />
-                          </svg>
-                        </div>
-                      )}
-                    </button>
-                  );
-                })}
+                <div className="min-w-0 flex-1">
+                  <p className="text-[11px] font-semibold text-[#B8AA98]">Yapping about</p>
+                  <p className="truncate text-sm font-bold text-white">{displayTitle}</p>
+                  <p className="text-xs text-[#B8AA98]">
+                    {[getYear(selectedMovie), selectedMovie.title ? 'Movie' : 'TV show'].filter(Boolean).join(' · ')}
+                  </p>
+                </div>
+                {!preselectedMovie && (
+                  <button
+                    type="button"
+                    onClick={() => { setSelectedMovie(null); setTimeout(() => searchRef.current?.focus(), 50); }}
+                    className="press shrink-0 rounded-full border border-white/15 px-3 py-1.5 text-xs font-bold text-white/90 hover:bg-white/10"
+                  >
+                    Change
+                  </button>
+                )}
               </div>
-            </div>
-          )}
-
-          {/* Step 2 — Feeling form */}
-          {step === 2 && (
-            <div>
-              {selectedMovie && (
-                <div className="flex items-center gap-2.5 p-3 rounded-xl bg-[#1A1714] border border-[#2A2520] mb-6">
-                  {selectedMovie.poster_path && (
-                    <Image
-                      src={`https://image.tmdb.org/t/p/w92${selectedMovie.poster_path}`}
-                      alt={displayTitle}
-                      width={32}
-                      height={48}
-                      className="rounded object-cover flex-shrink-0"
-                    />
-                  )}
-                  <div>
-                    <div className="text-xs text-[#8C7E6E]">You&rsquo;re writing about</div>
-                    <div className="text-sm font-semibold text-[#EEEAE2]">{displayTitle}</div>
-                  </div>
-                </div>
-              )}
-
-              <div className="flex flex-col gap-5">
-                
-
-                <div>
-                  <label className="block text-sm font-semibold text-[#C8B8A2] mb-2" htmlFor="reviewContent">
-                    What did it make you feel?
-                  </label>
-                  <textarea
-                    id="reviewContent"
-                    placeholder="Write freely — no critic templates, no star ratings. Just how it made you feel and why..."
-                    value={reviewContent}
-                    onChange={(e) => setReviewContent(e.target.value)}
-                    className="w-full px-4 py-3 border border-[#2A2520] focus:border-[#C8956A]/60 bg-[#1A1714] rounded-xl text-sm text-[#EEEAE2] placeholder:text-[#4A4038] outline-none transition-all resize-none min-h-[140px] leading-relaxed"
-                  />
-                  <div className="text-right text-xs mt-1.5 text-[#8C7E6E]">
-                    {reviewContent.length} {reviewContent.length === 1 ? 'character' : 'characters'}
-                  </div>
-                </div>
-
-                <div>
-                  <label className="block text-sm font-semibold text-[#C8B8A2] mb-2">
-                    Add a photo (optional)
-                  </label>
-                  {imagePreview ? (
-                    <div className="relative rounded-xl overflow-hidden border border-[#2A2520] h-48 w-full">
-                      <Image src={imagePreview} alt="Preview" fill className="object-cover" />
-                      <button
-                        type="button"
-                        onClick={() => { setImageFile(null); setImagePreview(null); }}
-                        className="absolute top-2 right-2 w-7 h-7 rounded-full bg-black/60 flex items-center justify-center text-white hover:bg-black/80 transition-all"
-                      >
-                        <XMarkIcon className="w-4 h-4" />
-                      </button>
-                    </div>
-                  ) : (
-                    <label className="flex flex-col items-center justify-center gap-2 p-6 border border-dashed border-[#2A2520] rounded-xl cursor-pointer hover:border-[#C8956A]/50 transition-all bg-[#111009]">
-                      <span className="text-2xl">📷</span>
-                      <span className="text-xs text-[#8C7E6E]">Click to upload a photo</span>
-                      <input type="file" accept="image/*" className="hidden" onChange={handleImageChange} />
-                    </label>
-                  )}
-                </div>
-
-                <div>
-                  <label className="block text-sm font-semibold text-[#C8B8A2] mb-2">
-                    How did it make you feel?
-                  </label>
-                  <div className="flex flex-wrap gap-2">
-                    {MOODS.map((mood) => (
-                      <button
-                        key={mood}
-                        type="button"
-                        onClick={() => setSelectedMoods(prev =>
-                          prev.includes(mood) ? prev.filter(m => m !== mood) : [...prev, mood]
-                        )}
-                        className={`px-3 py-1.5 rounded-full text-xs font-medium border transition-all ${
-                          selectedMoods.includes(mood)
-                            ? 'bg-[#C8956A] text-[#0A0908] border-[#C8956A]'
-                            : 'border-[#2A2520] text-[#8C7E6E] hover:border-[#C8956A]/50 hover:text-[#C8956A]'
-                        }`}
-                      >
-                        {mood}
-                      </button>
-                    ))}
-                  </div>
-                </div>
-
-                <label className="flex items-center gap-3 p-3.5 bg-[#111009] hover:bg-[#1A1714] rounded-xl cursor-pointer transition-colors border border-[#2A2520]">
+            ) : (
+              <div>
+                <div className="relative">
+                  <MagnifyingGlassIcon className="pointer-events-none absolute left-4 top-1/2 h-5 w-5 -translate-y-1/2 text-[#B8AA98]" />
                   <input
-                    type="checkbox"
-                    checked={containsSpoilers}
-                    onChange={(e) => setContainsSpoilers(e.target.checked)}
-                    className="w-4 h-4 cursor-pointer accent-[#C8956A] flex-shrink-0"
+                    ref={searchRef}
+                    type="text"
+                    value={searchQuery}
+                    onChange={(e) => setSearchQuery(e.target.value)}
+                    placeholder="What did you watch? 🎬"
+                    aria-label="Search for a movie or show"
+                    className="w-full rounded-2xl border border-white/15 bg-white/[0.05] py-3.5 pl-12 pr-4 text-base text-white outline-none transition-colors placeholder:text-[#B8AA98] focus:border-[#F5A623]/70"
                   />
-                  <div>
-                    <div className="text-sm font-semibold text-[#EEEAE2]">Contains spoilers</div>
-                    <div className="text-xs text-[#8C7E6E] mt-0.5">Check if your reaction reveals plot details</div>
-                  </div>
-                </label>
-              </div>
-            </div>
-          )}
+                </div>
 
-          {/* Success */}
-          {step === 'success' && (
-            <div className="text-center py-10">
-              <div className="w-16 h-16 mx-auto mb-6 rounded-full flex items-center justify-center text-3xl bg-[#1A1714]">
-                ✨
+                {showResults && (
+                  <ul className="mt-2 max-h-64 overflow-y-auto rounded-2xl border border-white/10 bg-black/30">
+                    {searching && searchResults.length === 0 && (
+                      <li className="px-4 py-4 text-sm text-[#B8AA98]">Searching…</li>
+                    )}
+                    {!searching && searchResults.length === 0 && (
+                      <li className="px-4 py-4 text-sm text-[#B8AA98]">
+                        Nothing found for &ldquo;{searchQuery.trim()}&rdquo;. Try a different spelling.
+                      </li>
+                    )}
+                    {searchResults.slice(0, 8).map((movie) => (
+                      <li key={`${movie.title ? 'm' : 't'}-${movie.id}`}>
+                        <button
+                          type="button"
+                          onClick={() => pickMovie(movie)}
+                          className="flex w-full items-center gap-3 px-3 py-2.5 text-left transition-colors hover:bg-white/10 focus-visible:bg-white/10 focus-visible:outline-none"
+                        >
+                          {movie.poster_path ? (
+                            <Image
+                              src={`https://image.tmdb.org/t/p/w92${movie.poster_path}`}
+                              alt=""
+                              width={32}
+                              height={48}
+                              className="shrink-0 rounded object-cover"
+                            />
+                          ) : (
+                            <div className="flex h-12 w-8 shrink-0 items-center justify-center rounded bg-white/10">
+                              <FilmIcon className="h-4 w-4 text-[#B8AA98]" />
+                            </div>
+                          )}
+                          <span className="min-w-0 flex-1">
+                            <span className="block truncate text-sm font-bold text-white">{movie.title || movie.name}</span>
+                            <span className="text-xs text-[#B8AA98]">
+                              {[getYear(movie), movie.title ? 'Movie' : 'TV show'].filter(Boolean).join(' · ')}
+                            </span>
+                          </span>
+                        </button>
+                      </li>
+                    ))}
+                  </ul>
+                )}
               </div>
-              <h3 className="font-plus-jakarta font-extrabold text-xl text-[#EEEAE2] mb-2">
-                Your feeling is out there.
-              </h3>
-              <p className="text-sm text-[#8C7E6E] leading-relaxed mb-8">
-                Someone will read this and feel less alone about what they watched.
-              </p>
-              <button
-                onClick={() => { onCreated(); onClose(); }}
-                className="px-8 py-3 rounded-xl font-semibold text-sm text-[#0A0908] bg-[#C8956A] hover:bg-[#D4A870] transition-all hover:-translate-y-0.5"
-              >
-                Back to the community
-              </button>
+            )}
+          </section>
+
+          {/* 2. The yap */}
+          <section aria-label="Your yap">
+            <textarea
+              ref={textareaRef}
+              value={reviewContent}
+              onChange={(e) => setReviewContent(e.target.value)}
+              placeholder="how did it hit you? yap it out…"
+              aria-label="Your yap"
+              rows={5}
+              className="min-h-[140px] w-full resize-none rounded-2xl border border-white/10 bg-white/[0.04] px-4 py-3 text-xl font-bold leading-snug text-white outline-none transition-[border-color,box-shadow] placeholder:font-semibold placeholder:text-[#B8AA98] focus:border-transparent"
+              style={{ boxShadow: `0 0 0 1px ${glow}55` }}
+            />
+
+            {imagePreview && (
+              <div className="relative mt-3 h-48 w-full overflow-hidden rounded-2xl border border-white/10">
+                <Image src={imagePreview} alt="Preview" fill className="object-cover" />
+                <button
+                  type="button"
+                  aria-label="Remove photo"
+                  onClick={() => { setImageFile(null); setImagePreview(null); }}
+                  className="press absolute right-2 top-2 flex h-8 w-8 items-center justify-center rounded-full bg-black/70 text-white hover:bg-black"
+                >
+                  <XMarkIcon className="h-4 w-4" />
+                </button>
+              </div>
+            )}
+
+            <div className="mt-2 flex items-center justify-between">
+              <label className="press inline-flex cursor-pointer items-center gap-1.5 rounded-full border border-white/15 px-3 py-1.5 text-xs font-bold text-white/90 transition-colors hover:bg-white/10">
+                <PhotoIcon className="h-4 w-4" />
+                {imagePreview ? 'Change photo' : 'Add photo'}
+                <input type="file" accept="image/*" className="hidden" onChange={handleImageChange} />
+              </label>
+              <span className="text-xs text-[#B8AA98]">{reviewContent.length}</span>
             </div>
-          )}
+          </section>
+
+          {/* 3. Feeling (optional) */}
+          <section aria-label="How it hit you">
+            <p className="text-sm font-bold text-[#EEEAE2]">
+              How did it hit? <span className="font-medium text-[#B8AA98]">(optional)</span>
+            </p>
+            <FeelingMoodSelect value={selectedMoods} onChange={setSelectedMoods} />
+          </section>
         </div>
 
-        {/* Footer */}
-        {step !== 'success' && (
-          <div className="px-6 py-5 border-t border-[#1A1410] flex gap-3 flex-shrink-0">
-            <button
-              onClick={() => step === 2 ? setStep(1) : onClose()}
-              className="flex-1 py-3 rounded-xl font-semibold text-sm text-[#C8B8A2] bg-[#1A1714] border border-[#2A2520] hover:bg-[#1E1B18] transition-all"
-            >
-              {step === 1 ? 'Cancel' : 'Back'}
-            </button>
-            <button
-              onClick={() => step === 1 ? setStep(2) : handleSubmit()}
-              disabled={!canContinue || isSubmitting}
-              className="flex-1 py-3 rounded-xl font-semibold text-sm text-[#0A0908] bg-[#C8956A] hover:bg-[#D4A870] transition-all hover:-translate-y-0.5 disabled:opacity-40 disabled:cursor-not-allowed disabled:translate-y-0"
-            >
-              {step === 1 ? 'Continue' : isSubmitting ? 'Sharing…' : 'Share Feeling'}
-            </button>
-          </div>
-        )}
-
+        {/* Footer CTA */}
+        <div className="relative shrink-0 border-t border-white/10 px-5 pb-[max(1.25rem,env(safe-area-inset-bottom))] pt-4">
+          {error && <p role="alert" className="mb-2 text-sm font-semibold text-[#FF8A8A]">{error}</p>}
+          {!selectedMovie && !error && (
+            <p className="mb-2 text-xs text-[#B8AA98]">Pick what you watched to post.</p>
+          )}
+          <button
+            type="button"
+            onClick={handleSubmit}
+            disabled={!canPost}
+            className="press w-full rounded-2xl py-3.5 text-base font-black text-[#0D0A08] transition-opacity disabled:cursor-not-allowed disabled:opacity-40"
+            style={{
+              background: 'linear-gradient(135deg, #FFD83D, #F5A623 60%, #FF5A36)',
+              boxShadow: canPost ? '0 0 24px rgba(245,166,35,0.4)' : 'none',
+            }}
+          >
+            {isSubmitting ? 'Posting…' : 'Yap it'}
+          </button>
+        </div>
       </div>
     </div>
   );

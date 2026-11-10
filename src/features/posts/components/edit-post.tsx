@@ -4,7 +4,7 @@ import { useState } from 'react';
 import Image from 'next/image';
 import { XMarkIcon } from '@heroicons/react/24/outline';
 import { supabase } from '@/lib/supabase/client';
-import { MOODS } from '@/lib/moods';
+import { FeelingMoodSelect } from '@/components/ui/feeling-mood-select';
 
 interface EditPostFormProps {
   postId: string;
@@ -79,7 +79,7 @@ export const EditPostForm = ({ postId, content, mood = [], imageUrl, onCancel, o
           onChange={(e) => setEditedContent(e.target.value)}
           placeholder="Edit your reaction..."
           rows={6}
-          className="w-full px-4 py-3 border border-[#3A3530] focus:border-[#C8956A]/60 bg-[#272320] rounded-xl text-sm text-[#EEEAE2] placeholder:text-[#4A4038] outline-none transition-all resize-none leading-relaxed"
+          className="w-full px-4 py-3 border border-white/15 focus:border-[#F5A623]/60 bg-white/[0.06] rounded-xl text-sm text-[#EEEAE2] placeholder:text-[#B8AA98] outline-none transition-all resize-none leading-relaxed"
         />
       </div>
 
@@ -87,24 +87,7 @@ export const EditPostForm = ({ postId, content, mood = [], imageUrl, onCancel, o
         <label className="text-xs font-semibold uppercase tracking-widest text-[#8C7E6E]">
           How did it make you feel?
         </label>
-        <div className="flex flex-wrap gap-2">
-          {MOODS.map((mood) => (
-            <button
-              key={mood}
-              type="button"
-              onClick={() => setEditedMoods(prev =>
-                prev.includes(mood) ? prev.filter(m => m !== mood) : [...prev, mood]
-              )}
-              className={`px-3 py-1.5 rounded-full text-xs font-medium border transition-all ${
-                editedMoods.includes(mood)
-                  ? 'bg-[#C8956A] text-[#0A0908] border-[#C8956A]'
-                  : 'border-[#3A3530] text-[#8C7E6E] hover:border-[#C8956A]/50 hover:text-[#C8956A]'
-              }`}
-            >
-              {mood}
-            </button>
-          ))}
-        </div>
+        <FeelingMoodSelect value={editedMoods} onChange={setEditedMoods} />
       </div>
 
       <div className="flex flex-col gap-1.5">
@@ -112,7 +95,7 @@ export const EditPostForm = ({ postId, content, mood = [], imageUrl, onCancel, o
           Photo
         </label>
         {imagePreview ? (
-          <div className="relative rounded-xl overflow-hidden border border-[#3A3530] h-48 w-full">
+          <div className="relative rounded-xl overflow-hidden border border-white/15 h-48 w-full">
             <Image src={imagePreview} alt="Preview" fill className="object-cover" />
             <button
               type="button"
@@ -123,7 +106,7 @@ export const EditPostForm = ({ postId, content, mood = [], imageUrl, onCancel, o
             </button>
           </div>
         ) : imageUrl && !removeImage ? (
-          <div className="relative rounded-xl overflow-hidden border border-[#3A3530] h-48 w-full">
+          <div className="relative rounded-xl overflow-hidden border border-white/15 h-48 w-full">
             <Image src={imageUrl} alt="Current photo" fill className="object-cover" sizes="700px" />
             <button
               type="button"
@@ -134,7 +117,7 @@ export const EditPostForm = ({ postId, content, mood = [], imageUrl, onCancel, o
             </button>
           </div>
         ) : (
-          <label className="flex flex-col items-center justify-center gap-2 p-6 border border-dashed border-[#3A3530] rounded-xl cursor-pointer hover:border-[#C8956A]/50 transition-all bg-[#1E1B18]">
+          <label className="flex flex-col items-center justify-center gap-2 p-6 border border-dashed border-white/15 rounded-xl cursor-pointer hover:border-[#F5A623]/50 transition-all bg-white/[0.04]">
             <span className="text-2xl">📷</span>
             <span className="text-xs text-[#8C7E6E]">{removeImage ? 'Add a new photo' : 'Click to upload a photo'}</span>
             <input type="file" accept="image/*" className="hidden" onChange={handleImageChange} />
@@ -145,14 +128,14 @@ export const EditPostForm = ({ postId, content, mood = [], imageUrl, onCancel, o
       <div className="flex gap-3 pt-1">
         <button
           onClick={onCancel}
-          className="flex-1 py-2.5 rounded-xl text-sm font-semibold text-[#C8B8A2] bg-[#272320] border border-[#3A3530] hover:bg-[#3A3530] hover:text-[#EEEAE2] transition-all"
+          className="flex-1 py-2.5 rounded-xl text-sm font-semibold text-[#C8B8A2] bg-white/[0.06] border border-white/15 hover:bg-white/10 hover:text-[#EEEAE2] transition-all"
         >
           Cancel
         </button>
         <button
           onClick={handleUpdatePost}
           disabled={isSaving || !editedContent.trim()}
-          className="flex-1 py-2.5 rounded-xl text-sm font-semibold text-[#0A0908] bg-[#C8956A] hover:bg-[#D4A870] transition-all hover:-translate-y-0.5 disabled:opacity-40 disabled:cursor-not-allowed disabled:translate-y-0"
+          className="flex-1 py-2.5 rounded-xl text-sm font-semibold text-[#0A0908] bg-[#F5A623] hover:bg-[#FFC04D] transition-all hover:-translate-y-0.5 disabled:opacity-40 disabled:cursor-not-allowed disabled:translate-y-0"
         >
           {isSaving ? 'Saving…' : 'Save Changes'}
         </button>
