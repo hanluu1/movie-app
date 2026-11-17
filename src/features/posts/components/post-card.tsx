@@ -158,7 +158,7 @@ export const PostCard = ({
           <Image src={movieImage} alt="" fill sizes="16px" className="object-cover" />
         </div>
       )}
-      <span className="max-w-[200px] truncate text-xs font-bold text-white/90">{movieTitle}</span>
+      <span className="min-w-0 max-w-[200px] truncate text-xs font-bold text-white/90">{movieTitle}</span>
     </>
   );
 
@@ -195,7 +195,7 @@ export const PostCard = ({
             aria-hidden
           />
         )}
-        <div className="absolute inset-0 bg-[#0D0A08]" style={{ opacity: movieImage ? 0.6 : 0.92 }} />
+        <div className="absolute inset-0 bg-[#07051A]" style={{ opacity: movieImage ? 0.6 : 0.92 }} />
         <div className="absolute inset-0 bg-gradient-to-t from-black/90 via-black/40 to-transparent" />
 
         {/* Emotion aura */}
@@ -213,10 +213,10 @@ export const PostCard = ({
       {/* ── FOREGROUND ── */}
       <div className={`relative z-10 flex flex-1 flex-col ${isFeatured ? 'p-6' : 'p-5'}`}>
 
-        {/* Who + feeling */}
-        <div className="mb-3 flex items-center justify-between gap-3">
-          <div className="flex min-w-0 items-center gap-2.5">
-            <div className="relative flex h-9 w-9 shrink-0 items-center justify-center overflow-hidden rounded-full border border-white/25 bg-white/10 text-[11px] font-black text-white">
+        {/* Who + what + when */}
+        <div className="mb-4 flex items-start justify-between gap-3">
+          <div className="flex min-w-0 items-start gap-2.5">
+            <div className="relative mt-1 flex h-10 w-10 shrink-0 items-center justify-center overflow-hidden rounded-full border border-white/25 bg-white/10 text-[11px] font-black text-white">
               {avatarUrl ? (
                 <Image src={avatarUrl} alt={username || ''} fill sizes="36px" className="object-cover" />
               ) : (
@@ -225,41 +225,31 @@ export const PostCard = ({
             </div>
             <div className="min-w-0 leading-tight">
               <p className="truncate text-sm font-bold text-white">{username || 'Anonymous'}</p>
-              <p className="text-[11px] font-semibold text-white/60">{formatRelativeTime(createdAt)}</p>
+              {movieTitle && (
+                movieHref ? (
+                  <Link
+                    href={movieHref}
+                    onClick={(e) => e.stopPropagation()}
+                    className="group/movie mt-1 flex max-w-full flex-col items-start gap-1 text-[11px] font-semibold text-white/60 transition-colors hover:text-white"
+                  >
+                    <span>Yapping about</span>
+                    <span className="flex max-w-full items-center gap-1.5">
+                      {pill}
+                      <ArrowUpRightIcon className="h-3 w-3 shrink-0 text-white/60 transition group-hover/movie:text-white" />
+                    </span>
+                  </Link>
+                ) : (
+                  <div className="mt-1 flex max-w-full flex-col items-start gap-1 text-[11px] font-semibold text-white/60">
+                    <span>Yapping about</span>
+                    <span className="flex max-w-full items-center gap-1.5">{pill}</span>
+                  </div>
+                )
+              )}
             </div>
           </div>
 
-          {feeling && (
-            <span
-              className="inline-flex shrink-0 items-center gap-1 rounded-full px-2.5 py-1 text-xs font-black backdrop-blur-sm"
-              style={{ background: `${color}22`, color, boxShadow: `inset 0 0 0 1px ${color}44` }}
-            >
-              <span aria-hidden>{feeling.emoji}</span>
-              {feeling.label}
-              {extraFeelings > 0 && <span className="text-white/60">+{extraFeelings}</span>}
-            </span>
-          )}
+          <p className="shrink-0 pt-0.5 text-[11px] font-semibold text-white/60">{formatRelativeTime(createdAt)}</p>
         </div>
-
-        {/* Show pill */}
-        {movieTitle && (
-          <div className="mb-4">
-            {movieHref ? (
-              <Link
-                href={movieHref}
-                onClick={(e) => e.stopPropagation()}
-                className="press group/movie inline-flex items-center gap-2 rounded-full border border-white/15 bg-white/10 py-1 pl-1.5 pr-2.5 backdrop-blur-md transition-colors hover:border-white/35 hover:bg-white/15"
-              >
-                {pill}
-                <ArrowUpRightIcon className="h-3 w-3 shrink-0 text-white/60 transition group-hover/movie:text-white" />
-              </Link>
-            ) : (
-              <div className="inline-flex items-center gap-2 rounded-full border border-white/15 bg-white/10 py-1 pl-1.5 pr-2.5 backdrop-blur-md">
-                {pill}
-              </div>
-            )}
-          </div>
-        )}
 
         {/* The yap */}
         {postContent && (
@@ -290,11 +280,19 @@ export const PostCard = ({
           </div>
         )}
 
-        {/* Footer: exact phrase + reactions */}
+        {/* Footer: feeling + reactions */}
         <div className="mt-4 flex items-center justify-between gap-3">
-          <p className="min-w-0 truncate text-xs font-semibold italic" style={{ color: primaryMood ? color : 'rgba(255,255,255,0.6)' }}>
-            {primaryMood ? `“${primaryMood}”` : ''}
-          </p>
+          {feeling ? (
+            <span
+              title={primaryMood ? `How it hit: ${primaryMood}` : undefined}
+              className="inline-flex min-w-0 items-center gap-1 rounded-full px-2.5 py-1 text-xs font-black backdrop-blur-sm"
+              style={{ background: `${color}22`, color, boxShadow: `inset 0 0 0 1px ${color}44` }}
+            >
+              <span aria-hidden>{feeling.emoji}</span>
+              <span className="truncate">{feeling.label}</span>
+              {extraFeelings > 0 && <span className="text-white/60">+{extraFeelings}</span>}
+            </span>
+          ) : <div />}
 
           <div className="flex shrink-0 items-center gap-1.5">
             <div className="relative">
