@@ -34,7 +34,7 @@ export function FeelingPicker ({ active, onChange, layout = 'row', bleed = true 
             }`}
             style={isGrid
               ? isActive
-                ? { background: f.color, borderColor: f.color, color: '#0D0A08', boxShadow: `0 0 24px ${f.color}66` }
+                ? { background: f.color, borderColor: f.color, color: '#07051A', boxShadow: `0 0 24px ${f.color}66` }
                 : { background: `${f.color}12`, borderColor: `${f.color}33`, color: f.color }
               : undefined}
           >
@@ -55,7 +55,7 @@ export function FeelingPicker ({ active, onChange, layout = 'row', bleed = true 
             )}
             <span
               className="text-[11px] font-bold leading-none"
-              style={isGrid ? undefined : { color: isActive ? f.color : '#B8AA98' }}
+              style={isGrid ? undefined : { color: isActive ? f.color : '#B3A9D6' }}
             >
               {f.label}
             </span>

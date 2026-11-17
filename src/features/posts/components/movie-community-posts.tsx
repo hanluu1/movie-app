@@ -110,18 +110,18 @@ export function MovieCommunityPosts ({ movieId, movieTitle, posterPath, mediaTyp
       {/* Section header */}
       <div className="mb-5 flex flex-wrap items-end justify-between gap-4">
         <div>
-          <p className="mb-1 text-[11px] font-black uppercase tracking-[0.18em] text-[#B8AA98]">Community</p>
-          <h2 className="font-plus-jakarta text-2xl font-extrabold text-[#EEEAE2]">
+          <p className="mb-1 text-[11px] font-black uppercase tracking-[0.18em] text-[#B3A9D6]">Community</p>
+          <h2 className="font-plus-jakarta text-2xl font-extrabold text-[#F1EEFF]">
             What people <span className="shimmer-text">felt</span>
           </h2>
         </div>
         <button
           type="button"
           onClick={handleWriteClick}
-          className="press flex items-center gap-2 rounded-full px-5 py-2.5 text-sm font-black text-[#0D0A08]"
+          className="press flex items-center gap-2 rounded-full px-5 py-2.5 text-sm font-black text-white"
           style={{
-            background: 'linear-gradient(135deg,#FFD83D,#F5A623 60%,#FF5A36)',
-            boxShadow: '0 0 24px rgba(245,166,35,0.35)',
+            background: 'linear-gradient(135deg,#A78BFA,#7C3AED 60%,#5B21B6)',
+            boxShadow: '0 0 24px rgba(139,92,246,0.35)',
           }}
         >
           <PencilSquareIcon className="h-4 w-4" strokeWidth={2.5} />
@@ -136,12 +136,12 @@ export function MovieCommunityPosts ({ movieId, movieTitle, posterPath, mediaTyp
       ) : posts.length === 0 ? (
         <div className="rounded-3xl border border-white/10 bg-white/[0.04] px-6 py-14 text-center backdrop-blur-md">
           <div aria-hidden className="mb-3 text-4xl">🎬</div>
-          <p className="mb-1 font-plus-jakarta text-lg font-extrabold text-[#EEEAE2]">No yaps yet</p>
-          <p className="mb-5 text-sm text-[#B8AA98]">Be the first to say how this one made you feel.</p>
+          <p className="mb-1 font-plus-jakarta text-lg font-extrabold text-[#F1EEFF]">No yaps yet</p>
+          <p className="mb-5 text-sm text-[#B3A9D6]">Be the first to say how this one made you feel.</p>
           <button
             type="button"
             onClick={handleWriteClick}
-            className="press inline-flex items-center gap-2 rounded-full bg-[#F5A623] px-5 py-2 text-sm font-black text-[#0D0A08]"
+            className="press inline-flex items-center gap-2 rounded-full bg-[#8B5CF6] px-5 py-2 text-sm font-black text-white"
           >
             <ChatBubbleLeftEllipsisIcon className="h-4 w-4" />
             Start the yapping

@@ -33,7 +33,7 @@ export const FEELINGS: Record<FeelingKey, Feeling> = {
   sad: { key: 'sad', label: 'Sad', emoji: '😭', color: '#3D8BFF' },
   scared: { key: 'scared', label: 'Scared', emoji: '😱', color: '#A6FF3D' },
   hype: { key: 'hype', label: 'Hype', emoji: '🔥', color: '#FF5A36' },
-  mindblown: { key: 'mindblown', label: 'Mind-blown', emoji: '🤯', color: '#9B6BFF' },
+  mindblown: { key: 'mindblown', label: 'Mind-blown', emoji: '🤯', color: '#2DE2C4' },
 };
 
 export const FEELING_LIST: Feeling[] = Object.values(FEELINGS);
@@ -54,7 +54,7 @@ const MOOD_TO_FEELING: Record<Mood, FeelingKey> = {
   'Still thinking about it': 'mindblown',
 };
 
-export const BRAND_COLOR = '#F5A623';
+export const BRAND_COLOR = '#8B5CF6';
 
 export function getFeeling (mood?: string | null): Feeling | null {
   if (!mood) return null;

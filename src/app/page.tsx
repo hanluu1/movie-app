@@ -16,6 +16,6 @@ export default function Home () {
     });
   }, [router]);
 
-  if (loading) return <div className="min-h-screen bg-[#0D0A08]" />;
+  if (loading) return <div className="min-h-screen bg-[#07051A]" />;
   return <LandingPage />;
 }

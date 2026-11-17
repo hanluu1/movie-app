@@ -23,7 +23,7 @@ export function FeelingMoodSelect ({ value, onChange }: FeelingMoodSelectProps) 
 
       {feeling && (
         <div role="group" aria-label="Say it more exactly" className="flex flex-wrap items-center gap-2">
-          <span className="text-xs font-semibold text-[#B8AA98]">Exactly:</span>
+          <span className="text-xs font-semibold text-[#B3A9D6]">Exactly:</span>
           {phrases.map((phrase) => {
             const isOn = value[0] === phrase;
             return (
@@ -34,7 +34,7 @@ export function FeelingMoodSelect ({ value, onChange }: FeelingMoodSelectProps) 
                 onClick={() => onChange([phrase])}
                 className="press rounded-full border px-3 py-1.5 text-xs font-bold transition-all"
                 style={isOn
-                  ? { background: feeling.color, borderColor: feeling.color, color: '#0D0A08' }
+                  ? { background: feeling.color, borderColor: feeling.color, color: '#07051A' }
                   : { background: `${feeling.color}12`, borderColor: `${feeling.color}44`, color: feeling.color }}
               >
                 {phrase}

@@ -86,13 +86,14 @@ export function AppShell ({
     if (requireAuth('share your take')) setShowComposer(true);
   };
 
-  const gridCols = width === 'feed'
-    ? `lg:grid-cols-[220px_minmax(0,620px)] lg:justify-center ${rightRail ? 'xl:grid-cols-[240px_minmax(0,620px)_300px]' : ''}`
-    : `lg:grid-cols-[220px_minmax(0,1fr)] ${rightRail ? 'xl:grid-cols-[240px_minmax(0,1fr)_300px]' : ''}`;
+  // Content column sits in the space beside the sidebar; the sidebar itself always hugs the left edge
+  const contentCols = width === 'feed'
+    ? `max-w-[620px] ${rightRail ? 'xl:max-w-[944px] xl:grid-cols-[minmax(0,620px)_300px]' : ''}`
+    : `max-w-[1200px] ${rightRail ? 'xl:grid-cols-[minmax(0,1fr)_300px]' : ''}`;
 
   return (
     <ShellContext.Provider value={{ user, profile, openComposer, requireAuth }}>
-      <div className="relative min-h-screen bg-[#0D0A08] font-dm-sans text-[#EEEAE2]">
+      <div className="relative min-h-screen bg-[#07051A] font-dm-sans text-[#F1EEFF]">
 
         {/* Ambient mesh glow */}
         <div aria-hidden className="pointer-events-none fixed inset-0 z-0 overflow-hidden">
@@ -107,7 +108,7 @@ export function AppShell ({
 
         <Header variant="dark" />
 
-        <div className={`relative z-10 mx-auto grid w-full max-w-[1280px] grid-cols-1 gap-6 px-4 pb-28 pt-6 lg:pb-16 ${gridCols}`}>
+        <div className="relative z-10 w-full px-4 pb-28 pt-6 lg:grid lg:grid-cols-[220px_minmax(0,1fr)] lg:gap-6 lg:px-10 lg:pb-16">
 
           {/* Left rail */}
           <aside className="sticky top-24 hidden self-start lg:block">
@@ -120,7 +121,7 @@ export function AppShell ({
                     href={href}
                     aria-current={active ? 'page' : undefined}
                     className={`press flex items-center gap-3 rounded-2xl px-4 py-3 text-sm font-bold transition-colors ${
-                      active ? 'bg-white/10 text-white' : 'text-[#B8AA98] hover:bg-white/5 hover:text-white'
+                      active ? 'bg-white/10 text-white' : 'text-[#B3A9D6] hover:bg-white/5 hover:text-white'
                     }`}
                   >
                     <Icon className="h-5 w-5" style={active ? { color: BRAND_COLOR } : undefined} />
@@ -132,10 +133,10 @@ export function AppShell ({
             <button
               type="button"
               onClick={openComposer}
-              className="press mt-4 flex w-full items-center justify-center gap-2 rounded-2xl py-3 text-sm font-black text-[#0D0A08]"
+              className="press mt-4 flex w-full items-center justify-center gap-2 rounded-2xl py-3 text-sm font-black text-white"
               style={{
-                background: 'linear-gradient(135deg, #FFD83D, #F5A623 60%, #FF5A36)',
-                boxShadow: '0 0 24px rgba(245,166,35,0.35)',
+                background: 'linear-gradient(135deg, #A78BFA, #7C3AED 60%, #5B21B6)',
+                boxShadow: '0 0 24px rgba(139,92,246,0.35)',
               }}
             >
               <PlusIcon className="h-4 w-4" strokeWidth={3} />
@@ -143,9 +144,11 @@ export function AppShell ({
             </button>
           </aside>
 
-          <main className="min-w-0">{children}</main>
+          <div className={`mx-auto grid w-full min-w-0 grid-cols-1 gap-6 ${contentCols}`}>
+            <main className="min-w-0">{children}</main>
 
-          {rightRail && <aside className="sticky top-24 hidden self-start xl:block">{rightRail}</aside>}
+            {rightRail && <aside className="sticky top-24 hidden self-start xl:block">{rightRail}</aside>}
+          </div>
         </div>
 
         <BottomTabBar onYap={openComposer} onMood={onMood} moodActive={moodActive} />

@@ -176,7 +176,7 @@ export default function MyProfilePage () {
           <div
             className="rounded-full p-[3px]"
             style={{
-              background: 'linear-gradient(135deg,#FFD83D,#F5A623 60%,#FF5A36)',
+              background: 'linear-gradient(135deg,#A78BFA,#7C3AED 60%,#5B21B6)',
               boxShadow: `0 0 48px ${glow}55`,
             }}
           >
@@ -184,7 +184,7 @@ export default function MyProfilePage () {
               onClick={() => fileInputRef.current?.click()}
               disabled={uploading}
               aria-label="Change profile photo"
-              className="press relative flex h-28 w-28 items-center justify-center overflow-hidden rounded-full border-4 border-[#0D0A08] bg-[#1c1612] font-plus-jakarta text-3xl font-extrabold text-[#EEEAE2] sm:h-32 sm:w-32"
+              className="press relative flex h-28 w-28 items-center justify-center overflow-hidden rounded-full border-4 border-[#07051A] bg-[#110B2B] font-plus-jakarta text-3xl font-extrabold text-[#F1EEFF] sm:h-32 sm:w-32"
             >
               {profile?.avatar_url ? (
                 <Image
@@ -206,7 +206,7 @@ export default function MyProfilePage () {
 
           {uploading && (
             <div className="absolute inset-0 flex items-center justify-center rounded-full bg-black/55">
-              <div className="h-6 w-6 animate-spin rounded-full border-2 border-[#F5A623] border-t-transparent motion-reduce:animate-none" />
+              <div className="h-6 w-6 animate-spin rounded-full border-2 border-[#8B5CF6] border-t-transparent motion-reduce:animate-none" />
             </div>
           )}
 
@@ -223,7 +223,7 @@ export default function MyProfilePage () {
           {profile?.username ?? <span className="skeleton inline-block h-9 w-40 rounded-full align-middle" />}
         </h1>
 
-        <p className="mt-1 text-sm text-[#B8AA98]">
+        <p className="mt-1 text-sm text-[#B3A9D6]">
           {profile ? `@${profile.username}` : ''}
           {memberYear ? ` · yapping since ${memberYear}` : ''}
         </p>
@@ -231,7 +231,7 @@ export default function MyProfilePage () {
         <button
           onClick={() => fileInputRef.current?.click()}
           disabled={uploading}
-          className="press mt-4 flex items-center gap-2 rounded-full border border-white/15 bg-white/[0.04] px-5 py-2 text-sm font-bold text-[#EEEAE2] backdrop-blur-md transition-colors hover:border-[#F5A623]/60 hover:bg-white/[0.08] disabled:opacity-60"
+          className="press mt-4 flex items-center gap-2 rounded-full border border-white/15 bg-white/[0.04] px-5 py-2 text-sm font-bold text-[#F1EEFF] backdrop-blur-md transition-colors hover:border-[#8B5CF6]/60 hover:bg-white/[0.08] disabled:opacity-60"
         >
           <PencilSquareIcon className="h-4 w-4" />
           Edit profile photo
@@ -240,18 +240,18 @@ export default function MyProfilePage () {
         {/* Stats */}
         <div className="mt-6 grid w-full grid-cols-3 gap-2 sm:gap-3">
           <div className="rounded-3xl border border-white/10 bg-white/[0.04] px-2 py-3 backdrop-blur-md">
-            <p className="font-plus-jakarta text-2xl font-extrabold text-[#F5A623]">{posts.length}</p>
-            <p className="mt-0.5 text-xs text-[#B8AA98]">{posts.length === 1 ? 'yap' : 'yaps'}</p>
+            <p className="font-plus-jakarta text-2xl font-extrabold text-[#8B5CF6]">{posts.length}</p>
+            <p className="mt-0.5 text-xs text-[#B3A9D6]">{posts.length === 1 ? 'yap' : 'yaps'}</p>
           </div>
           <div className="rounded-3xl border border-white/10 bg-white/[0.04] px-2 py-3 backdrop-blur-md">
-            <p className="font-plus-jakarta text-2xl font-extrabold text-[#F5A623]">{totalReactions}</p>
-            <p className="mt-0.5 text-xs text-[#B8AA98]">likes received</p>
+            <p className="font-plus-jakarta text-2xl font-extrabold text-[#8B5CF6]">{totalReactions}</p>
+            <p className="mt-0.5 text-xs text-[#B3A9D6]">likes received</p>
           </div>
           <div className="rounded-3xl border border-white/10 bg-white/[0.04] px-2 py-3 backdrop-blur-md">
-            <p className="font-plus-jakarta text-2xl font-extrabold" style={{ color: top?.color ?? '#EEEAE2' }}>
+            <p className="font-plus-jakarta text-2xl font-extrabold" style={{ color: top?.color ?? '#F1EEFF' }}>
               {top ? top.emoji : '—'}
             </p>
-            <p className="mt-0.5 text-xs text-[#B8AA98]">{top ? `top: ${top.label}` : 'top feeling'}</p>
+            <p className="mt-0.5 text-xs text-[#B3A9D6]">{top ? `top: ${top.label}` : 'top feeling'}</p>
           </div>
         </div>
       </section>
@@ -259,7 +259,7 @@ export default function MyProfilePage () {
       {/* Feeling fingerprint */}
       {tagged > 0 && (
         <section className="mt-6 rounded-3xl border border-white/10 bg-white/[0.04] p-4 backdrop-blur-md">
-          <p className="mb-3 text-[11px] font-black uppercase tracking-[0.18em] text-[#B8AA98]">
+          <p className="mb-3 text-[11px] font-black uppercase tracking-[0.18em] text-[#B3A9D6]">
             Your feeling fingerprint
           </p>
 
@@ -295,7 +295,7 @@ export default function MyProfilePage () {
       {/* Tabs */}
       <section className="mt-7">
         <div className="mb-5 flex flex-wrap items-center gap-2">
-          <span className="rounded-full border border-[#EEEAE2] bg-[#EEEAE2] px-3.5 py-1.5 text-xs font-bold text-[#0D0A08]">
+          <span className="rounded-full border border-[#F1EEFF] bg-[#F1EEFF] px-3.5 py-1.5 text-xs font-bold text-[#07051A]">
             My yaps
           </span>
 
@@ -311,7 +311,7 @@ export default function MyProfilePage () {
                 style={
                   on
                     ? { background: `${f.color}33`, borderColor: f.color, color: f.color }
-                    : { borderColor: 'rgba(255,255,255,0.15)', color: '#B8AA98' }
+                    : { borderColor: 'rgba(255,255,255,0.15)', color: '#B3A9D6' }
                 }
               >
                 {f.emoji} {f.label}
@@ -327,10 +327,10 @@ export default function MyProfilePage () {
           </div>
         ) : visiblePosts.length === 0 ? (
           <div className="rounded-3xl border border-white/10 bg-white/[0.04] px-6 py-16 text-center backdrop-blur-md">
-            <p className="font-plus-jakarta text-lg font-extrabold text-[#EEEAE2]">
+            <p className="font-plus-jakarta text-lg font-extrabold text-[#F1EEFF]">
               No yaps yet
             </p>
-            <p className="mx-auto mt-2 max-w-sm text-sm leading-relaxed text-[#B8AA98]">
+            <p className="mx-auto mt-2 max-w-sm text-sm leading-relaxed text-[#B3A9D6]">
               When something you watch stays with you, this is where your
               feelings will live.
             </p>

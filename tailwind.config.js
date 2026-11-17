@@ -9,14 +9,14 @@ module.exports = {
   theme: {
     extend: {
       colors: {
-        brand: '#F5A623',
+        brand: '#8B5CF6',
         feel: {
           joy: '#FFD83D',
           love: '#FF4D9D',
           sad: '#3D8BFF',
           scared: '#A6FF3D',
           hype: '#FF5A36',
-          mindblown: '#9B6BFF',
+          mindblown: '#2DE2C4',
         },
       },
       fontFamily: {

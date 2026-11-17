@@ -67,15 +67,15 @@ export const CommentModal = ({ postId, isOpen, onClose }: CommentModalProps) => 
         role="dialog"
         aria-modal="true"
         aria-label="Replies"
-        className="flex max-h-[85vh] w-full flex-col overflow-hidden rounded-t-3xl border border-white/10 bg-[#17120E]/95 backdrop-blur-xl sm:max-w-xl sm:rounded-3xl"
+        className="flex max-h-[85vh] w-full flex-col overflow-hidden rounded-t-3xl border border-white/10 bg-[#110B2B]/95 backdrop-blur-xl sm:max-w-xl sm:rounded-3xl"
       >
         {/* Header */}
         <div className="flex flex-shrink-0 items-center justify-between border-b border-white/10 px-5 pb-4 pt-5">
           <div>
-            <h2 className="font-plus-jakarta text-xl font-extrabold tracking-tight text-[#EEEAE2]">
+            <h2 className="font-plus-jakarta text-xl font-extrabold tracking-tight text-[#F1EEFF]">
               The <span className="shimmer-text">chat</span>
             </h2>
-            <p className="text-xs font-semibold text-[#B8AA98]">
+            <p className="text-xs font-semibold text-[#B3A9D6]">
               {comments.length} {comments.length === 1 ? 'reply' : 'replies'}
             </p>
           </div>
@@ -83,7 +83,7 @@ export const CommentModal = ({ postId, isOpen, onClose }: CommentModalProps) => 
             type="button"
             onClick={onClose}
             aria-label="Close"
-            className="press flex h-9 w-9 items-center justify-center rounded-full bg-white/[0.06] text-[#B8AA98] transition-colors hover:bg-white/10 hover:text-white"
+            className="press flex h-9 w-9 items-center justify-center rounded-full bg-white/[0.06] text-[#B3A9D6] transition-colors hover:bg-white/10 hover:text-white"
           >
             <XMarkIcon className="h-4 w-4" />
           </button>
@@ -93,8 +93,8 @@ export const CommentModal = ({ postId, isOpen, onClose }: CommentModalProps) => 
         <div className="flex-1 overflow-y-auto px-5 py-4">
           {comments.length === 0 ? (
             <div className="py-10 text-center">
-              <ChatBubbleLeftEllipsisIcon className="mx-auto mb-3 h-10 w-10 text-[#B8AA98]/60" />
-              <p className="text-sm font-semibold text-[#B8AA98]">No replies yet. Start the chat.</p>
+              <ChatBubbleLeftEllipsisIcon className="mx-auto mb-3 h-10 w-10 text-[#B3A9D6]/60" />
+              <p className="text-sm font-semibold text-[#B3A9D6]">No replies yet. Start the chat.</p>
             </div>
           ) : (
             <div className="flex flex-col gap-3">
@@ -107,12 +107,12 @@ export const CommentModal = ({ postId, isOpen, onClose }: CommentModalProps) => 
                     </div>
                     <div className="min-w-0 max-w-[85%]">
                       <div className="mb-1 flex items-baseline gap-2 pl-1">
-                        <span className="text-xs font-bold text-[#EEEAE2]">{username}</span>
-                        <span className="text-[11px] text-[#B8AA98]">
+                        <span className="text-xs font-bold text-[#F1EEFF]">{username}</span>
+                        <span className="text-[11px] text-[#B3A9D6]">
                           {new Date(comment.created_at).toLocaleDateString('en-US', { month: 'short', day: 'numeric' })}
                         </span>
                       </div>
-                      <p className="whitespace-pre-wrap break-words rounded-3xl rounded-bl-lg border border-white/10 bg-white/[0.06] px-4 py-2.5 text-sm leading-relaxed text-[#EEEAE2]">
+                      <p className="whitespace-pre-wrap break-words rounded-3xl rounded-bl-lg border border-white/10 bg-white/[0.06] px-4 py-2.5 text-sm leading-relaxed text-[#F1EEFF]">
                         {comment.content}
                       </p>
                     </div>
@@ -133,20 +133,20 @@ export const CommentModal = ({ postId, isOpen, onClose }: CommentModalProps) => 
               placeholder="say something..."
               aria-label="Write a reply"
               rows={1}
-              className="max-h-32 min-h-[44px] flex-1 resize-none rounded-3xl border border-white/10 bg-white/[0.06] px-4 py-3 text-sm leading-relaxed text-[#EEEAE2] outline-none transition-colors placeholder:text-[#B8AA98] focus:border-[#F5A623]/60"
+              className="max-h-32 min-h-[44px] flex-1 resize-none rounded-3xl border border-white/10 bg-white/[0.06] px-4 py-3 text-sm leading-relaxed text-[#F1EEFF] outline-none transition-colors placeholder:text-[#B3A9D6] focus:border-[#8B5CF6]/60"
             />
             <button
               type="button"
               onClick={handleAddComment}
               disabled={!newComment.trim() || isSubmitting}
               aria-label={isSubmitting ? 'Posting' : 'Send reply'}
-              className="press flex h-11 w-11 flex-shrink-0 items-center justify-center rounded-full text-[#0D0A08] transition-opacity disabled:cursor-not-allowed disabled:opacity-40"
-              style={{ background: 'linear-gradient(135deg,#FFD83D,#F5A623 60%,#FF5A36)' }}
+              className="press flex h-11 w-11 flex-shrink-0 items-center justify-center rounded-full text-white transition-opacity disabled:cursor-not-allowed disabled:opacity-40"
+              style={{ background: 'linear-gradient(135deg,#A78BFA,#7C3AED 60%,#5B21B6)' }}
             >
               <PaperAirplaneIcon className="h-5 w-5" />
             </button>
           </div>
-          <p className="mt-1.5 hidden pl-2 text-[11px] text-[#B8AA98] sm:block">⌘ + Enter to send</p>
+          <p className="mt-1.5 hidden pl-2 text-[11px] text-[#B3A9D6] sm:block">⌘ + Enter to send</p>
         </div>
       </div>
     </div>

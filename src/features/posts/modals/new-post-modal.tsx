@@ -145,7 +145,7 @@ export const CreatePostModal = ({ isOpen, onClose, onCreated, preselectedMovie }
         role="dialog"
         aria-modal="true"
         aria-label="New yap"
-        className="relative flex max-h-[94dvh] w-full flex-col overflow-hidden rounded-t-3xl border border-white/10 bg-[#120E0B] sm:max-h-[90dvh] sm:max-w-[560px] sm:rounded-3xl"
+        className="relative flex max-h-[94dvh] w-full flex-col overflow-hidden rounded-t-3xl border border-white/10 bg-[#110B2B] sm:max-h-[90dvh] sm:max-w-[560px] sm:rounded-3xl"
       >
         {/* Aura follows the chosen feeling */}
         <div
@@ -157,13 +157,13 @@ export const CreatePostModal = ({ isOpen, onClose, onCreated, preselectedMovie }
 
         {/* Header */}
         <div className="relative flex shrink-0 items-center justify-between px-5 pb-3 pt-5">
-          <h2 className="font-plus-jakarta text-xl font-extrabold tracking-tight text-[#EEEAE2]">
+          <h2 className="font-plus-jakarta text-xl font-extrabold tracking-tight text-[#F1EEFF]">
             New <span className="shimmer-text">yap</span>
           </h2>
           <button
             onClick={onClose}
             aria-label="Close"
-            className="press flex h-9 w-9 items-center justify-center rounded-full text-[#B8AA98] transition-colors hover:bg-white/10 hover:text-white"
+            className="press flex h-9 w-9 items-center justify-center rounded-full text-[#B3A9D6] transition-colors hover:bg-white/10 hover:text-white"
           >
             <XMarkIcon className="h-5 w-5" />
           </button>
@@ -186,13 +186,13 @@ export const CreatePostModal = ({ isOpen, onClose, onCreated, preselectedMovie }
                   />
                 ) : (
                   <div className="flex h-[54px] w-9 shrink-0 items-center justify-center rounded-lg bg-white/10">
-                    <FilmIcon className="h-4 w-4 text-[#B8AA98]" />
+                    <FilmIcon className="h-4 w-4 text-[#B3A9D6]" />
                   </div>
                 )}
                 <div className="min-w-0 flex-1">
-                  <p className="text-[11px] font-semibold text-[#B8AA98]">Yapping about</p>
+                  <p className="text-[11px] font-semibold text-[#B3A9D6]">Yapping about</p>
                   <p className="truncate text-sm font-bold text-white">{displayTitle}</p>
-                  <p className="text-xs text-[#B8AA98]">
+                  <p className="text-xs text-[#B3A9D6]">
                     {[getYear(selectedMovie), selectedMovie.title ? 'Movie' : 'TV show'].filter(Boolean).join(' · ')}
                   </p>
                 </div>
@@ -209,7 +209,7 @@ export const CreatePostModal = ({ isOpen, onClose, onCreated, preselectedMovie }
             ) : (
               <div>
                 <div className="relative">
-                  <MagnifyingGlassIcon className="pointer-events-none absolute left-4 top-1/2 h-5 w-5 -translate-y-1/2 text-[#B8AA98]" />
+                  <MagnifyingGlassIcon className="pointer-events-none absolute left-4 top-1/2 h-5 w-5 -translate-y-1/2 text-[#B3A9D6]" />
                   <input
                     ref={searchRef}
                     type="text"
@@ -217,17 +217,17 @@ export const CreatePostModal = ({ isOpen, onClose, onCreated, preselectedMovie }
                     onChange={(e) => setSearchQuery(e.target.value)}
                     placeholder="What did you watch? 🎬"
                     aria-label="Search for a movie or show"
-                    className="w-full rounded-2xl border border-white/15 bg-white/[0.05] py-3.5 pl-12 pr-4 text-base text-white outline-none transition-colors placeholder:text-[#B8AA98] focus:border-[#F5A623]/70"
+                    className="w-full rounded-2xl border border-white/15 bg-white/[0.05] py-3.5 pl-12 pr-4 text-base text-white outline-none transition-colors placeholder:text-[#B3A9D6] focus:border-[#8B5CF6]/70"
                   />
                 </div>
 
                 {showResults && (
                   <ul className="mt-2 max-h-64 overflow-y-auto rounded-2xl border border-white/10 bg-black/30">
                     {searching && searchResults.length === 0 && (
-                      <li className="px-4 py-4 text-sm text-[#B8AA98]">Searching…</li>
+                      <li className="px-4 py-4 text-sm text-[#B3A9D6]">Searching…</li>
                     )}
                     {!searching && searchResults.length === 0 && (
-                      <li className="px-4 py-4 text-sm text-[#B8AA98]">
+                      <li className="px-4 py-4 text-sm text-[#B3A9D6]">
                         Nothing found for &ldquo;{searchQuery.trim()}&rdquo;. Try a different spelling.
                       </li>
                     )}
@@ -248,12 +248,12 @@ export const CreatePostModal = ({ isOpen, onClose, onCreated, preselectedMovie }
                             />
                           ) : (
                             <div className="flex h-12 w-8 shrink-0 items-center justify-center rounded bg-white/10">
-                              <FilmIcon className="h-4 w-4 text-[#B8AA98]" />
+                              <FilmIcon className="h-4 w-4 text-[#B3A9D6]" />
                             </div>
                           )}
                           <span className="min-w-0 flex-1">
                             <span className="block truncate text-sm font-bold text-white">{movie.title || movie.name}</span>
-                            <span className="text-xs text-[#B8AA98]">
+                            <span className="text-xs text-[#B3A9D6]">
                               {[getYear(movie), movie.title ? 'Movie' : 'TV show'].filter(Boolean).join(' · ')}
                             </span>
                           </span>
@@ -275,7 +275,7 @@ export const CreatePostModal = ({ isOpen, onClose, onCreated, preselectedMovie }
               placeholder="how did it hit you? yap it out…"
               aria-label="Your yap"
               rows={5}
-              className="min-h-[140px] w-full resize-none rounded-2xl border border-white/10 bg-white/[0.04] px-4 py-3 text-xl font-bold leading-snug text-white outline-none transition-[border-color,box-shadow] placeholder:font-semibold placeholder:text-[#B8AA98] focus:border-transparent"
+              className="min-h-[140px] w-full resize-none rounded-2xl border border-white/10 bg-white/[0.04] px-4 py-3 text-xl font-bold leading-snug text-white outline-none transition-[border-color,box-shadow] placeholder:font-semibold placeholder:text-[#B3A9D6] focus:border-transparent"
               style={{ boxShadow: `0 0 0 1px ${glow}55` }}
             />
 
@@ -299,14 +299,14 @@ export const CreatePostModal = ({ isOpen, onClose, onCreated, preselectedMovie }
                 {imagePreview ? 'Change photo' : 'Add photo'}
                 <input type="file" accept="image/*" className="hidden" onChange={handleImageChange} />
               </label>
-              <span className="text-xs text-[#B8AA98]">{reviewContent.length}</span>
+              <span className="text-xs text-[#B3A9D6]">{reviewContent.length}</span>
             </div>
           </section>
 
           {/* 3. Feeling (optional) */}
           <section aria-label="How it hit you">
-            <p className="text-sm font-bold text-[#EEEAE2]">
-              How did it hit? <span className="font-medium text-[#B8AA98]">(optional)</span>
+            <p className="text-sm font-bold text-[#F1EEFF]">
+              How did it hit? <span className="font-medium text-[#B3A9D6]">(optional)</span>
             </p>
             <FeelingMoodSelect value={selectedMoods} onChange={setSelectedMoods} />
           </section>
@@ -316,16 +316,16 @@ export const CreatePostModal = ({ isOpen, onClose, onCreated, preselectedMovie }
         <div className="relative shrink-0 border-t border-white/10 px-5 pb-[max(1.25rem,env(safe-area-inset-bottom))] pt-4">
           {error && <p role="alert" className="mb-2 text-sm font-semibold text-[#FF8A8A]">{error}</p>}
           {!selectedMovie && !error && (
-            <p className="mb-2 text-xs text-[#B8AA98]">Pick what you watched to post.</p>
+            <p className="mb-2 text-xs text-[#B3A9D6]">Pick what you watched to post.</p>
           )}
           <button
             type="button"
             onClick={handleSubmit}
             disabled={!canPost}
-            className="press w-full rounded-2xl py-3.5 text-base font-black text-[#0D0A08] transition-opacity disabled:cursor-not-allowed disabled:opacity-40"
+            className="press w-full rounded-2xl py-3.5 text-base font-black text-white transition-opacity disabled:cursor-not-allowed disabled:opacity-40"
             style={{
-              background: 'linear-gradient(135deg, #FFD83D, #F5A623 60%, #FF5A36)',
-              boxShadow: canPost ? '0 0 24px rgba(245,166,35,0.4)' : 'none',
+              background: 'linear-gradient(135deg, #A78BFA, #7C3AED 60%, #5B21B6)',
+              boxShadow: canPost ? '0 0 24px rgba(139,92,246,0.4)' : 'none',
             }}
           >
             {isSubmitting ? 'Posting…' : 'Yap it'}

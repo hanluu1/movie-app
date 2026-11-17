@@ -80,26 +80,26 @@ export default function AuthPage () {
   const switchMode = () => { setIsLogin(prev => !prev); setError(''); };
 
   return (
-    <div className="font-dm-sans relative flex min-h-screen items-center justify-center overflow-hidden bg-[#0D0A08] p-5">
+    <div className="font-dm-sans relative flex min-h-screen items-center justify-center overflow-hidden bg-[#07051A] p-5">
       <div className="pointer-events-none absolute -left-24 -top-16 h-96 w-96 rounded-full bg-[#FF4D9D]/20 blur-[120px]" />
       <div className="pointer-events-none absolute -right-24 top-1/3 h-96 w-96 rounded-full bg-[#9B6BFF]/20 blur-[120px]" />
-      <div className="pointer-events-none absolute -bottom-24 left-1/4 h-80 w-80 rounded-full bg-[#F5A623]/15 blur-[120px]" />
+      <div className="pointer-events-none absolute -bottom-24 left-1/4 h-80 w-80 rounded-full bg-[#8B5CF6]/15 blur-[120px]" />
       <div className="film-grain pointer-events-none fixed inset-0" />
 
       <div className="relative w-full max-w-[420px]">
         <div className="mb-6 text-center">
           <Logo shimmer className="text-4xl" />
-          <p className="mt-2 text-sm text-[#B8AA98]">
+          <p className="mt-2 text-sm text-[#B3A9D6]">
             {isLogin ? 'Welcome back. The group chat missed you.' : 'Yap about what you watch. Tag how it hit.'}
           </p>
         </div>
 
         <div className="rounded-3xl border border-white/10 bg-white/[0.04] p-7 backdrop-blur-md sm:p-8">
           <div className="mb-6">
-            <h1 className="mb-1 font-plus-jakarta text-2xl font-extrabold tracking-tight text-[#EEEAE2]">
+            <h1 className="mb-1 font-plus-jakarta text-2xl font-extrabold tracking-tight text-[#F1EEFF]">
               {isLogin ? 'Sign in' : 'Join ReelEmotion'}
             </h1>
-            <p className="text-sm text-[#B8AA98]">
+            <p className="text-sm text-[#B3A9D6]">
               {isLogin ? 'Share and discover reactions.' : 'Share how movies make you feel.'}
             </p>
           </div>
@@ -107,7 +107,7 @@ export default function AuthPage () {
           <button
             type="button"
             onClick={handleGoogleLogin}
-            className="press mb-6 flex w-full items-center justify-center gap-2.5 rounded-full border border-white/15 bg-white/[0.06] py-3 text-sm font-bold text-[#EEEAE2] transition-all hover:border-[#F5A623]/60 hover:bg-white/[0.1]"
+            className="press mb-6 flex w-full items-center justify-center gap-2.5 rounded-full border border-white/15 bg-white/[0.06] py-3 text-sm font-bold text-[#F1EEFF] transition-all hover:border-[#8B5CF6]/60 hover:bg-white/[0.1]"
           >
             <GoogleIcon />
             <span>Continue with Google</span>
@@ -115,7 +115,7 @@ export default function AuthPage () {
 
           <div className="relative mb-6 flex items-center gap-3">
             <div className="h-px flex-1 bg-white/10" />
-            <span className="text-xs font-medium text-[#B8AA98]">or</span>
+            <span className="text-xs font-medium text-[#B3A9D6]">or</span>
             <div className="h-px flex-1 bg-white/10" />
           </div>
 
@@ -157,27 +157,27 @@ export default function AuthPage () {
 
             <button
               type="submit"
-              style={{ background: 'linear-gradient(135deg,#FFD83D,#F5A623 60%,#FF5A36)' }}
-              className="press mt-1 w-full rounded-full py-3 text-sm font-extrabold text-[#0D0A08] transition-all hover:brightness-110"
+              style={{ background: 'linear-gradient(135deg,#A78BFA,#7C3AED 60%,#5B21B6)' }}
+              className="press mt-1 w-full rounded-full py-3 text-sm font-extrabold text-white transition-all hover:brightness-110"
             >
               {isLogin ? 'Sign in' : 'Create account'}
             </button>
           </form>
 
-          <p className="mt-6 text-center text-sm text-[#B8AA98]">
+          <p className="mt-6 text-center text-sm text-[#B3A9D6]">
             {isLogin ? "Don't have an account? " : 'Already have an account? '}
             <button
               type="button"
               onClick={switchMode}
-              className="font-bold text-[#F5A623] transition-opacity hover:opacity-80"
+              className="font-bold text-[#8B5CF6] transition-opacity hover:opacity-80"
             >
               {isLogin ? 'Sign up' : 'Sign in'}
             </button>
           </p>
         </div>
 
-        <p className="mt-6 text-center text-xs text-[#B8AA98]">
-          <Link href="/" className="transition-colors hover:text-[#EEEAE2]">
+        <p className="mt-6 text-center text-xs text-[#B3A9D6]">
+          <Link href="/" className="transition-colors hover:text-[#F1EEFF]">
             ← Back
           </Link>
         </p>

@@ -83,8 +83,8 @@ export default async function MoviePage ({ params, searchParams }: { params: Pro
           {posterUrl && (
             <Image src={posterUrl} alt="" fill sizes="900px" className="scale-125 object-cover opacity-40 blur-3xl" />
           )}
-          <div className="absolute inset-0 bg-[#0D0A08]/70" />
-          <div className="absolute -right-20 -top-20 h-72 w-72 rounded-full bg-[#F5A623] opacity-25 blur-[100px]" />
+          <div className="absolute inset-0 bg-[#07051A]/70" />
+          <div className="absolute -right-20 -top-20 h-72 w-72 rounded-full bg-[#8B5CF6] opacity-25 blur-[100px]" />
           <div className="absolute -bottom-24 -left-16 h-64 w-64 rounded-full bg-[#9B6BFF] opacity-20 blur-[100px]" />
           <div className="film-grain absolute inset-0" />
         </div>
@@ -99,10 +99,10 @@ export default async function MoviePage ({ params, searchParams }: { params: Pro
                 width={220}
                 height={330}
                 priority
-                className="h-auto w-full rounded-2xl border border-white/15 object-cover shadow-[0_20px_60px_-15px_rgba(245,166,35,0.45)]"
+                className="h-auto w-full rounded-2xl border border-white/15 object-cover shadow-[0_20px_60px_-15px_rgba(139,92,246,0.45)]"
               />
             ) : (
-              <div className="flex aspect-[2/3] w-full items-center justify-center rounded-2xl border border-white/10 bg-white/[0.04] text-sm text-[#B8AA98]">
+              <div className="flex aspect-[2/3] w-full items-center justify-center rounded-2xl border border-white/10 bg-white/[0.04] text-sm text-[#B3A9D6]">
                 No poster
               </div>
             )}
@@ -110,25 +110,25 @@ export default async function MoviePage ({ params, searchParams }: { params: Pro
 
           {/* Info */}
           <div className="flex min-w-0 flex-1 flex-col gap-4">
-            <h1 className="font-plus-jakarta text-3xl font-extrabold leading-tight text-[#EEEAE2] sm:text-5xl">
+            <h1 className="font-plus-jakarta text-3xl font-extrabold leading-tight text-[#F1EEFF] sm:text-5xl">
               {displayTitle}
             </h1>
 
             {/* Meta pills */}
             <div className="flex flex-wrap items-center gap-2">
               {year && (
-                <span className="rounded-full border border-white/15 bg-white/10 px-3 py-1 text-xs font-bold text-[#EEEAE2]">{year}</span>
+                <span className="rounded-full border border-white/15 bg-white/10 px-3 py-1 text-xs font-bold text-[#F1EEFF]">{year}</span>
               )}
-              <span className="rounded-full border border-white/15 bg-white/10 px-3 py-1 text-xs font-bold text-[#EEEAE2]">
+              <span className="rounded-full border border-white/15 bg-white/10 px-3 py-1 text-xs font-bold text-[#F1EEFF]">
                 {mediaType === 'tv' ? 'TV Series' : 'Film'}
               </span>
               {number_of_seasons && (
-                <span className="rounded-full border border-white/15 bg-white/10 px-3 py-1 text-xs font-bold text-[#EEEAE2]">
+                <span className="rounded-full border border-white/15 bg-white/10 px-3 py-1 text-xs font-bold text-[#F1EEFF]">
                   {number_of_seasons} season{number_of_seasons > 1 ? 's' : ''}
                 </span>
               )}
               {rating && (
-                <span className="rounded-full bg-[#F5A623]/15 px-3 py-1 text-xs font-black text-[#F5A623]">★ {rating}</span>
+                <span className="rounded-full bg-[#8B5CF6]/15 px-3 py-1 text-xs font-black text-[#8B5CF6]">★ {rating}</span>
               )}
             </div>
 
@@ -138,7 +138,7 @@ export default async function MoviePage ({ params, searchParams }: { params: Pro
                 {genres.map((g: Genre) => (
                   <span
                     key={g.id}
-                    className="rounded-full border border-white/10 bg-white/[0.04] px-3 py-1 text-xs font-semibold text-[#B8AA98]"
+                    className="rounded-full border border-white/10 bg-white/[0.04] px-3 py-1 text-xs font-semibold text-[#B3A9D6]"
                   >
                     {g.name}
                   </span>
@@ -148,23 +148,23 @@ export default async function MoviePage ({ params, searchParams }: { params: Pro
 
             {/* Overview */}
             {overview && (
-              <p className="text-sm leading-relaxed text-[#EEEAE2]/90 sm:text-base">{overview}</p>
+              <p className="text-sm leading-relaxed text-[#F1EEFF]/90 sm:text-base">{overview}</p>
             )}
 
             {/* Cast & director */}
             {(director || topCast.length > 0) && (
               <div className="flex flex-col gap-2 border-t border-white/10 pt-4 text-sm">
                 {director && (
-                  <div className="text-[#B8AA98]">
-                    <span className="font-bold text-[#EEEAE2]">
+                  <div className="text-[#B3A9D6]">
+                    <span className="font-bold text-[#F1EEFF]">
                       {mediaType === 'tv' ? 'Created by ' : 'Directed by '}
                     </span>
                     {director}
                   </div>
                 )}
                 {topCast.length > 0 && (
-                  <div className="text-[#B8AA98]">
-                    <span className="font-bold text-[#EEEAE2]">Starring </span>
+                  <div className="text-[#B3A9D6]">
+                    <span className="font-bold text-[#F1EEFF]">Starring </span>
                     {topCast.join(', ')}
                   </div>
                 )}

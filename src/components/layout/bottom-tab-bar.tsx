@@ -17,12 +17,12 @@ const tabBase = 'press flex flex-1 flex-col items-center justify-center gap-0.5 
 
 export function BottomTabBar ({ onYap, onMood, moodActive = false }: BottomTabBarProps) {
   const pathname = usePathname();
-  const tone = (active: boolean) => (active ? 'text-[#F5A623]' : 'text-[#B8AA98]');
+  const tone = (active: boolean) => (active ? 'text-[#8B5CF6]' : 'text-[#B3A9D6]');
 
   return (
     <nav
       aria-label="Primary"
-      className="fixed inset-x-0 bottom-0 z-50 border-t border-white/10 bg-[#0D0A08]/85 pb-[env(safe-area-inset-bottom)] backdrop-blur-xl lg:hidden"
+      className="fixed inset-x-0 bottom-0 z-50 border-t border-white/10 bg-[#07051A]/85 pb-[env(safe-area-inset-bottom)] backdrop-blur-xl lg:hidden"
     >
       <div className="mx-auto flex max-w-md items-end px-2">
         <Link href="/community" className={`${tabBase} ${tone(pathname === '/community')}`}>
@@ -36,10 +36,10 @@ export function BottomTabBar ({ onYap, onMood, moodActive = false }: BottomTabBa
 
         <button type="button" onClick={onYap} aria-label="New yap" className="press flex flex-1 justify-center pb-2">
           <span
-            className="flex h-12 w-12 items-center justify-center rounded-2xl text-[#0D0A08]"
+            className="flex h-12 w-12 items-center justify-center rounded-2xl text-white"
             style={{
-              background: 'linear-gradient(135deg, #FFD83D, #F5A623 60%, #FF5A36)',
-              boxShadow: '0 0 20px rgba(245,166,35,0.55)',
+              background: 'linear-gradient(135deg, #A78BFA, #7C3AED 60%, #5B21B6)',
+              boxShadow: '0 0 20px rgba(139,92,246,0.55)',
             }}
           >
             <PlusIcon className="h-7 w-7" strokeWidth={2.5} />

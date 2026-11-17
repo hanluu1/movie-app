@@ -30,12 +30,12 @@ interface ResultItem {
 
 const THEMES = {
   dark: {
-    panel: 'bg-[#17120E]/95 border-white/10 backdrop-blur-xl',
-    text: 'text-[#EEEAE2]',
-    muted: 'text-[#B8AA98]',
+    panel: 'bg-[#110B2B]/95 border-white/10 backdrop-blur-xl',
+    text: 'text-[#F1EEFF]',
+    muted: 'text-[#B3A9D6]',
     divider: 'border-white/10',
     active: 'bg-white/10',
-    chip: 'bg-white/10 text-[#EEEAE2]',
+    chip: 'bg-white/10 text-[#F1EEFF]',
     poster: 'bg-white/10',
   },
   light: {
@@ -159,7 +159,7 @@ export function AppSearch ({ open, onClose, dark = false }: Props) {
             onChange={(e) => setQuery(e.target.value)}
             onKeyDown={handleKeyDown}
             placeholder="Search a movie, show or yap…"
-            className={`flex-1 bg-transparent text-base outline-none ${t.text} ${dark ? 'placeholder:text-[#B8AA98]' : 'placeholder:text-[#5B7370]'}`}
+            className={`flex-1 bg-transparent text-base outline-none ${t.text} ${dark ? 'placeholder:text-[#B3A9D6]' : 'placeholder:text-[#5B7370]'}`}
           />
           {loading && (
             <span aria-label="Searching" className={`h-4 w-4 shrink-0 animate-spin rounded-full border-2 border-current border-t-transparent ${t.muted}`} />

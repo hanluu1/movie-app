@@ -71,7 +71,7 @@ export const EditPostForm = ({ postId, content, mood = [], imageUrl, onCancel, o
   return (
     <div className="flex flex-col gap-4 pt-2">
       <div className="flex flex-col gap-1.5">
-        <label className="text-xs font-semibold uppercase tracking-widest text-[#8C7E6E]">
+        <label className="text-xs font-semibold uppercase tracking-widest text-[#9A91C2]">
           Your reaction
         </label>
         <textarea
@@ -79,19 +79,19 @@ export const EditPostForm = ({ postId, content, mood = [], imageUrl, onCancel, o
           onChange={(e) => setEditedContent(e.target.value)}
           placeholder="Edit your reaction..."
           rows={6}
-          className="w-full px-4 py-3 border border-white/15 focus:border-[#F5A623]/60 bg-white/[0.06] rounded-xl text-sm text-[#EEEAE2] placeholder:text-[#B8AA98] outline-none transition-all resize-none leading-relaxed"
+          className="w-full px-4 py-3 border border-white/15 focus:border-[#8B5CF6]/60 bg-white/[0.06] rounded-xl text-sm text-[#F1EEFF] placeholder:text-[#B3A9D6] outline-none transition-all resize-none leading-relaxed"
         />
       </div>
 
       <div className="flex flex-col gap-1.5">
-        <label className="text-xs font-semibold uppercase tracking-widest text-[#8C7E6E]">
+        <label className="text-xs font-semibold uppercase tracking-widest text-[#9A91C2]">
           How did it make you feel?
         </label>
         <FeelingMoodSelect value={editedMoods} onChange={setEditedMoods} />
       </div>
 
       <div className="flex flex-col gap-1.5">
-        <label className="text-xs font-semibold uppercase tracking-widest text-[#8C7E6E]">
+        <label className="text-xs font-semibold uppercase tracking-widest text-[#9A91C2]">
           Photo
         </label>
         {imagePreview ? (
@@ -117,9 +117,9 @@ export const EditPostForm = ({ postId, content, mood = [], imageUrl, onCancel, o
             </button>
           </div>
         ) : (
-          <label className="flex flex-col items-center justify-center gap-2 p-6 border border-dashed border-white/15 rounded-xl cursor-pointer hover:border-[#F5A623]/50 transition-all bg-white/[0.04]">
+          <label className="flex flex-col items-center justify-center gap-2 p-6 border border-dashed border-white/15 rounded-xl cursor-pointer hover:border-[#8B5CF6]/50 transition-all bg-white/[0.04]">
             <span className="text-2xl">📷</span>
-            <span className="text-xs text-[#8C7E6E]">{removeImage ? 'Add a new photo' : 'Click to upload a photo'}</span>
+            <span className="text-xs text-[#9A91C2]">{removeImage ? 'Add a new photo' : 'Click to upload a photo'}</span>
             <input type="file" accept="image/*" className="hidden" onChange={handleImageChange} />
           </label>
         )}
@@ -128,14 +128,14 @@ export const EditPostForm = ({ postId, content, mood = [], imageUrl, onCancel, o
       <div className="flex gap-3 pt-1">
         <button
           onClick={onCancel}
-          className="flex-1 py-2.5 rounded-xl text-sm font-semibold text-[#C8B8A2] bg-white/[0.06] border border-white/15 hover:bg-white/10 hover:text-[#EEEAE2] transition-all"
+          className="flex-1 py-2.5 rounded-xl text-sm font-semibold text-[#CFC6F0] bg-white/[0.06] border border-white/15 hover:bg-white/10 hover:text-[#F1EEFF] transition-all"
         >
           Cancel
         </button>
         <button
           onClick={handleUpdatePost}
           disabled={isSaving || !editedContent.trim()}
-          className="flex-1 py-2.5 rounded-xl text-sm font-semibold text-[#0A0908] bg-[#F5A623] hover:bg-[#FFC04D] transition-all hover:-translate-y-0.5 disabled:opacity-40 disabled:cursor-not-allowed disabled:translate-y-0"
+          className="flex-1 py-2.5 rounded-xl text-sm font-semibold text-white bg-[#8B5CF6] hover:bg-[#A78BFA] transition-all hover:-translate-y-0.5 disabled:opacity-40 disabled:cursor-not-allowed disabled:translate-y-0"
         >
           {isSaving ? 'Saving…' : 'Save Changes'}
         </button>

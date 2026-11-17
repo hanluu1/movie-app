@@ -44,32 +44,32 @@ function CommunityFeed ({
         <h1 className="font-plus-jakarta text-3xl font-extrabold leading-tight sm:text-4xl">
           The <span className="shimmer-text">Yap</span> Feed
         </h1>
-        <p className="mt-1 text-sm text-[#B8AA98]">what everyone&apos;s watching &amp; feeling rn</p>
+        <p className="mt-1 text-sm text-[#B3A9D6]">what everyone&apos;s watching &amp; feeling rn</p>
       </div>
 
       {/* Composer */}
       <button
         onClick={openComposer}
-        className="press group mb-5 flex w-full items-center gap-3 rounded-3xl border border-white/10 bg-white/[0.04] px-4 py-3.5 text-left backdrop-blur-md transition-all hover:border-[#F5A623]/50 hover:bg-white/[0.07]"
+        className="press group mb-5 flex w-full items-center gap-3 rounded-3xl border border-white/10 bg-white/[0.04] px-4 py-3.5 text-left backdrop-blur-md transition-all hover:border-[#8B5CF6]/50 hover:bg-white/[0.07]"
       >
-        <span className="relative flex h-10 w-10 shrink-0 items-center justify-center overflow-hidden rounded-full bg-[#F5A623] text-xs font-extrabold text-[#17110E]">
+        <span className="relative flex h-10 w-10 shrink-0 items-center justify-center overflow-hidden rounded-full bg-[#8B5CF6] text-xs font-extrabold text-[#110B2B]">
           {profile?.avatar_url ? (
             <Image src={profile.avatar_url} alt={profile.username} fill sizes="40px" className="object-cover" />
           ) : (
             (profile?.username || user?.email || 'You').slice(0, 2).toUpperCase()
           )}
         </span>
-        <span className="flex-1 text-sm text-[#B8AA98] transition-colors group-hover:text-white">
+        <span className="flex-1 text-sm text-[#B3A9D6] transition-colors group-hover:text-white">
           what are you watching? yap about it... 🎬
         </span>
-        <span className="shrink-0 rounded-full bg-[#F5A623] px-4 py-1.5 text-xs font-black text-[#0D0A08]">
+        <span className="shrink-0 rounded-full bg-[#8B5CF6] px-4 py-1.5 text-xs font-black text-white">
           Yap
         </span>
       </button>
 
       {/* Feelings: orbs below xl; moved to right rail at xl */}
       <div className="mb-5 xl:hidden">
-        <p className="mb-2.5 text-[11px] font-black uppercase tracking-[0.18em] text-[#B8AA98]">How are you feeling?</p>
+        <p className="mb-2.5 text-[11px] font-black uppercase tracking-[0.18em] text-[#B3A9D6]">How are you feeling?</p>
         <FeelingPicker active={activeFeeling} onChange={setActiveFeeling} />
       </div>
 
@@ -82,8 +82,8 @@ function CommunityFeed ({
               onClick={() => setActiveFilter(f)}
               className={`press flex items-center gap-1.5 rounded-full border px-3.5 py-1.5 text-xs font-bold transition-all ${
                 activeFilter === f
-                  ? 'border-[#EEEAE2] bg-[#EEEAE2] text-[#0D0A08]'
-                  : 'border-white/15 text-[#B8AA98] hover:border-white/30 hover:text-white'
+                  ? 'border-[#F1EEFF] bg-[#F1EEFF] text-[#07051A]'
+                  : 'border-white/15 text-[#B3A9D6] hover:border-white/30 hover:text-white'
               }`}
             >
               {f === 'movies' && <FilmIcon className="h-3 w-3" />}
@@ -99,7 +99,7 @@ function CommunityFeed ({
               key={s}
               onClick={() => setActiveSort(s)}
               className={`rounded-full px-3 py-1 text-xs font-bold transition-all ${
-                activeSort === s ? 'bg-[#EEEAE2] text-[#0D0A08]' : 'text-[#B8AA98] hover:text-white'
+                activeSort === s ? 'bg-[#F1EEFF] text-[#07051A]' : 'text-[#B3A9D6] hover:text-white'
               }`}
             >
               {s === 'created_at' ? 'Newest' : 'Most felt'}
@@ -111,9 +111,9 @@ function CommunityFeed ({
       {/* Active filter tags */}
       {hasActiveFilters && (
         <div className="mb-5 flex flex-wrap items-center gap-2">
-          <span className="text-xs text-[#B8AA98]">Showing:</span>
+          <span className="text-xs text-[#B3A9D6]">Showing:</span>
           {activeFilter !== 'all' && (
-            <button onClick={() => setActiveFilter('all')} className="flex items-center gap-1 rounded-full bg-[#F5A623]/15 px-2.5 py-1 text-xs font-bold text-[#F5A623]">
+            <button onClick={() => setActiveFilter('all')} className="flex items-center gap-1 rounded-full bg-[#8B5CF6]/15 px-2.5 py-1 text-xs font-bold text-[#8B5CF6]">
               {activeFilter === 'movies' ? 'Movies' : 'TV shows'} <XMarkIcon className="h-3 w-3" />
             </button>
           )}
@@ -127,11 +127,11 @@ function CommunityFeed ({
             </button>
           )}
           {activeSort === 'upvotes' && (
-            <button onClick={() => setActiveSort('created_at')} className="flex items-center gap-1 rounded-full bg-[#F5A623]/15 px-2.5 py-1 text-xs font-bold text-[#F5A623]">
+            <button onClick={() => setActiveSort('created_at')} className="flex items-center gap-1 rounded-full bg-[#8B5CF6]/15 px-2.5 py-1 text-xs font-bold text-[#8B5CF6]">
               Most felt <XMarkIcon className="h-3 w-3" />
             </button>
           )}
-          <button onClick={clearFilters} className="text-xs font-bold text-[#B8AA98] transition-colors hover:text-white">
+          <button onClick={clearFilters} className="text-xs font-bold text-[#B3A9D6] transition-colors hover:text-white">
             Clear all
           </button>
         </div>
@@ -156,7 +156,7 @@ function CommunityFeed ({
             className="absolute inset-0 bg-black/60 backdrop-blur-sm"
             onClick={() => setShowFeelingSheet(false)}
           />
-          <div className="absolute inset-x-0 bottom-0 rounded-t-3xl border-t border-white/10 bg-[#17120E] p-5 pb-8">
+          <div className="absolute inset-x-0 bottom-0 rounded-t-3xl border-t border-white/10 bg-[#110B2B] p-5 pb-8">
             <p className="mb-4 font-plus-jakarta text-xl font-extrabold">How are you feeling?</p>
             <FeelingPicker
               layout="grid"
@@ -185,9 +185,9 @@ export default function CommunityPage () {
       moodActive={activeFeeling !== null}
       rightRail={
         <div className="rounded-3xl border border-white/10 bg-white/[0.04] p-4 backdrop-blur-md">
-          <p className="mb-3 text-[11px] font-black uppercase tracking-[0.18em] text-[#B8AA98]">How are you feeling?</p>
+          <p className="mb-3 text-[11px] font-black uppercase tracking-[0.18em] text-[#B3A9D6]">How are you feeling?</p>
           <FeelingPicker active={activeFeeling} onChange={setActiveFeeling} layout="grid" />
-          <p className="mt-3 text-xs leading-relaxed text-[#B8AA98]">
+          <p className="mt-3 text-xs leading-relaxed text-[#B3A9D6]">
             Pick a feeling to see yaps that hit the same way.
           </p>
         </div>

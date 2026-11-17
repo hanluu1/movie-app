@@ -161,7 +161,7 @@ function PostDetail () {
         <div className="rounded-3xl border border-white/10 bg-white/[0.04] px-6 py-16 text-center backdrop-blur-md">
           <div aria-hidden className="mb-3 text-4xl">🫥</div>
           <p className="font-plus-jakarta text-lg font-extrabold">Post not found</p>
-          <p className="mt-1 text-sm text-[#B8AA98]">This yap may have been deleted.</p>
+          <p className="mt-1 text-sm text-[#B3A9D6]">This yap may have been deleted.</p>
         </div>
       </>
     );
@@ -201,7 +201,7 @@ function PostDetail () {
           {post.movie_image && (
             <Image src={post.movie_image} alt="" fill sizes="700px" className="scale-110 object-cover opacity-35 blur-2xl" />
           )}
-          <div className="absolute inset-0 bg-[#0D0A08]" style={{ opacity: post.movie_image ? 0.6 : 0.92 }} />
+          <div className="absolute inset-0 bg-[#07051A]" style={{ opacity: post.movie_image ? 0.6 : 0.92 }} />
           <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/30 to-transparent" />
           <div
             className="absolute -right-16 -top-16 h-72 w-72 rounded-full blur-3xl"
@@ -311,7 +311,7 @@ function PostDetail () {
                   <button
                     type="button"
                     onClick={() => setEdit(true)}
-                    className="press inline-flex items-center gap-1.5 rounded-full border border-white/15 bg-white/[0.06] px-3.5 py-1.5 text-xs font-bold text-[#EEEAE2] transition-colors hover:bg-white/10"
+                    className="press inline-flex items-center gap-1.5 rounded-full border border-white/15 bg-white/[0.06] px-3.5 py-1.5 text-xs font-bold text-[#F1EEFF] transition-colors hover:bg-white/10"
                   >
                     <PencilSquareIcon className="h-3.5 w-3.5" />
                     Edit
@@ -336,15 +336,15 @@ function PostDetail () {
         id="comments"
         className="scroll-mt-24 rounded-3xl border border-white/10 bg-white/[0.04] p-4 backdrop-blur-md sm:p-5"
       >
-        <h2 className="mb-4 font-plus-jakarta text-lg font-extrabold text-[#EEEAE2]">
+        <h2 className="mb-4 font-plus-jakarta text-lg font-extrabold text-[#F1EEFF]">
           The <span className="shimmer-text">chat</span>
-          <span className="ml-2 text-sm font-semibold text-[#B8AA98]">
+          <span className="ml-2 text-sm font-semibold text-[#B3A9D6]">
             {comments.length} {comments.length === 1 ? 'reply' : 'replies'}
           </span>
         </h2>
 
         {comments.length === 0 ? (
-          <div className="py-8 text-center text-sm font-semibold text-[#B8AA98]">
+          <div className="py-8 text-center text-sm font-semibold text-[#B3A9D6]">
             No replies yet. Start the chat.
           </div>
         ) : (
@@ -357,16 +357,16 @@ function PostDetail () {
                   <Avatar username={name} avatarUrl={comment.profiles?.avatar_url} px={32} />
                   <div className={`min-w-0 max-w-[82%] ${mine ? 'items-end text-right' : ''} flex flex-col`}>
                     <div className="mb-1 flex items-baseline gap-2 px-1">
-                      <span className="text-xs font-bold text-[#EEEAE2]">{name}</span>
-                      <span className="text-[11px] text-[#B8AA98]">
+                      <span className="text-xs font-bold text-[#F1EEFF]">{name}</span>
+                      <span className="text-[11px] text-[#B3A9D6]">
                         {new Date(comment.created_at).toLocaleDateString('en-US', { month: 'short', day: 'numeric' })}
                       </span>
                     </div>
                     <p
                       className={`whitespace-pre-wrap break-words border px-4 py-2.5 text-left text-sm leading-relaxed ${
                         mine
-                          ? 'rounded-3xl rounded-br-lg border-[#F5A623]/30 bg-[#F5A623]/15 text-[#EEEAE2]'
-                          : 'rounded-3xl rounded-bl-lg border-white/10 bg-white/[0.06] text-[#EEEAE2]'
+                          ? 'rounded-3xl rounded-br-lg border-[#8B5CF6]/30 bg-[#8B5CF6]/15 text-[#F1EEFF]'
+                          : 'rounded-3xl rounded-bl-lg border-white/10 bg-white/[0.06] text-[#F1EEFF]'
                       }`}
                     >
                       {comment.content}
@@ -381,7 +381,7 @@ function PostDetail () {
 
       {/* Sticky comment input */}
       <div className="sticky bottom-20 z-20 mt-4 lg:bottom-4">
-        <div className="flex items-end gap-2 rounded-3xl border border-white/10 bg-[#17120E]/90 p-2 backdrop-blur-xl">
+        <div className="flex items-end gap-2 rounded-3xl border border-white/10 bg-[#110B2B]/90 p-2 backdrop-blur-xl">
           {user && (
             <Avatar username={currentProfile?.username ?? user.email ?? ''} avatarUrl={currentProfile?.avatar_url} px={36} />
           )}
@@ -392,15 +392,15 @@ function PostDetail () {
             placeholder="say something..."
             aria-label="Write a reply"
             rows={1}
-            className="max-h-32 min-h-[40px] flex-1 resize-none rounded-2xl bg-transparent px-2 py-2.5 text-sm leading-relaxed text-[#EEEAE2] outline-none placeholder:text-[#B8AA98]"
+            className="max-h-32 min-h-[40px] flex-1 resize-none rounded-2xl bg-transparent px-2 py-2.5 text-sm leading-relaxed text-[#F1EEFF] outline-none placeholder:text-[#B3A9D6]"
           />
           <button
             type="button"
             onClick={handleAddComment}
             disabled={!newComment.trim()}
             aria-label="Send reply"
-            className="press flex h-10 w-10 flex-shrink-0 items-center justify-center rounded-full text-[#0D0A08] transition-opacity disabled:cursor-not-allowed disabled:opacity-40"
-            style={{ background: 'linear-gradient(135deg,#FFD83D,#F5A623 60%,#FF5A36)' }}
+            className="press flex h-10 w-10 flex-shrink-0 items-center justify-center rounded-full text-white transition-opacity disabled:cursor-not-allowed disabled:opacity-40"
+            style={{ background: 'linear-gradient(135deg,#A78BFA,#7C3AED 60%,#5B21B6)' }}
           >
             <PaperAirplaneIcon className="h-5 w-5" />
           </button>
@@ -413,11 +413,11 @@ function PostDetail () {
           className="fixed inset-0 z-[70] flex items-center justify-center bg-black/70 p-6 backdrop-blur-sm"
           onClick={(e) => e.target === e.currentTarget && setShowDeleteModal(false)}
         >
-          <div role="dialog" aria-modal="true" className="flex w-full max-w-sm flex-col gap-5 rounded-3xl border border-white/10 bg-[#17120E]/95 p-6 backdrop-blur-xl">
+          <div role="dialog" aria-modal="true" className="flex w-full max-w-sm flex-col gap-5 rounded-3xl border border-white/10 bg-[#110B2B]/95 p-6 backdrop-blur-xl">
             <div>
               <p className="mb-1 text-[11px] font-black uppercase tracking-[0.18em] text-rose-300">Heads up</p>
-              <h2 className="font-plus-jakarta text-xl font-extrabold text-[#EEEAE2]">Delete this yap?</h2>
-              <p className="mt-2 text-sm leading-relaxed text-[#B8AA98]">
+              <h2 className="font-plus-jakarta text-xl font-extrabold text-[#F1EEFF]">Delete this yap?</h2>
+              <p className="mt-2 text-sm leading-relaxed text-[#B3A9D6]">
                 This will permanently remove your reaction. There&rsquo;s no way to get it back.
               </p>
             </div>
@@ -425,7 +425,7 @@ function PostDetail () {
               <button
                 type="button"
                 onClick={() => setShowDeleteModal(false)}
-                className="press flex-1 rounded-full border border-white/15 bg-white/[0.06] py-2.5 text-sm font-bold text-[#EEEAE2] transition-colors hover:bg-white/10"
+                className="press flex-1 rounded-full border border-white/15 bg-white/[0.06] py-2.5 text-sm font-bold text-[#F1EEFF] transition-colors hover:bg-white/10"
               >
                 Keep it
               </button>

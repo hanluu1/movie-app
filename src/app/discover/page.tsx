@@ -81,16 +81,16 @@ function MovieCard ({ id, title, posterPath, mediaType, reactionCount, glow }: {
           />
         ) : (
           <div className="flex h-full w-full items-center justify-center">
-            <FilmIcon className="h-8 w-8 text-[#B8AA98]" />
+            <FilmIcon className="h-8 w-8 text-[#B3A9D6]" />
           </div>
         )}
         {reactionCount !== undefined && reactionCount > 0 && (
-          <div className="absolute bottom-2 left-2 rounded-full bg-black/70 px-2.5 py-1 text-[11px] font-black text-[#F5A623] backdrop-blur-sm">
+          <div className="absolute bottom-2 left-2 rounded-full bg-black/70 px-2.5 py-1 text-[11px] font-black text-[#8B5CF6] backdrop-blur-sm">
             {reactionCount} {reactionCount === 1 ? 'yap' : 'yaps'}
           </div>
         )}
       </div>
-      <p className="truncate px-1 text-sm font-bold leading-snug text-[#EEEAE2]">{title}</p>
+      <p className="truncate px-1 text-sm font-bold leading-snug text-[#F1EEFF]">{title}</p>
     </Link>
   );
 }
@@ -123,10 +123,10 @@ function SectionHeading ({ eyebrow, title, subtitle, action }: {
     <div className="mb-3 flex items-end justify-between gap-3">
       <div className="min-w-0">
         {eyebrow && (
-          <p className="mb-1 text-[11px] font-black uppercase tracking-[0.18em] text-[#B8AA98]">{eyebrow}</p>
+          <p className="mb-1 text-[11px] font-black uppercase tracking-[0.18em] text-[#B3A9D6]">{eyebrow}</p>
         )}
-        <h2 className="font-plus-jakarta text-xl font-extrabold text-[#EEEAE2] sm:text-2xl">{title}</h2>
-        {subtitle && <p className="mt-0.5 text-sm text-[#B8AA98]">{subtitle}</p>}
+        <h2 className="font-plus-jakarta text-xl font-extrabold text-[#F1EEFF] sm:text-2xl">{title}</h2>
+        {subtitle && <p className="mt-0.5 text-sm text-[#B3A9D6]">{subtitle}</p>}
       </div>
       {action}
     </div>
@@ -211,7 +211,7 @@ export default function DiscoverPage () {
         <h1 className="font-plus-jakarta text-3xl font-extrabold leading-tight sm:text-4xl">
           Find your next <span className="shimmer-text">obsession</span>
         </h1>
-        <p className="mt-1 text-sm text-[#B8AA98]">pick a feeling, we&apos;ll find the watch</p>
+        <p className="mt-1 text-sm text-[#B3A9D6]">pick a feeling, we&apos;ll find the watch</p>
       </div>
 
       {/* Feeling picker */}
@@ -220,12 +220,12 @@ export default function DiscoverPage () {
         style={feeling ? { boxShadow: `0 0 40px -10px ${feeling.color}66`, borderColor: `${feeling.color}55` } : undefined}
       >
         <div className="flex items-center justify-between gap-3">
-          <p className="text-[11px] font-black uppercase tracking-[0.18em] text-[#B8AA98]">How are you feeling?</p>
+          <p className="text-[11px] font-black uppercase tracking-[0.18em] text-[#B3A9D6]">How are you feeling?</p>
           {feeling && (
             <button
               type="button"
               onClick={() => setActiveFeeling(null)}
-              className="press text-xs font-bold text-[#B8AA98] transition-colors hover:text-white"
+              className="press text-xs font-bold text-[#B3A9D6] transition-colors hover:text-white"
             >
               Clear
             </button>
@@ -257,7 +257,7 @@ export default function DiscoverPage () {
               ))}
             </HorizontalRow>
           ) : (
-            <p className="text-sm text-[#B8AA98]">Nothing matched that feeling yet. Try another one.</p>
+            <p className="text-sm text-[#B3A9D6]">Nothing matched that feeling yet. Try another one.</p>
           )}
         </section>
       )}
@@ -270,7 +270,7 @@ export default function DiscoverPage () {
             title="Everyone's yapping about"
             subtitle="movies and shows people can't stop talking about"
             action={(
-              <Link href="/community" className="press mb-1 shrink-0 text-xs font-bold text-[#F5A623] transition-colors hover:text-[#FFD83D]">
+              <Link href="/community" className="press mb-1 shrink-0 text-xs font-bold text-[#8B5CF6] transition-colors hover:text-[#FFD83D]">
                 See the feed →
               </Link>
             )}
