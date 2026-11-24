@@ -3,7 +3,7 @@
 import Link from 'next/link';
 import Image from 'next/image';
 import { Logo } from '@/components/ui/logo';
-import { ArrowUpRightIcon, ChatBubbleOvalLeftIcon, HeartIcon } from '@heroicons/react/24/solid';
+import { ArrowRightIcon, ArrowUpRightIcon, ChatBubbleOvalLeftIcon, HeartIcon } from '@heroicons/react/24/solid';
 import { useEffect, useState } from 'react';
 import { FEELING_LIST, FEELINGS, getFeeling, getMoodsForFeeling, type FeelingKey } from '@/lib/moods';
 import { searchMoviesAndTv, searchTvShows, type Movie, type TrendingTV } from '@/lib/tmdb/client';
@@ -150,11 +150,11 @@ export default function LandingPage () {
             Post your take on any show or movie and tag how it made you feel. Find your people, find your next watch.
           </p>
           <div className="mt-8 flex flex-col justify-center gap-3 sm:flex-row lg:justify-start xl:mt-10">
-            <Link href="/login" style={{ background: CTA_GRADIENT }} className="press inline-flex items-center justify-center gap-2 rounded-full px-8 py-4 text-base font-extrabold text-white shadow-[0_8px_40px_rgba(139,92,246,0.3)] xl:px-10 xl:py-5 xl:text-lg transition hover:brightness-110">
-              Start yapping <ArrowUpRightIcon className="h-4 w-4" />
+            <Link href="/community" style={{ background: CTA_GRADIENT }} className="group press inline-flex items-center justify-center gap-2 rounded-full px-8 py-4 text-base font-extrabold text-white shadow-[0_8px_40px_rgba(139,92,246,0.3)] xl:px-10 xl:py-5 xl:text-lg transition hover:brightness-110">
+              Start yapping <ArrowRightIcon className="h-4 w-4 transition-transform duration-200 group-hover:translate-x-1" />
             </Link>
-            <Link href="/community" className="press inline-flex items-center justify-center rounded-full border border-white/10 bg-white/[0.04] px-8 py-4 text-base font-bold text-[#F1EEFF] backdrop-blur-md transition hover:bg-white/[0.08] xl:px-10 xl:py-5 xl:text-lg">
-              Peek at the feed
+            <Link href="/discover" className="press inline-flex items-center justify-center rounded-full border border-white/10 bg-white/[0.04] px-8 py-4 text-base font-bold text-[#F1EEFF] backdrop-blur-md transition hover:bg-white/[0.08] xl:px-10 xl:py-5 xl:text-lg">
+              Browse by mood
             </Link>
           </div>
 
@@ -273,8 +273,8 @@ export default function LandingPage () {
             <p className="mx-auto mt-4 max-w-lg text-base leading-7 text-[#B3A9D6]">
               No essays required. Just you, a show, and how it hit.
             </p>
-            <Link href="/login" style={{ background: CTA_GRADIENT }} className="press mt-8 inline-flex items-center justify-center gap-2 rounded-full px-8 py-4 text-base font-extrabold text-white transition hover:brightness-110">
-              Join the conversation <ArrowUpRightIcon className="h-4 w-4" />
+            <Link href="/login" style={{ background: CTA_GRADIENT }} className="group press mt-8 inline-flex items-center justify-center gap-2 rounded-full px-8 py-4 text-base font-extrabold text-white transition hover:brightness-110">
+              Join the conversation <ArrowRightIcon className="h-4 w-4 transition-transform duration-200 group-hover:translate-x-1" />
             </Link>
           </div>
         </div>
