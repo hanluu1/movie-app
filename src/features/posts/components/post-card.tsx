@@ -126,7 +126,7 @@ export const PostCard = ({
 
   const handleReaction = (e: React.MouseEvent) => {
     e.stopPropagation();
-    if (!canLike) return;
+    if (!canLike) { onLike?.(); return; }
     setLiked((prev) => !prev);
     onLike?.();
     // Burst on like only; un-liking stays quiet
@@ -298,11 +298,10 @@ export const PostCard = ({
             <div className="relative">
               <button
                 type="button"
-                disabled={!canLike}
                 aria-pressed={liked}
                 aria-label={`${liked ? 'Unlike' : 'Like'}, ${upvotes} likes`}
                 onClick={handleReaction}
-                className="press inline-flex items-center gap-1.5 rounded-full px-3 py-1.5 text-xs font-black backdrop-blur-md transition-all disabled:cursor-not-allowed disabled:opacity-50"
+                className="press inline-flex items-center gap-1.5 rounded-full px-3 py-1.5 text-xs font-black backdrop-blur-md transition-all"
                 style={liked
                   ? { background: `${LIKE_COLOR}30`, color: LIKE_COLOR, boxShadow: `0 0 14px ${LIKE_COLOR}55` }
                   : { background: 'rgba(255,255,255,0.1)', color: 'rgba(255,255,255,0.8)' }}

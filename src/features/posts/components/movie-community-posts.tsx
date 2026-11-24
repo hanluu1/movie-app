@@ -88,7 +88,10 @@ export function MovieCommunityPosts ({ movieId, movieTitle, posterPath, mediaTyp
   useEffect(() => { fetchPosts(); }, [movieId]);
 
   const handleToggleLike = async (postId: string) => {
-    if (!user) return;
+    if (!user) {
+      router.push(`/login?redirect=${encodeURIComponent(pathname)}`);
+      return;
+    }
     const post = posts.find(p => p.id === postId);
     if (!post) return;
 

@@ -157,16 +157,12 @@ export const AllPost = forwardRef<{ refetch: () => void }, AllPostProps>(
           if (payload.eventType === 'INSERT') {
             const { post_id, user_id } = payload.new;
             setPosts(prev => prev.map(post =>
-              post.id === post_id
-                ? { ...post, upvotes: user?.id === user_id ? post.upvotes : post.upvotes + 1, isLiked: user?.id === user_id ? true : post.isLiked }
-                : post
+              post.id === post_id && user?.id === user_id ? { ...post, isLiked: true } : post
             ));
           } else if (payload.eventType === 'DELETE') {
             const { post_id, user_id } = payload.old;
             setPosts(prev => prev.map(post =>
-              post.id === post_id
-                ? { ...post, upvotes: user?.id === user_id ? post.upvotes : post.upvotes - 1, isLiked: user?.id === user_id ? false : post.isLiked }
-                : post
+              post.id === post_id && user?.id === user_id ? { ...post, isLiked: false } : post
             ));
           }
         })
@@ -179,7 +175,7 @@ export const AllPost = forwardRef<{ refetch: () => void }, AllPostProps>(
               .select('*, profiles(username, avatar_url), comments(count)')
               .eq('id', payload.new.id)
               .single();
-            if (data) setPosts(prev => [{ ...data, isLiked: false, comment_count: 0 }, ...prev]);
+            if (data) setPosts(prev => prev.some(p => p.id === data.id) ? prev : [{ ...data, isLiked: false, comment_count: 0 }, ...prev]);
           } else if (payload.eventType === 'UPDATE') {
             setPosts(prev => prev.map(p => p.id === payload.new.id ? { ...p, ...payload.new } : p));
           }
